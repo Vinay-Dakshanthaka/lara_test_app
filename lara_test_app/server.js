@@ -14,7 +14,7 @@ app.use(express.json());
 // Routes
 app.use('/api/test', router);
 app.use('/api/auth/user', authRoute);
-app.use('/api/profile/user', profileRoute);
+app.use('/api/user/profile', profileRoute);
 
 // Port
 const PORT = process.env.PORT || 8080;
