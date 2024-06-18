@@ -32,4 +32,18 @@ db.sequelize = sequelize;
 db.User = require('./userModel')(sequelize, DataTypes);
 db.Profile = require('./profileModel')(sequelize, DataTypes);
 
+
+db.User.hasOne(db.Profile, {
+    foreignKey: 'user_id',
+    as: 'profile',
+    onDelete: 'CASCADE'
+});
+
+db.Profile.belongsTo(db.User, {
+    foreignKey: 'user_id',
+    onDelete: 'CASCADE'
+});
+
+
+
 module.exports = db;
