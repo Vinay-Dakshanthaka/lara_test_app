@@ -33,11 +33,11 @@ const saveOrUpdateProfile = async(req, res) => {
         };
 
         // Check if the profile already exists
-        const existingProfile = await db.Profile.findOne({ where: { user_id } });
+        const existingProfile = await db.Profile.findOne({ where: { user_id: student_id } });
 
         if (existingProfile) {
             // If the profile exists, update it
-            await db.Profile.update(profileInfo, { where: { user_id } });
+            await db.Profile.update(profileInfo, { where: { user_id:student_id } });
             res.status(200).send({profile: profileInfo, message: 'Profile updated successfully.' });
         } else {
             // If the profile doesn't exist, create a new one
