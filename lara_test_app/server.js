@@ -5,6 +5,7 @@ const cors = require('cors');
 const app = express();
 const router = require('./routes/adminRoutes');
 const authRoute = require('./routes/auth');
+const profileRoute = require('./routes/profileRoutes')
 const db = require('./models'); // Ensure this matches your Sequelize setup file path
 
 app.use(cors());
@@ -13,6 +14,7 @@ app.use(express.json());
 // Routes
 app.use('/api/test', router);
 app.use('/api/auth/user', authRoute);
+app.use('/api/profile/user', profileRoute);
 
 // Port
 const PORT = process.env.PORT || 8080;
