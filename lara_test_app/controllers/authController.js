@@ -3,7 +3,7 @@ const db = require('../models');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const xlsx = require('xlsx');
-const nodemailer = require('nodemailer'); 
+const nodemailer = require('nodemailer');
 
 const Student = db.Student;
 
@@ -73,15 +73,17 @@ const verifyByEmail = async (req, res) => {
             return res.status(404).send({ message: 'No Student Found with this Email Id' });
         }
 
-        // console.log("studentData : ", studentData);
-
         // Compare passwords using bcrypt
         const passwordMatch = await bcrypt.compare(password, studentData.password);
 
         if (passwordMatch) {
-            // Generate JWT token
             const token = jwt.sign({ student_id: studentData.student_id, email: studentData.email }, jwtSecret);
+            // Generate JWT token
             const role = studentData.role;
+            // Check if the password is the default password that needs updating
+            if (password === "password@123") {
+                return res.status(400).send({ message: 'Please update your password', token, role });
+            }
 
             // Send token and role to the client
             return res.status(200).send({ token, role, message: 'Signin success!!' });
@@ -97,12 +99,13 @@ const verifyByEmail = async (req, res) => {
 };
 
 
+
 const verifyByPhone = async (req, res) => {
     try {
         const { phoneNumber, password } = req.body;
         const studentData = await Student.findOne({ where: { phoneNumber } });
         if (!studentData) {
-          return  res.status(404).send({ message: 'No Student Found with this Phone' });
+            return res.status(404).send({ message: 'No Student Found with this Phone' });
         }
 
         const passwordMatch = await bcrypt.compare(password, studentData.password);
@@ -111,13 +114,13 @@ const verifyByPhone = async (req, res) => {
             const token = jwt.sign({ student_id: studentData.student_id, email: studentData.email }, jwtSecret);
             const role = studentData.role;
             //send token and role to the client 
-           return res.status(200).send({ token, role, message: 'Signin success!!' });
+            return res.status(200).send({ token, role, message: 'Signin success!!' });
         } else {
-          return  res.status(401).send({ message: 'Invalid Password' });
+            return res.status(401).send({ message: 'Invalid Password' });
         }
 
     } catch (error) {
-       return res.status(500).send({ message: error.message })
+        return res.status(500).send({ message: error.message })
     }
 };
 
@@ -125,7 +128,7 @@ const getStudentDetailsById = async (req, res) => {
     try {
         const student_id = req.student_id;
         // console.log("Student ID: ", student_id);
-        
+
         const studentData = await Student.findByPk(student_id, {
             attributes: { exclude: ['password'] }
         });
@@ -141,22 +144,22 @@ const getStudentDetailsById = async (req, res) => {
     }
 }
 
-const getAllStudentDetails = async (req, res)=>{
-    try{
+const getAllStudentDetails = async (req, res) => {
+    try {
         const student_id = req.student_id;
 
         const studentData = await Student.findByPk(student_id);
         const role = studentData.role;
 
-        if(role!== 'PLACEMENT OFFICER' & role !== 'SUPER ADMIN'){
-           return res.status(403).send({message:'Access Forbidden'});
+        if (role !== 'PLACEMENT OFFICER' & role !== 'SUPER ADMIN') {
+            return res.status(403).send({ message: 'Access Forbidden' });
         }
 
-        const allStudents = await Student.findAll({attributes:{exclude:['password']}});
+        const allStudents = await Student.findAll({ attributes: { exclude: ['password'] } });
 
-       return res.json({allStudents})
-    }catch(error){
-       return res.status(500).send({message: error.message})
+        return res.json({ allStudents })
+    } catch (error) {
+        return res.status(500).send({ message: error.message })
     }
 }
 
@@ -245,13 +248,13 @@ const bulkSignup = async (req, res) => {
 
         const student_id = req.student_id;
         const userData = await Student.findOne({
-            where:{student_id}
+            where: { student_id }
         })
 
         const userRole = userData.role;
 
-        if(userRole !== 'SUPER ADMIN' && userRole !== 'PLACEMENT OFFICER'){
-          return  res.status(403).send({message:'Access Forbidden'});
+        if (userRole !== 'SUPER ADMIN' && userRole !== 'PLACEMENT OFFICER') {
+            return res.status(403).send({ message: 'Access Forbidden' });
         }
 
         const file = req.file;
@@ -348,20 +351,20 @@ const bulkSignup = async (req, res) => {
         }
 
         if (emailErrors.length > 0) {
-          return  res.status(200).send({
+            return res.status(200).send({
                 message: 'Bulk signup success with some email errors',
                 students: createdStudents,
                 emailErrors
             });
         } else {
-          return  res.status(200).send({
+            return res.status(200).send({
                 message: 'Bulk signup success',
                 students: createdStudents
             });
         }
     } catch (error) {
         console.error('Error during bulk signup:', error);
-      return  res.status(500).send({ message: 'An error occurred during bulk signup.' });
+        return res.status(500).send({ message: 'An error occurred during bulk signup.' });
     }
 };
 
@@ -372,13 +375,13 @@ const signupSingle = async (req, res) => {
 
         const student_id = req.student_id;
         const userData = await Student.findOne({
-            where:{student_id}
+            where: { student_id }
         })
 
         const userRole = userData.role;
 
-        if(userRole !== 'SUPER ADMIN' && userRole !== 'PLACEMENT OFFICER'){
-         return   res.status(403).send({message:'Access Forbidden'});
+        if (userRole !== 'SUPER ADMIN' && userRole !== 'PLACEMENT OFFICER') {
+            return res.status(403).send({ message: 'Access Forbidden' });
         }
 
         const { email } = req.body;
@@ -444,19 +447,209 @@ const signupSingle = async (req, res) => {
 
         try {
             await transporter.sendMail(mailOptions);
-          return  res.status(200).send({ message: 'Signup success', student: newStudent });
+            return res.status(200).send({ message: 'Signup success', student: newStudent });
         } catch (emailError) {
             console.error('Error sending email:', emailError);
-          return  res.status(200).send({ 
-                message: 'Signup success, but there was an error sending the welcome email', 
-                student: newStudent, 
-                emailError: emailError.message 
+            return res.status(200).send({
+                message: 'Signup success, but there was an error sending the welcome email',
+                student: newStudent,
+                emailError: emailError.message
             });
         }
     } catch (error) {
-       return res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 };
+
+const updatePassword = async (req, res) => {
+    try {
+        console.log("Starting password update process");
+
+        const studentId = req.student_id;
+        console.log(req.studentId)
+        console.log("Extracted studentId from request:", studentId);
+
+        const student = await Student.findOne({ where: { student_id: studentId } });
+        if (!student) {
+            return res.status(404).json({ error: 'Student not found' });
+        }
+        console.log("Fetched student from database:", student);
+
+        const existingPassword = student.password;
+        console.log("Existing password from database:", existingPassword);
+
+        const { oldPassword, newPassword } = req.body;
+        console.log("Received old password and new password:", oldPassword, ":", newPassword);
+
+        // Compare the provided password with the hashed password in the database
+        const passwordMatch = await bcrypt.compare(oldPassword, existingPassword);
+        console.log("Password match result:", passwordMatch);
+
+        // Check if the old password matches the existing password
+        if (!passwordMatch) {
+            return res.status(400).json({ error: 'Old password does not match' });
+        }
+
+        // Update the password with the new password
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+        console.log("Hashed new password:", hashedPassword);
+
+        await Student.update({ password: hashedPassword }, { where: { student_id: studentId } });
+        console.log("Password updated in database");
+
+        res.status(200).send({ message: 'Password updated successfully.' });
+    } catch (error) {
+        console.error("Error during password update process:", error);
+        res.status(500).send({ message: error.message });
+    }
+};
+
+const sendPasswordResetEmail = async (req, res) => {
+    try {
+        const { email } = req.body;
+        
+        // Check if the email exists in the database
+        const user = await Student.findOne({ where: { email } });
+        if (!user) {
+            return res.status(403).send({ message: 'No account exists with this email ID.' });
+        }
+
+        // Generate unique token using JWT
+        const token = jwt.sign({ student_id: user.student_id }, jwtSecret, { expiresIn: '30m' }); 
+
+        // Define the email options
+        const mailOptions = {
+            from: 'lara.placementcell@gmail.com', // Sender address
+            to: email, // Recipient's email address
+            subject: 'Password Reset Request', // Subject line
+            html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px;">
+                    <img src="https://laragrooming.com/laralogo.webp" alt="Lara Technologies Logo" style="max-width: 150px;">
+                    <h2>Password Reset Request</h2>
+                    <p>We received a request to reset the password associated with your account.</p>
+                    <p>To proceed with the password reset, please click on the button below:</p>
+                    <a href="https://www.laragrooming.com/resetPassword?token=${token}" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;">Reset Password</a>
+                    <p>If you did not request a password reset, you can ignore this email.</p>
+                    <p>Please note that the link will expire after 30 minutes, so make sure to reset your password promptly.</p>
+                    <p>Thank You,</p>
+                    <p>Lara Technologies Team</p>
+                </div>
+            `
+        };
+        console.log(`http://localhost:5173/reset-password?token=${token}`)
+        // Send mail with defined transport object
+        await transporter.sendMail(mailOptions);
+
+        return res.status(200).send({ success: true, message: 'Password reset email sent successfully.' });
+    } catch (error) {
+        console.error('Error sending password reset email:', error);
+        return res.status(500).send({ success: false, message: 'An error occurred while sending the password reset email.' });
+    }
+};
+
+
+
+// const sendPasswordResetEmail = async (req, res) => {
+//     try {
+//         const { email } = req.body;
+
+//         // Check if the email exists in the database
+//         const user = await Student.findOne({ where: { email } });
+//         if (!user) {
+//             return res.status(403).send({ message: 'No account exists with this email ID.' });
+//         }
+
+//         // Generate unique token using JWT
+//         const token = jwt.sign({ student_id: user.id }, jwtSecret, { expiresIn: '30m' }); 
+
+//         // Define the email options
+//         const mailOptions = {
+//             from: 'lara.placementcell@gmail.com',
+//             to: email, // Recipient's email address
+//             subject: 'Password Reset Request', // Subject line
+//             html: `
+//                 <div style="font-family: Arial, sans-serif; padding: 20px;">
+//                     <img src="https://laragrooming.com/laralogo.webp" alt="Lara Technologies Logo" style="max-width: 150px;">
+//                     <h2>Password Reset Request</h2>
+//                     <p>We received a request to reset the password associated with your account.</p>
+//                     <p>To proceed with the password reset, please click on the button below:</p>
+//                     <a href="http://localhost:8080/resetPassword?token=${token}" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;">Reset Password</a>
+//                     <p>If you did not request a password reset, you can ignore this email.</p>
+//                     <p>Please note that the link will expire after 30 minutes, so make sure to reset your password promptly.</p>
+//                     <p>Thank You,</p>
+//                     <p>Lara Technologies Team</p>
+//                 </div>
+//             `
+//         };
+
+//         console.log(`http://localhost:5173/reset-password?token=${token}`);
+
+//         // Send mail with defined transport object
+//         await transporter.sendMail(mailOptions);
+
+//         return res.status(200).send({ success: true, message: 'Password reset email sent successfully.' });
+//     } catch (error) {
+//         console.error('Error sending password reset email:', error);
+//         return res.status(500).send({ success: false, message: 'An error occurred while sending the password reset email.' });
+//     }
+// };
+
+
+const resetPassword = async (req, res) => {
+    try {
+        const { newPassword } = req.body;
+        const token = req.query.token; // Get the token from the query parameters which is sent along with the email link
+
+        if (!token) {
+            return res.status(400).send({ message: 'Token is missing.' });
+        }
+
+        // Verify the JWT token
+        jwt.verify(token, jwtSecret, async (err, decoded) => {
+            if (err) {
+              console.error('Error verifying token:', err);
+              console.log('Token:', token);
+              console.log('jwtSecret:', jwtSecret);
+              return res.status(403).send({ message: 'Invalid or expired token.' });
+            }
+          
+            console.log('Decoded token:', decoded);
+          
+            if (!decoded || !decoded.student_id) {
+              console.error('Decoded token is invalid or missing student_id');
+              return res.status(403).send({ message: 'Invalid token.' });
+            }
+          
+            const studentId = decoded.student_id;
+            req.student_id = studentId;
+          
+            // Retrieve user information from the database
+            try {
+              const user = await Student.findOne({ where: { student_id: studentId } });
+              console.log('user:', user);
+              if (!user) {
+                return res.status(404).send({ message: 'User not found.' });
+              }
+          
+              // Hash the new password
+              const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+          
+              // Update the password in the database
+              await Student.update({ password: hashedPassword }, { where: { student_id: studentId } });
+          
+              res.status(200).send({ message: 'Password updated successfully.' });
+            } catch (error) {
+              console.error('Error finding user:', error);
+              res.status(500).send({ message: 'An error occurred while resetting the password.' });
+            }
+          });
+    } catch (error) {
+        console.error('Error resetting password:', error);
+        res.status(500).send({ message: 'An error occurred while resetting the password.' });
+    }
+};
+
+
 
 
 module.exports = {
@@ -467,4 +660,7 @@ module.exports = {
     getAllStudentDetails,
     bulkSignup,
     signupSingle,
+    updatePassword,
+    sendPasswordResetEmail,
+    resetPassword
 }

@@ -1,27 +1,26 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import SignUp from './components/SignUp';
-import SignIn from './components/SignIn';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import UpdatePassword from './components/UpdatePassword';
+import PasswordUpdateWarning from './components/PasswordUpdateWarning';
+import Signup from './components/SignUp';
+import Signin from './components/SignIn';
 import Sidebar from './components/Sidebar';
-import AdminDashboard from './components/admin/AdminDashboard';
+import ResetPasswordEmail from './components/ResetPasswordEmail';
+import ResetPassword from './components/ResetPassword';
 
-
-const App = () => {
-    return (
-        <>
-            <Sidebar />
-            <Router>
-                <Routes>
-                    <Route path="signin" element={<SignIn />} />
-                    <Route path="signup" element={<SignUp />} />
-                    <Route path="admin-dashboard" element={<AdminDashboard />} />
-                    <Route path="/" element={<SignIn />} />
-                </Routes>
-            </Router>
-        </>
-    );
-};
+const App = () => (
+    <Router>
+        <Sidebar />
+        <Routes>
+            <Route path="/signin" element={<Signin />} />
+            <Route path="/update-password" element={<UpdatePassword />} />
+            <Route path="/password-update-warning" element={<PasswordUpdateWarning />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/reset-password-email" element={<ResetPasswordEmail />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/" element={<Signin />} /> {/* Default route */}
+        </Routes>
+    </Router>
+);
 
 export default App;

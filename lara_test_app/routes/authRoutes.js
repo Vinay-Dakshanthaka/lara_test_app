@@ -24,4 +24,10 @@ authRoute.post('/bulk-signup', upload.single('file'),verifyToken,authController.
 
 authRoute.post('/single-signup',verifyToken, authController.signupSingle);
 
+authRoute.post('/update-password',verifyToken, authController.updatePassword);
+
+authRoute.post('/password-reset-email', authController.sendPasswordResetEmail);
+
+authRoute.post('/reset-password', authController.resetPassword);
+
 module.exports = authRoute;

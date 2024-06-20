@@ -83,29 +83,38 @@ const Signin = () => {
                 const { token, role } = response.data;
                 localStorage.setItem('token', token);
                 localStorage.setItem('role', role);
+                localStorage.removeItem('passwordUpdated'); // Remove the flag if it exists
                 toast.success('Signin successful!');
-                setInterval(() => {
+                setTimeout(() => {
                     navigate('/dashboard');
+                }, 2000);
+            } else if (response.status === 400) {
+                toast.warning('Password update required.');
+                localStorage.setItem('token', response.data.token); // Save token for future use
+                setTimeout(() => {
+                    navigate('/password-update-warning');
                 }, 2000);
             } else {
                 toast.error('Signin failed. Please try again.');
             }
         } catch (error) {
             if (error.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
                 if (error.response.status === 404) {
-                    toast.error("User Not Exist!!");
+                    toast.error('User Not Exist!!');
                 } else if (error.response.status === 401) {
-                    toast.error("Invalid Password!!");
+                    toast.error('Invalid Password!!');
+                } else if (error.response.status === 400) {
+                    toast.warning('Password update required.');
+                    localStorage.setItem('token', error.response.data.token); // Save token for future use
+                    setTimeout(() => {
+                        navigate('/password-update-warning');
+                    }, 2000);
                 } else {
                     toast.error('Signin failed. Please try again.');
                 }
             } else if (error.request) {
-                // The request was made but no response was received
                 toast.error('No response from server. Please try again later.');
             } else {
-                // Something happened in setting up the request that triggered an Error
                 toast.error('Signin failed. Please try again.');
             }
         } finally {
@@ -113,7 +122,6 @@ const Signin = () => {
         }
     };
     
-
     return (
         <div className="container d-flex justify-content-center align-items-center vh-100" style={{ backgroundColor: '#f0f2f5' }}>
             <div className="card p-4 shadow-lg" style={{ width: '400px', maxWidth: '100%', borderRadius: '20px', background: '#ecf0f3', boxShadow: '7px 7px 15px #cbced1, -7px -7px 15px #ffffff' }}>
@@ -150,7 +158,6 @@ const Signin = () => {
                             >
                                 {showPassword ? <BsEyeSlash /> : <BsEye />}
                             </button>
-                            {/* {errors.password && <div className="invalid-feedback d-block">{errors.password}</div>} */}
                         </div>
                     </div>
                     <button type="submit" className="btn btn-primary w-100" disabled={isLoading} style={{ borderRadius: '10px', background: '#4CAF50', borderColor: '#4CAF50' }}>
@@ -163,8 +170,9 @@ const Signin = () => {
                 </form>
                 <div className="mt-3 text-center">
                     <span style={{ color: '#555' }}>Don't have an account? </span>
-                    <button onClick={()=>{navigate('/signup')}}  className='link'>Sign Up</button>
+                    <button onClick={() => { navigate('/signup') }} className='link'>Sign Up</button>
                 </div>
+                    <button onClick={() => { navigate('/reset-password-email') }} className='link'>Forgot Password?</button>
             </div>
             <ToastContainer />
         </div>
