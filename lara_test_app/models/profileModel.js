@@ -40,8 +40,8 @@ module.exports = (sequelize, DataTypes) => {
 
     Profile.associate = (models) => {
         // Define association with the Students table
-        Profile.belongsTo(models.User, {
-            foreignKey: 'user_id', // Explicitly specify the foreign key field
+        Profile.belongsTo(models.Student, {
+            foreignKey: 'student_id', // Explicitly specify the foreign key field
             onDelete: 'CASCADE' // Delete the profile if the associated student is deleted
         });
     };

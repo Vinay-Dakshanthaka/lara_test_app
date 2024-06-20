@@ -1,4 +1,4 @@
-/* :root {
+ /* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -11,8 +11,8 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
+} */
+/*
 a {
   font-weight: 500;
   color: #646cff;
@@ -66,3 +66,21 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 } */
+
+#root,
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+
+  font-family: "Rubik", sans-serif;
+  font-optical-sizing: auto;
+  /* font-weight: <weight>; */
+  font-style: normal;
+}
+
+#root{
+    background-color: #F8F4EC;
+}

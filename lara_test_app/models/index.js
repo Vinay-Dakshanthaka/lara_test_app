@@ -29,18 +29,18 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 // Import models
-db.User = require('./userModel')(sequelize, DataTypes);
+db.Student = require('./studentModel')(sequelize, DataTypes);
 db.Profile = require('./profileModel')(sequelize, DataTypes);
 
 
-db.User.hasOne(db.Profile, {
-    foreignKey: 'user_id',
+db.Student.hasOne(db.Profile, {
+    foreignKey: 'student_id',
     as: 'profile',
     onDelete: 'CASCADE'
 });
 
-db.Profile.belongsTo(db.User, {
-    foreignKey: 'user_id',
+db.Profile.belongsTo(db.Student, {
+    foreignKey: 'student_id',
     onDelete: 'CASCADE'
 });
 
