@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BsEye, BsEyeSlash } from 'react-icons/bs'; // Using react-icons for bootstrap icons
-import { Link, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import { baseURL } from '../config';
 import './style.css';
 
@@ -17,8 +17,11 @@ const Signin = () => {
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-
     const navigate = useNavigate();
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -40,7 +43,7 @@ const Signin = () => {
         let error;
         switch (name) {
             case 'email':
-                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                // const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 error = !emailPattern.test(value) ? 'Please enter a valid email' : '';
                 break;
             case 'password':
@@ -162,7 +165,7 @@ const Signin = () => {
                     </button>
                 </form>
                 <div className="mt-3 text-center">
-                    <span style={{ color: '#555' }}>Don't have an account? </span>
+                    <span style={{ color: '#555' }}>Don&apos;t have an account? </span>
                     <button onClick={()=>{navigate('/signup')}}  className='link'>Sign Up</button>
                 </div>
             </div>

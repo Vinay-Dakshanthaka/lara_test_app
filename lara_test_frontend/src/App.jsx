@@ -1,16 +1,18 @@
-import React from 'react';
+//import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
-import Sidebar from './components/Sidebar';
+//import Sidebar from './components/Sidebar';
+import StudentNavBar from './components/Navbars/StudentNavbar';
 
 
 const App = () => {
     return (
         <>
-            <Sidebar />
+            
+            <StudentNavBar/>
             <Router>
                 <Routes>
                     <Route path="signin" element={<SignIn />} />

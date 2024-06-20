@@ -3,6 +3,7 @@
 :root {
     --header-height: 3rem;
     --nav-width: 68px;
+    --nav-width-expanded: 150px;
     --first-color: #4723D9;
     --first-color-light: #AFA5D9;
     --white-color: #F7F6FB;
@@ -25,11 +26,12 @@ a {
     text-decoration: none;
 }
 
-.link{
+.link {
     border: none;
     text-decoration: underline;
     color: rgb(76, 175, 80);
 }
+
 .header {
     width: 100%;
     height: var(--header-height);
@@ -89,6 +91,7 @@ a {
 
 .l-navbar.show {
     left: 0;
+    width: var(--nav-width-expanded); /* Expand width on mobile */
 }
 
 .nav {
@@ -112,6 +115,7 @@ a {
 
 .nav_logo {
     margin-bottom: 2rem;
+    margin-top: 1.5rem;
 }
 
 .nav_logo-icon {
@@ -154,16 +158,12 @@ a {
 
 .nav_toggle {
     position: absolute;
-    /* top: 1rem; */
-    /* right: 2rem; */
-    padding-right: 4px;
-    padding-top: 6px;
+    top: 0.75rem;
+    right: 1.25rem;
     font-size: 1.5rem;
     cursor: pointer;
     color: var(--white-color);
     z-index: 102; /* Higher than other elements in .nav */
-    margin: -1.5rem;
-    padding: auto;
 }
 
 @media screen and (min-width: 768px) {
@@ -192,7 +192,7 @@ a {
     }
 
     .l-navbar.show {
-        width: calc(var(--nav-width) + 156px);
+        width: calc(var(--nav-width) + 160px);
     }
 
     .body-pd {

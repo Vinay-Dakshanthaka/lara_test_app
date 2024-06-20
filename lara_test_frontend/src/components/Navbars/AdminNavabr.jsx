@@ -1,9 +1,10 @@
 import  { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import { BsBoxArrowLeft, BsHouse, BsList, BsSpeedometer } from 'react-icons/bs';
+import { BsBoxArrowLeft, BsHouse, BsList, BsSpeedometer, BsX } from 'react-icons/bs';
 import './style.css'; // Import custom CSS for sidebar styles
+import { Link } from 'react-router-dom';
 
-const Sidebar = () => {
+const AdminNavbar = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const toggleSidebar = () => {
@@ -26,10 +27,10 @@ const Sidebar = () => {
             <div className={`l-navbar ${sidebarOpen ? 'show' : ''}`}>
                 <nav className="nav">
                     <div>
-                        <a href="#" className="nav_logo">
+                        <Link to="#" className="nav_logo">
                             <i className='bx bx-layer nav_logo-icon'></i>
-                            <span className="nav_logo-name">Bootstrap</span>
-                        </a>
+                            <span className="nav_logo-name">LARA</span>
+                        </Link>
                         <div className="nav_list">
                             <a href="#" className="nav_link active">
                                 <BsSpeedometer className='nav_icon' />
@@ -47,12 +48,12 @@ const Sidebar = () => {
                         <span className="nav_name">SignOut</span>
                     </a>
                     <div className="nav_toggle" onClick={toggleSidebar}>
-                        {sidebarOpen ? <BsBoxArrowLeft /> : <BsList />}
+                        {sidebarOpen ? <BsX className='border border-danger'/> : <BsList />}
                     </div>
                 </nav>
             </div>
         </div>
     );
-};
+}
 
-export default Sidebar;
+export default AdminNavbar;
