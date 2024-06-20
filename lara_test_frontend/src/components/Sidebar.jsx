@@ -2,11 +2,9 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import { BsBoxArrowLeft, BsHouse, BsList, BsSpeedometer } from 'react-icons/bs';
 import './style.css'; // Import custom CSS for sidebar styles
-import { useNavigate } from 'react-router-dom';
 
 const Sidebar = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const navigate = useNavigate();
 
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
@@ -35,7 +33,7 @@ const Sidebar = () => {
                         <div className="nav_list">
                             <a href="#" className="nav_link active">
                                 <BsSpeedometer className='nav_icon' />
-                                <span className="nav_name" onClick={()=>{navigate('/admin-dashboard')}}>Dashboard</span>
+                                <span className="nav_name">Dashboard</span>
                             </a>
                             <a href="#" className="nav_link">
                                 <BsHouse className='nav_icon' />

@@ -5,6 +5,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
 import Sidebar from './components/Sidebar';
+import AdminDashboard from './components/admin/AdminDashboard';
 
 
 const App = () => {
@@ -15,6 +16,7 @@ const App = () => {
                 <Routes>
                     <Route path="signin" element={<SignIn />} />
                     <Route path="signup" element={<SignUp />} />
+                    <Route path="admin-dashboard" element={<AdminDashboard />} />
                     <Route path="/" element={<SignIn />} />
                 </Routes>
             </Router>
