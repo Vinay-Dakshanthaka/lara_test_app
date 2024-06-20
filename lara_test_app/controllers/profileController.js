@@ -5,8 +5,8 @@ const db = require('../models');
 const saveOrUpdateProfile = async(req, res) => {
     try {
         //const student_id = req.studentId;
-        var user_id = "LARA00001";
-        console.log("student id :",user_id);
+        var student_id = "LARA00002";
+        console.log("student id :",student_id);
         const profileInfo = {
             name: req.body.name,
             gender: req.body.gender,
@@ -29,17 +29,17 @@ const saveOrUpdateProfile = async(req, res) => {
             district: req.body.district,
             state: req.body.state,
             country: req.body.country,
-            user_id: user_id
+            student_id: student_id
         };
         // console.log("profle info ", profileInfo)
   
-        console.log("user id ", user_id)
+        console.log("Student id ", student_id)
         // Check if the profile already exists
-        const existingProfile = await db.Profile.findOne({ where: { user_id } });
+        const existingProfile = await db.Profile.findOne({ where: { student_id } });
 
         if (existingProfile) {
             // If the profile exists, update it
-            await db.Profile.update(profileInfo, { where: { user_id } });
+            await db.Profile.update(profileInfo, { where: { student_id } });
             res.status(200).send({profile: profileInfo, message: 'Profile updated successfully.' });
         } else {
             // If the profile doesn't exist, create a new one

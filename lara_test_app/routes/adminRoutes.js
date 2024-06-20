@@ -1,11 +1,8 @@
 const express = require('express');
-const route = express.Router();
+const adminRoute = express.Router();
+const verifyToken = require('../middleware/authMiddleware')
+const adminController = require('../controllers/adminController')
 
+adminRoute.post('/update-role',verifyToken,adminController.updateRole);
 
-route.get('/test-started', async(req,res)=>{
-    
-    res.status(200).send({message:"test-started"})
-})
-
-
-module.exports = route
+module.exports = adminRoute

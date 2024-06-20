@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-    const User = sequelize.define("User", {
-        user_id: {
+    const Student = sequelize.define("Student", {
+        student_id: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true,
@@ -13,19 +13,18 @@ module.exports = (sequelize, DataTypes) => {
         email: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: true
+            unique: true 
         },
         phoneNumber: {
             type: DataTypes.STRING,
-            allowNull: false,
-            unique: true
+            allowNull: true, 
         },
         password: {
             type: DataTypes.STRING,
             allowNull: false
         },
         imagePath: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING, 
             allowNull: true
         },
         role: {
@@ -40,5 +39,5 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: false // Disable createdAt and updatedAt
     });
 
-    return User; 
+    return Student; 
 };
