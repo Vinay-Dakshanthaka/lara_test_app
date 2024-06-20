@@ -1,5 +1,4 @@
 const express = require('express');
-//const { verify } = require('jsonwebtoken');
 const profileRoute = express.Router();
 const profileController = require('../controllers/profileController'); 
 
@@ -8,6 +7,10 @@ const profileController = require('../controllers/profileController');
 // })
 
 profileRoute.post('/saveOrUpdateProfile', profileController.saveOrUpdateProfile);
+
+profileRoute.get('/getProfileDetails', profileController.getProfileDetails);
+
+profileRoute.post('/getProfileDetailsById', profileController.getProfileDetailsById);
 
 
 module.exports = profileRoute;

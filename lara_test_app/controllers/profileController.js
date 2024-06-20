@@ -1,11 +1,11 @@
 const db = require('../models');
 
-
+const Profile = db.Profile;
 
 const saveOrUpdateProfile = async(req, res) => {
     try {
         //const student_id = req.studentId;
-        var user_id = "LARA00001";
+        var user_id = "LARA00002";
         console.log("student id :",user_id);
         const profileInfo = {
             name: req.body.name,
@@ -35,16 +35,49 @@ const saveOrUpdateProfile = async(req, res) => {
   
         console.log("user id ", user_id)
         // Check if the profile already exists
-        const existingProfile = await db.Profile.findOne({ where: { user_id: student_id } });
+        const existingProfile = await Profile.findOne({ where: { user_id } });
 
         if (existingProfile) {
             // If the profile exists, update it
-            await db.Profile.update(profileInfo, { where: { user_id:student_id } });
+            await Profile.update(profileInfo, { where: { user_id } });
             res.status(200).send({profile: profileInfo, message: 'Profile updated successfully.' });
         } else {
             // If the profile doesn't exist, create a new one
-            await db.Profile.create(profileInfo);
+            await Profile.create(profileInfo);
             res.status(200).send({profile: profileInfo, message: 'Profile saved successfully.' });
+        }
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};
+
+
+// Get profile details controller
+const getProfileDetails = async (req, res) => {
+    try {
+        // console.log("inside get profile tyr")
+        const student_id = req.studentId;
+        const profile = await Profile.findOne({ where: { student_id } });
+        if (profile) {
+            res.status(200).send(profile);
+        } else {
+            res.status(404).send({ message: 'Profile not found.' });
+        }
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};
+
+
+
+const getProfileDetailsById = async (req, res) => {
+    try {
+        const {student_id} = req.body;
+        const profile = await Profile.findOne({ where: { student_id } });
+        if (profile) {
+            res.status(200).send(profile);
+        } else {
+            res.status(404).send({ message: 'Profile not found.' });
         }
     } catch (error) {
         res.status(500).send({ message: error.message });
@@ -54,4 +87,6 @@ const saveOrUpdateProfile = async(req, res) => {
 
 module.exports = {
     saveOrUpdateProfile,
+    getProfileDetails,
+    getProfileDetailsById
 }
