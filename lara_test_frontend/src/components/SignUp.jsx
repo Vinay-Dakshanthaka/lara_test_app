@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer, toast } from 'react-toastify';
@@ -22,6 +22,9 @@ const Signup = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phonePattern = /^\d{10}$/
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -50,15 +53,15 @@ const Signup = () => {
                 error = value.length < 3 ? 'Name must contain at least 3 characters' : '';
                 break;
             case 'email':
-                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                // const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 error = !emailPattern.test(value) ? 'Please enter a valid email' : '';
                 break;
             case 'phone':
-                const phonePattern = /^\d{10}$/;
+                // const phonePattern = /^\d{10}$/;
                 error = !phonePattern.test(value) ? 'Phone number must be 10 digits' : '';
                 break;
             case 'password':
-                const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+                // const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
                 error = !passwordPattern.test(value)
                     ? 'Password must contain at least 1 uppercase letter, lowercase letters, 1 numerical character, and 1 special symbol, with a minimum length of 6 characters'
                     : '';
