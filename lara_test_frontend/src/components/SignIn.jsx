@@ -87,6 +87,8 @@ const Signin = () => {
                 localStorage.setItem('token', token);
                 localStorage.setItem('role', role);
                 toast.success('Signin successful!');
+
+                
                 setInterval(() => {
                     navigate('/dashboard');
                 }, 2000);

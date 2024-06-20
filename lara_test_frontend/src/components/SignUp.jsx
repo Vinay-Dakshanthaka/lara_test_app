@@ -78,7 +78,7 @@ const Signup = () => {
     const validateForm = () => {
         const { name, email, phone, password, confirmPassword } = formData;
         const newErrors = {};
-        // const navigate = useNavigate()
+        const navigate = useNavigate
 
         newErrors.name = validateField('name', name);
         newErrors.email = validateField('email', email);
