@@ -12,8 +12,8 @@ const upload = multer({ storage: storage });
 
 const jwtSecret = process.env.JWT_SECRET;
 // No. of salt rounds hash the password using bcrypt 
-const saltRounds = 15;
-
+const saltRounds = 10;
+ 
 const signup = async (req, res) => {
     try {
         const { name, email, phone, password } = req.body;
@@ -63,7 +63,7 @@ const signup = async (req, res) => {
 const verifyByEmail = async (req, res) => {
     try {
         const { email, password } = req.body;
-        console.log("email , password : ", email, " : ", password);
+        // console.log("email , password : ", email, " : ", password);
 
         // Find student data based on email
         const studentData = await Student.findOne({ where: { email } });

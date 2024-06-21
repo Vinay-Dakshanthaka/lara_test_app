@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import UpdatePassword from './components/UpdatePassword';
 import PasswordUpdateWarning from './components/PasswordUpdateWarning';
 import Signup from './components/SignUp';
@@ -8,19 +8,30 @@ import Sidebar from './components/Sidebar';
 import ResetPasswordEmail from './components/ResetPasswordEmail';
 import ResetPassword from './components/ResetPassword';
 
-const App = () => (
+const App = () => {
+    const location = useLocation();
+    const hideSidebarRoutes = ['/signin', '/signup'];
+
+    return (
+        <>
+            {!hideSidebarRoutes.includes(location.pathname) && <Sidebar />}
+            <Routes>
+                <Route path="/signin" element={<Signin />} />
+                <Route path="/update-password" element={<UpdatePassword />} />
+                <Route path="/password-update-warning" element={<PasswordUpdateWarning />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/reset-password-email" element={<ResetPasswordEmail />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/" element={<Signin />} /> {/* Default route */}
+            </Routes>
+        </>
+    );
+};
+
+const AppWrapper = () => (
     <Router>
-        <Sidebar />
-        <Routes>
-            <Route path="/signin" element={<Signin />} />
-            <Route path="/update-password" element={<UpdatePassword />} />
-            <Route path="/password-update-warning" element={<PasswordUpdateWarning />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/reset-password-email" element={<ResetPasswordEmail />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/" element={<Signin />} /> {/* Default route */}
-        </Routes>
+        <App />
     </Router>
 );
 
-export default App;
+export default AppWrapper;
