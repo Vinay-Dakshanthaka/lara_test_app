@@ -6,6 +6,7 @@
     --first-color: #4723D9;
     --nav-width-expanded: 200px;
     --first-color-light: #AFA5D9;
+    --nav-width-expanded:200px;
     --white-color: #F7F6FB;
     --body-font: 'Nunito', sans-serif;
     --normal-font-size: 1rem;
@@ -77,7 +78,7 @@ a {
 .l-navbar {
     position: fixed;
     top: 0;
-    left: -100%; /* Initial position off-screen */
+    left: -100%; /* Initial position off-scree93n */
     width: var(--nav-width);
     height: 100vh;
     background-color: var(--first-color);
@@ -90,7 +91,7 @@ a {
 
 .l-navbar.show {
     left: 0;
-    width: var(--nav-width-expanded)
+    width: var(--nav-width-expanded);
 }
 
 .nav {
@@ -110,10 +111,11 @@ a {
     column-gap: 1rem;
     padding: .5rem 0 .5rem 1.5rem;
     white-space: nowrap; /* Prevent text wrapping */
+    cursor: pointer;
 }
 
 .nav_logo {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .nav_logo-icon {
@@ -123,7 +125,8 @@ a {
 
 .nav_logo-name {
     color: var(--white-color);
-    font-weight: 700;    
+    font-weight: 700;  
+    /* margin-left: -20px;   */
 }
 
 .nav_link {

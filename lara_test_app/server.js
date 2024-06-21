@@ -24,7 +24,7 @@ app.use('/api/student/profile', profileRoute);
 app.use('/api/admin/activites',adminRoute);
 
 // Port
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 5000;
 
 db.sequelize.sync({ force: false })
     .then(() => {

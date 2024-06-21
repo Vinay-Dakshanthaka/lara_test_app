@@ -1,51 +1,37 @@
-//import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import SignUp from './components/SignUp';
-import SignIn from './components/SignIn';
-import Dashboard from './components/Dashboard';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import UpdatePassword from './components/UpdatePassword';
+import PasswordUpdateWarning from './components/PasswordUpdateWarning';
+import Signup from './components/SignUp';
+import Signin from './components/SignIn';
 import Sidebar from './components/Sidebar';
-// import AdminNavbar from './components/Navbars/AdminNavabr';
-// import PlacementOfficerNavbar from './components/Navbars/PlacementOfficerNavbar';
-
+import ResetPasswordEmail from './components/ResetPasswordEmail';
+import ResetPassword from './components/ResetPassword';
 
 const App = () => {
-    // const isLoggedIn = localStorage.getItem("token");
-    // const role = localStorage.getItem("role");
-    // const [isLoggedIn, setIsLoggedIn] = useState(false);
-    // const [role, setRole] = useState('');
+    const location = useLocation();
+    const hideSidebarRoutes = ['/signin', '/signup'];
 
-    // useEffect(() => {
-    // // Assuming you set 'isLoggedIn' and 'role' in localStorage upon login
-    // const userLoggedIn = localStorage.getItem('token')
-    // const userRole = localStorage.getItem('role');
-
-    // setIsLoggedIn(userLoggedIn);
-    // setRole(userRole);
-    // },[]);
     return (
         <>
-            <Router>
-            {/* {isLoggedIn && 
-            <>
-                {role === 'SUPER ADMIN' && <AdminNavbar />}
-                {role === 'PLACEMENT OFFICER' && <PlacementOfficerNavbar />}
-                {role === 'STUDENT' && <StudentNavBar />}
-            </>
-            } */}
-            {/* <PlacementOfficerNavbar/> */}
-            <Sidebar/>
-                <Routes>
-                    <Route path="signin" element={<SignIn />} />
-                    <Route path="signup" element={<SignUp />} />
-                    <Route path="/" element={<SignIn />} />
-                    <Route path="#" element={<SignUp/>} />
-                    <Route path="dashboard" element={<Dashboard/>}/>
-                </Routes>
-            </Router>
+            {!hideSidebarRoutes.includes(location.pathname) && <Sidebar />}
+            <Routes>
+                <Route path="/signin" element={<Signin />} />
+                <Route path="/update-password" element={<UpdatePassword />} />
+                <Route path="/password-update-warning" element={<PasswordUpdateWarning />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/reset-password-email" element={<ResetPasswordEmail />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/" element={<Signin />} /> {/* Default route */}
+            </Routes>
         </>
     );
 };
 
-export default App;
+const AppWrapper = () => (
+    <Router>
+        <App />
+    </Router>
+);
+
+export default AppWrapper;
