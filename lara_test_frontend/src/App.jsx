@@ -4,11 +4,6 @@ import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
-//import Sidebar from './components/Sidebar';
-// import StudentNavBar from './components/Navbars/StudentNavbar';
-// import AdminNavbar from './components/Navbars/AdminNavabr';
-// import PlacementOfficerNavbar from './components/Navbars/PlacementOfficerNavbar';
-// import { useEffect, useState } from 'react';
 import Dashboard from './components/Dashboard';
 import Sidebar from './components/Sidebar';
 // import AdminNavbar from './components/Navbars/AdminNavabr';
