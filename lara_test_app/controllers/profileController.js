@@ -1,12 +1,14 @@
 const db = require('../models');
 
+const Student = db.Student;
 const Profile = db.Profile;
+
 
 const saveOrUpdateProfile = async(req, res) => {
     try {
-        //const student_id = req.studentId;
-        var user_id = "LARA00001";
-        console.log("student id :",user_id);
+        const student_id = req.studentId;
+        //var student_id = "LARA00002";
+        console.log("student id :",student_id);
         const profileInfo = {
             name: req.body.name,
             gender: req.body.gender,
@@ -34,22 +36,47 @@ const saveOrUpdateProfile = async(req, res) => {
         // console.log("profle info ", profileInfo)
   
         console.log("Student id ", student_id)
-        // Check if the profile already exists
-        const existingProfile = await db.Profile.findOne({ where: { user_id } });
+        //  Check if the profile already exists
+         const existingProfile = await Profile.findOne({ where: { student_id } });
+
+        // Check if the profile already exists in Student table
+        //const existingProfileAsStudent = await db.Student.findOne({ where: { student_id } });
 
         if (existingProfile) {
             // If the profile exists, update it
-            await db.Profile.update(profileInfo, { where: { user_id } });
+            await Profile.update(profileInfo, { where: { student_id } });
             res.status(200).send({profile: profileInfo, message: 'Profile updated successfully.' });
         } else {
             // If the profile doesn't exist, create a new one
             await Profile.create(profileInfo);
             res.status(200).send({profile: profileInfo, message: 'Profile saved successfully.' });
         }
+
+        // if (existingProfileAsStudent) {
+        //     // If the profile exists, update it
+        //     const existingProfile = await db.Profile.findOne({ where: { student_id } });
+        //     if (existingProfile){
+        //         await db.Profile.update(profileInfo, { where: { student_id } });
+        //         res.status(200).send({profile: profileInfo, message: 'Profile updated successfully.' });
+        //     }
+
+        //     else {
+        //         // If the profile doesn't exist, create a new one
+        //         await db.Profile.create(profileInfo);
+        //         res.status(200).send({profile: profileInfo, message: 'Profile saved successfully.' });
+        //     }
+        // } else {
+        //     // If the profile doesn't exist, 
+        //     // await db.Profile.create(profileInfo);
+        //     // res.status(200).send({profile: profileInfo, message: 'Profile saved successfully.' });
+        //     res.status(400).send({message: 'Please sign in' });
+        // }
+
     } catch (error) {
         res.status(500).send({ message: error.message });
     }
 };
+
 
 
 // Get profile details controller
@@ -88,5 +115,5 @@ const getProfileDetailsById = async (req, res) => {
 module.exports = {
     saveOrUpdateProfile,
     getProfileDetails,
-    getProfileDetailsById
+    getProfileDetailsById,
 }

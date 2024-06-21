@@ -2,11 +2,14 @@ const bcrypt = require('bcrypt');
 const db = require('../models');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
+const imgUpload = multer({dest: 'Images/'});
 const xlsx = require('xlsx');
-const nodemailer = require('nodemailer');
+const nodemailer = require('nodemailer'); 
+const fs = require('fs');
+const path = require('path');
 
 const Student = db.Student;
-
+const Profile = db.Profile;
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -58,7 +61,6 @@ const signup = async (req, res) => {
         return res.status(500).send({ message: 'Signup failed', errorMessage: error.message });
     }
 }
-
 
 const verifyByEmail = async (req, res) => {
     try {
@@ -144,8 +146,23 @@ const getStudentDetailsById = async (req, res) => {
     }
 }
 
-const getAllStudentDetails = async (req, res) => {
+const getStudentDetails = async (req, res) => {
     try {
+        const studentId = req.student_id; // Extracted from the token
+        const student = await Student.findByPk(studentId, {
+            attributes: { exclude:['password'] }
+        });
+        if (!student) {
+            return res.status(404).send({ message: 'Student not found' });
+        }
+        res.status(200).send(student);
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};
+
+const getAllStudentDetails = async (req, res)=>{
+    try{
         const student_id = req.student_id;
 
         const studentData = await Student.findByPk(student_id);
@@ -652,15 +669,118 @@ const resetPassword = async (req, res) => {
 
 
 
+const validFileFormats = ['jpeg', 'jpg', 'png'];
+
+const uploadProfileImage = async (req, res) => {
+    try {
+        const studentId = req.student_id;
+        console.log("id :"+studentId);
+        // Check if file was uploaded
+        if (!req.file) {
+            throw new Error('No image file uploaded.');
+        }
+
+        // Check if the file format is valid
+        const fileFormat = req.file.originalname.split('.').pop().toLowerCase();
+        if (!validFileFormats.includes(fileFormat)) {
+            throw new Error('Invalid file format. Supported formats: JPEG, JPG, PNG.');
+        }
+
+        // Construct the full path for saving the image
+        const imagePath = req.file.path;
+        console.log("path :"+imagePath);
+        console.log("path req:"+req.file.path);
+        // Update the image path in the database
+        await Student.update({ imagePath: imagePath }, { where: { student_id: studentId } });
+
+        res.status(200).send({ message: 'Profile image uploaded successfully.', imagePath });
+        console.log("Path: " + imagePath);
+    } catch (error) {
+        console.error('Error uploading profile image:', error);
+        res.status(500).send({ message: error.message });
+    }
+};
+
+const getProfileImage = async (req, res) => {
+    try {
+        const id = req.student_id;
+        const profile = await Student.findOne({ where: { student_id: id } });
+
+        if (!profile) {
+            return res.status(404).send({ message: 'Student not found.' });
+        }
+
+        const imagePath = profile.imagePath;
+
+        // Check if imagePath exists
+        if (!imagePath) {
+            return res.status(404).send({ message: 'Image not found.' });
+        }
+
+        // Read the image file
+        fs.readFile(imagePath, (err, data) => {
+            if (err) {
+                return res.status(500).send({ message: 'Error reading image file.' });
+            }
+
+            // Set the appropriate content type
+            res.setHeader('Content-Type', 'image/jpeg'); // Adjust content type based on your image format
+
+            // Send the image file as response
+            // console.log(data)
+            res.status(200).send(data);
+        });
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};
+
+const getProfileImageFor = async (req, res) => {
+    try {
+        const {student_id} = req.body;
+        const profile = await Student.findOne({ where: { student_id }  });
+
+        if (!profile) {
+            return res.status(404).send({ message: 'Student not found.' });
+        }
+
+        const imagePath = profile.imagePath;
+
+        // Check if imagePath exists
+        if (!imagePath) {
+            return res.status(404).send({ message: 'Image not found.' });
+        }
+
+        // Read the image file
+        fs.readFile(imagePath, (err, data) => {
+            if (err) {
+                return res.status(500).send({ message: 'Error reading image file.' });
+            }
+
+            // Set the appropriate content type
+            res.setHeader('Content-Type', 'image/jpeg'); // Adjust content type based on your image format
+
+            // Send the image file as response
+            // console.log(data)
+            res.status(200).send(data);
+        });
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};
+
 module.exports = {
     signup,
     verifyByEmail,
     verifyByPhone,
     getStudentDetailsById,
+    getStudentDetails,
     getAllStudentDetails,
+    imgUpload,
+    upload,
     bulkSignup,
     signupSingle,
-    updatePassword,
-    sendPasswordResetEmail,
-    resetPassword
+    uploadProfileImage,
+    getProfileImage,
+    getProfileImageFor,
 }
