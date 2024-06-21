@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+
 const Sidebar = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -21,11 +22,23 @@ const Sidebar = () => {
     };
 
     useEffect(() => {
-        const userLoggedIn = localStorage.getItem('token');
-        const userRole = localStorage.getItem('role');
+        const fetchUserDetails = () => {
+            const userLoggedIn = localStorage.getItem('token');
+            const userRole = localStorage.getItem('role');
 
-        setIsLoggedIn(!!userLoggedIn);
-        setRole(userRole);
+            setIsLoggedIn(!!userLoggedIn);
+            setRole(userRole);
+        };
+
+        fetchUserDetails();
+
+        // Listen for storage changes (e.g., after login)
+        window.addEventListener('storage', fetchUserDetails);
+
+        // Cleanup listener on unmount
+        return () => {
+            window.removeEventListener('storage', fetchUserDetails);
+        };
     }, []);
 
     const toggleSidebar = () => {
@@ -48,7 +61,7 @@ const Sidebar = () => {
             <div className={`l-navbar ${sidebarOpen ? 'show' : ''}`}>
                 <nav className="nav">
                     <div>
-                        <Link  className="nav_logo mt-2">
+                        <Link className="nav_logo mt-2">
                             {/* <i className='bx bx-layer nav_logo-icon'></i> */}
                             <span className="nav_logo-name mt-3">
                                 <BsPersonCircle className='fs-4'/>
@@ -56,10 +69,16 @@ const Sidebar = () => {
                         </Link>
                         <div className="nav_list">
                             {isLoggedIn && (role === 'SUPER ADMIN' || role === 'PLACEMENT OFFICER') && (
+                               <>
                                 <Link to="/" className="nav_link active">
                                     <BsSpeedometer className="nav_icon" />
                                     <span className="nav_name">Dashboard</span>
                                 </Link>
+                                <Link to="/" className="nav_link ">
+                                    <BsSpeedometer className="nav_icon" />
+                                    <span className="nav_name">Dashboard</span>
+                                </Link>
+                               </>
                             )}
                             <Link to="/" className="nav_link">
                                 <BsHouse className='nav_icon' />

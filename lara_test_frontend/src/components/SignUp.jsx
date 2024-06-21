@@ -5,7 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BsEye, BsEyeSlash } from 'react-icons/bs'; // Using react-icons for bootstrap icons
 import { useNavigate } from 'react-router-dom';
-import { baseURL } from '../config';
+import { baseURL } from './config';
 import './style.css';
 
 const Signup = () => {

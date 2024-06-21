@@ -4,7 +4,7 @@ import { Form, Button, Alert } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-import { baseURL } from '../config'; // Ensure you have a proper baseURL in config
+import { baseURL } from './config'; // Ensure you have a proper baseURL in config
 import './style.css'; // Import your custom CSS styles if needed
 
 const ResetPassword = () => {

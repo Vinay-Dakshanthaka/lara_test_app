@@ -44,7 +44,7 @@ const saveOrUpdateProfile = async(req, res) => {
 
         if (existingProfile) {
             // If the profile exists, update it
-            await Profile.update(profileInfo, { where: { student_id } });
+            await Profile.update(profileInfo, { where: { student_id:id } });
             res.status(200).send({profile: profileInfo, message: 'Profile updated successfully.' });
         } else {
             // If the profile doesn't exist, create a new one

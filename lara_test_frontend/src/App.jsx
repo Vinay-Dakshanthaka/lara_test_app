@@ -7,10 +7,12 @@ import Signin from './components/SignIn';
 import Sidebar from './components/Sidebar';
 import ResetPasswordEmail from './components/ResetPasswordEmail';
 import ResetPassword from './components/ResetPassword';
+// import Dashboard from './components/Dashboard';
+import AdminDashboard from './components/admin/AdminDashboard';
 
 const App = () => {
     const location = useLocation();
-    const hideSidebarRoutes = ['/signin', '/signup'];
+    const hideSidebarRoutes = ['/signin', '/signup', '/'];
 
     return (
         <>
@@ -22,6 +24,7 @@ const App = () => {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/reset-password-email" element={<ResetPasswordEmail />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/dashboard" element={<AdminDashboard />} />
                 <Route path="/" element={<Signin />} /> {/* Default route */}
             </Routes>
         </>

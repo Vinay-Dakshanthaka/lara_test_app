@@ -2,6 +2,7 @@ import React from 'react';
 import { Alert, Button, Container, Row, Col } from 'react-bootstrap';
 import { BsExclamationTriangle } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
+import './style.css';
 
 const PasswordUpdateWarning = () => {
     const navigate = useNavigate();

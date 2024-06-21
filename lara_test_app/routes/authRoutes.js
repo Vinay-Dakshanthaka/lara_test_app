@@ -22,8 +22,6 @@ authRoute.get('/student-details',verifyToken,authController.getStudentDetailsByI
 
 authRoute.get('/getStudentDetails',verifyToken,authController.getStudentDetails);
 
-authRoute.get('/all-student-details',verifyToken,authController.getAllStudentDetails);
-
 authRoute.post('/bulk-signup', upload.single('file'),verifyToken,authController.bulkSignup);
 
 authRoute.post('/single-signup',verifyToken, authController.signupSingle);

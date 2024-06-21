@@ -161,24 +161,7 @@ const getStudentDetails = async (req, res) => {
     }
 };
 
-const getAllStudentDetails = async (req, res)=>{
-    try{
-        const student_id = req.student_id;
 
-        const studentData = await Student.findByPk(student_id);
-        const role = studentData.role;
-
-        if (role !== 'PLACEMENT OFFICER' & role !== 'SUPER ADMIN') {
-            return res.status(403).send({ message: 'Access Forbidden' });
-        }
-
-        const allStudents = await Student.findAll({ attributes: { exclude: ['password'] } });
-
-        return res.json({ allStudents })
-    } catch (error) {
-        return res.status(500).send({ message: error.message })
-    }
-}
 
 
 // const bulkSignup = async (req, res) => {
@@ -775,7 +758,6 @@ module.exports = {
     verifyByPhone,
     getStudentDetailsById,
     getStudentDetails,
-    getAllStudentDetails,
     imgUpload,
     upload,
     bulkSignup,
