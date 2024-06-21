@@ -6,19 +6,25 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const Sidebar = () => {
+const Sidebar = ({onSignOut}) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [role, setRole] = useState('');
     const navigate = useNavigate();
 
+    // const handleLogout = () => {
+    //     localStorage.clear();
+    //     toast.success('Logout Success');
+    //     setTimeout(() => {
+    //         navigate('/signin');
+    //     }, 2000); // Delay for 2 seconds
+    // };
+
     const handleLogout = () => {
-        localStorage.clear();
-        toast.success('Logout Success');
         setTimeout(() => {
-            navigate('/signin');
-        }, 2000); // Delay for 2 seconds
-    };
+            onSignOut();
+        })
+    }
 
     useEffect(() => {
         const userLoggedIn = localStorage.getItem('token');
