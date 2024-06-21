@@ -6,9 +6,9 @@ const Profile = db.Profile;
 
 const saveOrUpdateProfile = async(req, res) => {
     try {
-        const student_id = req.studentId;
+        const id = req.student_id;
         //var student_id = "LARA00002";
-        console.log("student id :",student_id);
+        // console.log("student id :",student_id);
         const profileInfo = {
             name: req.body.name,
             gender: req.body.gender,
@@ -31,13 +31,13 @@ const saveOrUpdateProfile = async(req, res) => {
             district: req.body.district,
             state: req.body.state,
             country: req.body.country,
-            student_id: student_id
+            student_id: id
         };
         // console.log("profle info ", profileInfo)
   
-        console.log("Student id ", student_id)
+        // console.log("Student id ", student_id)
         //  Check if the profile already exists
-         const existingProfile = await Profile.findOne({ where: { student_id } });
+         const existingProfile = await Profile.findOne({ where: { student_id:id } });
 
         // Check if the profile already exists in Student table
         //const existingProfileAsStudent = await db.Student.findOne({ where: { student_id } });
