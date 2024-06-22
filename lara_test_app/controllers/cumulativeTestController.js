@@ -603,9 +603,10 @@ module.exports = {
     getTopicById,    //
     getTopicsBySubjectId,  // 
     getAllSubjectsAndTopics,  //
-    getQuestionsByTopicIds,
+    processExcel,   //
+    getQuestionsByTopicIds,   //
     getQuestionCountsByTopicIds,
-    saveTestResults,
+    saveTestResults,    //
     getTestResultsByTestId,
     getTestResultsByStudentId,
 }

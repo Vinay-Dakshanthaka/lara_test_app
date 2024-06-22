@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         });
         Topic.hasMany(models.CumulativeQuestion, {
             foreignKey: 'topic_id',
-            as: 'questions'
+            as: 'cumulativequestions'
         });
     };
  
