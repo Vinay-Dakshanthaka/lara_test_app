@@ -11,6 +11,7 @@ import BulkSignup from './components/admin/BulkSignup';
 import AddSubject from './components/admin/AddSubject';
 import UpdateRole from './components/admin/UpdateRole';
 import StudentHome from './components/StudentHome';
+import CumulativeTest from './components/admin/CumulativeTest';
 
 const App = () => {
     const location = useLocation();
@@ -30,6 +31,7 @@ const App = () => {
                 <Route path="/bulk-signup" element={<BulkSignup />} />
                 <Route path="/add-subject" element={<AddSubject />} />
                 <Route path="/student-home" element={<StudentHome />} />
+                <Route path="/cumulative-test" element={<CumulativeTest />} />
                 {/* <Route path="/admin/create-accounts" element={<BulkSignup />} /> */}
                 <Route path="/" element={<Signin />} /> {/* Default route */}
             </Routes>

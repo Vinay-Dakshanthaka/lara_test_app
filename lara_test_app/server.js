@@ -23,7 +23,7 @@ app.use('/api/test', router);
 app.use('/api/auth/student', authRoute);
 app.use('/api/student/profile', profileRoute); 
 app.use('/api/admin/activites',adminRoute);
-app.use('/api/test/cumulativeTest',cumulativeTestRouter);
+app.use('/api/test/cumulative-test',cumulativeTestRouter);
 
 // Port
 const PORT = process.env.PORT || 8080;

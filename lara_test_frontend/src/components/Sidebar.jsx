@@ -92,8 +92,11 @@ const Sidebar = () => {
                                             <Link to="/bulk-signup" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Bulk Signup</span>
                                             </Link>
-                                            <Link to="/add-subject" className="nav_link custom-bg margin-bottom-0">
+                                            {/* <Link to="/add-subject" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Add Subject</span>
+                                            </Link> */}
+                                            <Link to="/cumulative-test" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name dropdown-link">Cumulative Test</span>
                                             </Link>
                                             {/* Add more links here as needed */}
                                         </Accordion.Body>
