@@ -26,7 +26,7 @@ authRoute.post('/bulk-signup', upload.single('file'),verifyToken,authController.
 
 authRoute.post('/single-signup',verifyToken, authController.signupSingle);
 
-authRoute.post('/uploadProfileImage', imgUpload.single('file'), verifyToken, authController.uploadProfileImage);
+authRoute.post('/uploadProfileImage', imgUpload.single('image'), verifyToken, authController.uploadProfileImage);
 
 authRoute.get('/getProfileImage',verifyToken, authController.getProfileImage);
 
