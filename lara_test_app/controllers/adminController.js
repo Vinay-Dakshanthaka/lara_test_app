@@ -28,6 +28,7 @@ const updateRole = async (req,res)=>{
 
 const getAllStudentDetails = async (req, res)=>{
     try{
+        console.log("1");
         const student_id = req.student_id;
 
         const studentData = await Student.findByPk(student_id);

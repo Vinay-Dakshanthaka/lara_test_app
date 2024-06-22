@@ -147,6 +147,7 @@ const getStudentDetailsById = async (req, res) => {
 
 const getStudentDetails = async (req, res) => {
     try {
+        console.log("1");
         const studentId = req.student_id; // Extracted from the token
         const student = await Student.findByPk(studentId, {
             attributes: { exclude:['password'] }
@@ -154,6 +155,7 @@ const getStudentDetails = async (req, res) => {
         if (!student) {
             return res.status(404).send({ message: 'Student not found' });
         }
+        console.log("Student",student);
         res.status(200).send(student);
     } catch (error) {
         res.status(500).send({ message: error.message });
@@ -655,6 +657,7 @@ const resetPassword = async (req, res) => {
 const validFileFormats = ['jpeg', 'jpg', 'png'];
 
 const uploadProfileImage = async (req, res) => {
+    console.log("222222222222222222");
     try {
         const studentId = req.student_id;
         console.log("id :"+studentId);
@@ -685,6 +688,7 @@ const uploadProfileImage = async (req, res) => {
 };
 
 const getProfileImage = async (req, res) => {
+    console.log("111111111111111");
     try {
         const id = req.student_id;
         const profile = await Student.findOne({ where: { student_id: id } });
