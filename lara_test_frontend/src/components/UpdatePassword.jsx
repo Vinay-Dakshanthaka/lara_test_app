@@ -69,9 +69,10 @@ const UpdatePassword = () => {
             if (response.status === 200) {
                 setSuccessMessage('Password updated successfully');
                 toast.success('Password updated successfully');
-                localStorage.setItem('passwordUpdated', 'true'); // Set the flag in local storage
+                // localStorage.setItem('passwordUpdated', 'true'); // Set the flag in local storage
+                localStorage.clear();
                 setTimeout(() => {
-                    navigate('/dashboard'); // Navigate to the dashboard or any other authenticated page
+                    navigate('/signin'); // Navigate to the dashboard or any other authenticated page
                 }, 2000);
             }
         } catch (error) {

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import { BsBoxArrowLeft, BsHouse, BsList, BsPersonCircle, BsSpeedometer, BsX } from 'react-icons/bs';
+import { BsBoxArrowLeft, BsHouse, BsList, BsPen, BsPersonCircle, BsSpeedometer, BsX } from 'react-icons/bs';
 import './style.css'; // Import custom CSS for sidebar styles
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ProfileImage from './student/ProfileImage'
+import { Accordion } from 'react-bootstrap';
 
 
 const Sidebar = () => {
@@ -75,10 +76,6 @@ const Sidebar = () => {
                                 <BsPersonCircle className='fs-4' />
                             </span>
                         </Link>
-                        <Link to="/student-home" className="nav_link">
-                                <BsHouse className='nav_icon' />
-                                <span className="nav_name">Home</span>
-                        </Link>
                         <div className="nav_list">
                             {isLoggedIn && (role === 'SUPER ADMIN' || role === 'PLACEMENT OFFICER') && (
                                 <Accordion className="custom-bg">
@@ -105,8 +102,16 @@ const Sidebar = () => {
                                     </Accordion.Item>
                                 </Accordion>
                             )}
-                            {/* Add more links here as needed */}
                         </div>
+                        <Link to="/student-dashboard" className="nav_link">
+                                <BsHouse className='nav_icon' />
+                                <span className="nav_name">Home</span>
+                        </Link>
+                        <Link to="/student-cumulative-test" className="nav_link">
+                                <BsPen className='nav_icon' />
+                                <span className="nav_name">Write Test</span>
+                        </Link>
+                        
                     </div>
                     <div className="nav_link" onClick={handleLogout}>
                         <BsBoxArrowLeft className='nav_icon' style={{ cursor: 'pointer' }} />

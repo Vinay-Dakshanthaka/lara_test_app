@@ -136,10 +136,11 @@ const UpdateProfile = () => {
 
         try {
             await axios.post(`${baseURL}/api/student/profile/saveOrUpdateProfile`, profile, config);
-            toast.success("")
+            toast.success("Profile Details Upadated Successfully")
         } catch (error) {
             console.error('Error updating profile:', error);
-            alert('Failed to update profile');
+            // alert('Failed to update profile');
+            toast.error('Something Went wrong!!')
         }
     };
 
@@ -224,7 +225,7 @@ const UpdateProfile = () => {
             <div className="row">
                 <div className="col-md-3 border-right">
                     <div className="d-flex flex-column align-items-center text-center p-3 py-5">
-                        <ProfileImage className="rounded-circle mt-5" style={{ width: '150px' }} />
+                        <ProfileImage className="rounded-circle mt-5" style={{ width: '150px',height:'150px' }} />
                         <div className="edit-icon">
                             <FontAwesomeIcon icon={faEdit} size="sm" onClick={() => document.getElementById('fileInput').click()} />
                             <input
@@ -288,7 +289,7 @@ const UpdateProfile = () => {
                                     {errors.tenth_percentage && <div className="text-danger">{errors.tenth_percentage}</div>}
                                 </div>
                                 <div className="col-md-12 my-2">
-                                    <label className="labels">Twelfth Percentage</label>
+                                    <label className="labels">Twelth Percentage</label>
                                     <input type="number" className="form-control" placeholder="Twelfth Percentage" name="twelth_percentage" value={profile.twelth_percentage} onChange={handleChange} />
                                     {errors.twelth_percentage && <div className="text-danger">{errors.twelth_percentage}</div>}
                                 </div>
