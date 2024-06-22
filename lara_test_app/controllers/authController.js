@@ -352,13 +352,13 @@ const bulkSignup = async (req, res) => {
 
         if (emailErrors.length > 0) {
             return res.status(200).send({
-                message: 'Bulk signup success with some email errors',
+                message: 'Bulk signup success with some unsent emails ',
                 students: createdStudents,
                 emailErrors
             });
         } else {
             return res.status(200).send({
-                message: 'Bulk signup success',
+                message: 'Bulk signup success and email sent successfully',
                 students: createdStudents
             });
         }
@@ -447,7 +447,7 @@ const signupSingle = async (req, res) => {
 
         try {
             await transporter.sendMail(mailOptions);
-            return res.status(200).send({ message: 'Signup success', student: newStudent });
+            return res.status(200).send({ message: 'Account Created successfylly. Email Sent', student: newStudent });
         } catch (emailError) {
             console.error('Error sending email:', emailError);
             return res.status(200).send({
@@ -463,27 +463,28 @@ const signupSingle = async (req, res) => {
 
 const updatePassword = async (req, res) => {
     try {
-        console.log("Starting password update process");
+        // console.log("Starting password update process");
 
-        const studentId = req.student_id;
-        console.log(req.studentId)
-        console.log("Extracted studentId from request:", studentId);
+        const studentId =  req.student_id
+        console.log('student id ', studentId)
+        // console.log(req.studentId)
+        // console.log("Extracted studentId from request:", studentId);
 
         const student = await Student.findOne({ where: { student_id: studentId } });
         if (!student) {
             return res.status(404).json({ error: 'Student not found' });
         }
-        console.log("Fetched student from database:", student);
+        // console.log("Fetched student from database:", student);
 
         const existingPassword = student.password;
-        console.log("Existing password from database:", existingPassword);
+        // console.log("Existing password from database:", existingPassword);
 
         const { oldPassword, newPassword } = req.body;
-        console.log("Received old password and new password:", oldPassword, ":", newPassword);
+        // console.log("Received old password and new password:", oldPassword, ":", newPassword);
 
         // Compare the provided password with the hashed password in the database
         const passwordMatch = await bcrypt.compare(oldPassword, existingPassword);
-        console.log("Password match result:", passwordMatch);
+        // console.log("Password match result:", passwordMatch);
 
         // Check if the old password matches the existing password
         if (!passwordMatch) {
@@ -492,10 +493,10 @@ const updatePassword = async (req, res) => {
 
         // Update the password with the new password
         const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-        console.log("Hashed new password:", hashedPassword);
+        // console.log("Hashed new password:", hashedPassword);
 
         await Student.update({ password: hashedPassword }, { where: { student_id: studentId } });
-        console.log("Password updated in database");
+        // console.log("Password updated in database");
 
         res.status(200).send({ message: 'Password updated successfully.' });
     } catch (error) {
@@ -765,4 +766,6 @@ module.exports = {
     uploadProfileImage,
     getProfileImage,
     getProfileImageFor,
+    sendPasswordResetEmail,
+    updatePassword,
 }

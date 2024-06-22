@@ -14,8 +14,9 @@
 
 body {
     position: relative;
-    margin: var(--header-height) 0 0 0;
-    padding: 0;
+    /* margin: var(--header-height) 0 0 2rem; */
+    margin-left: 3rem;
+    padding: 1.7rem 0 0 0;
     font-family: var(--body-font);
     font-size: var(--normal-font-size);
     transition: .5s;
@@ -131,7 +132,7 @@ a {
 .nav_link {
     position: relative;
     color: var(--first-color-light);
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.3rem;
     transition: .3s;
 }
 
@@ -174,7 +175,7 @@ a {
 @media screen and (min-width: 768px) {
     body {
         margin: calc(var(--header-height) + 1rem) 0 0 0;
-        padding-left: calc(var(--nav-width) + 2rem);
+        padding-left: calc(var(--nav-width) + 0.7rem);
     }
 
     .header {
@@ -216,4 +217,17 @@ a {
 .l-navbar::-webkit-scrollbar-thumb {
     background-color: #888; /* Color of the scrollbar thumb */
     border-radius: 4px; /* Rounded corners for scrollbar thumb */
+}
+
+.custom-bg{
+    background-color: #4723d9 !important;
+
+}
+
+.accordion-item{
+    background-color: #4723D9 !important;
+}
+
+.margin-bottom-0{
+    margin-bottom: 0 !important;
 }

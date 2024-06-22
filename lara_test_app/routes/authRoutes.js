@@ -32,4 +32,9 @@ authRoute.get('/getProfileImage',verifyToken, authController.getProfileImage);
 
 authRoute.get('/getProfileImageFor', authController.getProfileImageFor);
 
+authRoute.post('/password-reset-email', authController.sendPasswordResetEmail);
+
+authRoute.post('/update-password', verifyToken, authController.updatePassword);
+
+
 module.exports = authRoute;

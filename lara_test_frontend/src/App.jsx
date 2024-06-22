@@ -9,6 +9,7 @@ import ResetPasswordEmail from './components/ResetPasswordEmail';
 import ResetPassword from './components/ResetPassword';
 // import Dashboard from './components/Dashboard';
 import AdminDashboard from './components/admin/AdminDashboard';
+import BulkSignup from './components/admin/BulkSignup';
 
 const App = () => {
     const location = useLocation();
@@ -25,6 +26,8 @@ const App = () => {
                 <Route path="/reset-password-email" element={<ResetPasswordEmail />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/dashboard" element={<AdminDashboard />} />
+                <Route path="/bulk-signup" element={<BulkSignup />} />
+                {/* <Route path="/admin/create-accounts" element={<BulkSignup />} /> */}
                 <Route path="/" element={<Signin />} /> {/* Default route */}
             </Routes>
         </>

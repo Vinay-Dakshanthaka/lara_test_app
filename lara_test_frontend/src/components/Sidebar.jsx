@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import { BsBoxArrowLeft, BsHouse, BsList, BsPersonCircle, BsSpeedometer, BsX } from 'react-icons/bs';
 import './style.css'; // Import custom CSS for sidebar styles
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { Accordion } from 'react-bootstrap';
 
 const Sidebar = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [role, setRole] = useState('');
     const navigate = useNavigate();
+    const sidebarRef = useRef(null);
 
     const handleLogout = () => {
         localStorage.clear();
@@ -22,24 +23,30 @@ const Sidebar = () => {
     };
 
     useEffect(() => {
-        const fetchUserDetails = () => {
-            const userLoggedIn = localStorage.getItem('token');
-            const userRole = localStorage.getItem('role');
+        const userLoggedIn = localStorage.getItem('token');
+        const userRole = localStorage.getItem('role');
 
-            setIsLoggedIn(!!userLoggedIn);
-            setRole(userRole);
-        };
-
-        fetchUserDetails();
-
-        // Listen for storage changes (e.g., after login)
-        window.addEventListener('storage', fetchUserDetails);
-
-        // Cleanup listener on unmount
-        return () => {
-            window.removeEventListener('storage', fetchUserDetails);
-        };
+        setIsLoggedIn(!!userLoggedIn);
+        setRole(userRole);
     }, []);
+
+    useEffect(() => {
+        if (sidebarOpen) {
+            document.addEventListener('click', handleClickOutside, true);
+        } else {
+            document.removeEventListener('click', handleClickOutside, true);
+        }
+
+        return () => {
+            document.removeEventListener('click', handleClickOutside, true);
+        };
+    }, [sidebarOpen]);
+
+    const handleClickOutside = (event) => {
+        if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+            setSidebarOpen(false);
+        }
+    };
 
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
@@ -50,7 +57,7 @@ const Sidebar = () => {
             {/* Header */}
             <header className="header">
                 <div className="header_toggle" onClick={toggleSidebar}>
-                    {/* {sidebarOpen ? <BsBoxArrowLeft /> : <BsList />} */}
+                    {sidebarOpen ? <BsBoxArrowLeft /> : <BsList />}
                 </div>
                 <div className="header_img">
                     <img src="..." alt="Profile" />
@@ -58,38 +65,44 @@ const Sidebar = () => {
             </header>
 
             {/* Sidebar */}
-            <div className={`l-navbar ${sidebarOpen ? 'show' : ''}`}>
+            <div ref={sidebarRef} className={`l-navbar ${sidebarOpen ? 'show' : ''}`}>
                 <nav className="nav">
                     <div>
-                        <Link className="nav_logo mt-2">
-                            {/* <i className='bx bx-layer nav_logo-icon'></i> */}
+                        <Link to="#" className="nav_logo mt-2">
                             <span className="nav_logo-name mt-3">
-                                <BsPersonCircle className='fs-4'/>
+                                <BsPersonCircle className='fs-4' />
                             </span>
+                        </Link>
+                        <Link to="/" className="nav_link">
+                                <BsHouse className='nav_icon' />
+                                <span className="nav_name">Home</span>
                         </Link>
                         <div className="nav_list">
                             {isLoggedIn && (role === 'SUPER ADMIN' || role === 'PLACEMENT OFFICER') && (
-                               <>
-                                <Link to="/" className="nav_link active">
-                                    <BsSpeedometer className="nav_icon" />
-                                    <span className="nav_name">Dashboard</span>
-                                </Link>
-                                <Link to="/" className="nav_link ">
-                                    <BsSpeedometer className="nav_icon" />
-                                    <span className="nav_name">Dashboard</span>
-                                </Link>
-                               </>
+                                <Accordion className="custom-bg">
+                                    <Accordion.Item eventKey="0" className='custom-bg accordion-item'>
+                                        <Accordion.Header className="custom-bg ">
+                                            <BsSpeedometer className="nav_icon" />
+                                            <span className="nav_name ms-2">Dashboard</span>
+                                        </Accordion.Header>
+                                        <Accordion.Body className="custom-bg">
+                                            <Link to="/dashboard" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name custom-bg dropdown-link ">Main Dashboard</span>
+                                            </Link>
+                                            <Link to="/bulk-signup" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name dropdown-link">Bulk Signup</span>
+                                            </Link>
+                                            {/* Add more links here as needed */}
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                </Accordion>
                             )}
-                            <Link to="/" className="nav_link">
-                                <BsHouse className='nav_icon' />
-                                <span className="nav_name">Home</span>
-                            </Link>
                             {/* Add more links here as needed */}
                         </div>
                     </div>
                     <div className="nav_link" onClick={handleLogout}>
-                        <BsBoxArrowLeft className='nav_icon' style={{cursor:'pointer'}} />
-                        <span className="nav_name" style={{cursor:'pointer'}}>SignOut</span>
+                        <BsBoxArrowLeft className='nav_icon' style={{ cursor: 'pointer' }} />
+                        <span className="nav_name" style={{ cursor: 'pointer' }}>Sign Out</span>
                     </div>
                     <div className="nav_toggle" onClick={toggleSidebar}>
                         {sidebarOpen ? <BsX className='border border-danger' /> : <BsList />}
