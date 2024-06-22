@@ -73,7 +73,7 @@ const Sidebar = () => {
                                 <BsPersonCircle className='fs-4' />
                             </span>
                         </Link>
-                        <Link to="/" className="nav_link">
+                        <Link to="/student-home" className="nav_link">
                                 <BsHouse className='nav_icon' />
                                 <span className="nav_name">Home</span>
                         </Link>
@@ -86,8 +86,8 @@ const Sidebar = () => {
                                             <span className="nav_name ms-2">Dashboard</span>
                                         </Accordion.Header>
                                         <Accordion.Body className="custom-bg">
-                                            <Link to="/dashboard" className="nav_link custom-bg margin-bottom-0">
-                                                <span className="nav_name custom-bg dropdown-link ">Main Dashboard</span>
+                                            <Link to="/update-role" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name custom-bg dropdown-link ">Update Role</span>
                                             </Link>
                                             <Link to="/bulk-signup" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Bulk Signup</span>

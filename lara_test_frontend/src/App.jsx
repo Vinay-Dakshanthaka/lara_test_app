@@ -7,10 +7,10 @@ import Signin from './components/SignIn';
 import Sidebar from './components/Sidebar';
 import ResetPasswordEmail from './components/ResetPasswordEmail';
 import ResetPassword from './components/ResetPassword';
-// import Dashboard from './components/Dashboard';
-import AdminDashboard from './components/admin/AdminDashboard';
 import BulkSignup from './components/admin/BulkSignup';
 import AddSubject from './components/admin/AddSubject';
+import UpdateRole from './components/admin/UpdateRole';
+import StudentHome from './components/StudentHome';
 
 const App = () => {
     const location = useLocation();
@@ -26,9 +26,10 @@ const App = () => {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/reset-password-email" element={<ResetPasswordEmail />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/dashboard" element={<AdminDashboard />} />
+                <Route path="/update-role" element={<UpdateRole />} />
                 <Route path="/bulk-signup" element={<BulkSignup />} />
                 <Route path="/add-subject" element={<AddSubject />} />
+                <Route path="/student-home" element={<StudentHome />} />
                 {/* <Route path="/admin/create-accounts" element={<BulkSignup />} /> */}
                 <Route path="/" element={<Signin />} /> {/* Default route */}
             </Routes>

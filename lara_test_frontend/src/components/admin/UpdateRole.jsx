@@ -5,7 +5,7 @@ import { baseURL } from '../config';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const AdminDashboard = () => {
+const UpdateRole = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -155,4 +155,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default UpdateRole;

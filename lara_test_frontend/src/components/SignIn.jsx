@@ -88,11 +88,17 @@ const Signin = () => {
                 localStorage.setItem('role', role);
                 localStorage.removeItem('passwordUpdated'); // Remove the flag if it exists
                 toast.success('Signin successful!');
-                setTimeout(() => {
-                    navigate('/dashboard');
-                }, 2000);
+                if(role === 'SUPER ADMIN'){
+                    setTimeout(() => {
+                        navigate('/update-role');
+                    }, 2000);
+                }else if(role === 'STUDENT'){
+                    setTimeout(() => {
+                        navigate('/student-home');
+                    }, 2000);
+                }
             } else if (response.status === 400) {
-                toast.warning('Password update required.');
+                toast.warning('Login Successs : Password update required.');
                 localStorage.setItem('token', response.data.token); // Save token for future use
                 setTimeout(() => {
                     navigate('/password-update-warning');
