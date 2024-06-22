@@ -32,4 +32,6 @@ authRoute.get('/getProfileImage',verifyToken, authController.getProfileImage);
 
 authRoute.get('/getProfileImageFor', authController.getProfileImageFor);
 
+authRoute.put('/updateStudentNameAndPhoneNumber', verifyToken, authController.updateStudentNameAndPhoneNumber);
+
 module.exports = authRoute;
