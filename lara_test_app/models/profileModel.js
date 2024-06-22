@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         specialization: DataTypes.STRING,
         highest_education_percent: DataTypes.FLOAT,
         tenth_percentage: DataTypes.FLOAT,
-        twelth_percentage: DataTypes.FLOAT,
+        twelfth_percentage: DataTypes.FLOAT,
         
         mobile_number: {
             type: DataTypes.STRING,
