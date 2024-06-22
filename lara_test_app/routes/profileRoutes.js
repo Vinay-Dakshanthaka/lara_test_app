@@ -11,6 +11,8 @@ profileRoute.post('/saveOrUpdateProfile', verifyToken, profileController.saveOrU
 
 profileRoute.get('/getProfileDetails', verifyToken, profileController.getProfileDetails);
 
+profileRoute.get('/getAllProfileDetails', verifyToken, profileController.getAllProfileDetails);
+
 profileRoute.get('/getProfileDetailsById', profileController.getProfileDetailsById);
 
 module.exports = profileRoute;

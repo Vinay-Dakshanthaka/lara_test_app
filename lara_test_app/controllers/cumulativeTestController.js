@@ -581,7 +581,12 @@ const getTestResultsByStudentId = async (req, res) => {
             }
         });
 
-        res.status(200).send(testResults);
+        if (!testResults) {
+            return res.status(404).send({ message: "Test result not found for the student" });
+        }
+        else{
+            res.status(200).send(testResults);
+        }
 
     } catch (error) {
         console.log(error);
@@ -591,22 +596,21 @@ const getTestResultsByStudentId = async (req, res) => {
 
 
 module.exports = {
-    saveSubject,  //
-    updateSubject,  //
-    deleteSubject,  //
-    saveTopic,   //
-    updateTopic,   //
-    deleteTopic,   //
-    processExcel,
-    getAllSubjects,  //
-    getSubjectById,   //
-    getTopicById,    //
-    getTopicsBySubjectId,  // 
-    getAllSubjectsAndTopics,  //
-    processExcel,   //
-    getQuestionsByTopicIds,   //
-    getQuestionCountsByTopicIds,
-    saveTestResults,    //
+    saveSubject,  
+    updateSubject,  
+    deleteSubject,  
+    saveTopic,   
+    updateTopic,   
+    deleteTopic,   
+    processExcel,   
+    getAllSubjects,  
+    getSubjectById,   
+    getTopicById,    
+    getTopicsBySubjectId,  
+    getAllSubjectsAndTopics,  
+    getQuestionsByTopicIds,   
+    getQuestionCountsByTopicIds,  
+    saveTestResults,    
     getTestResultsByTestId,
     getTestResultsByStudentId,
 }

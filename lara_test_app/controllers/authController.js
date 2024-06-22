@@ -9,7 +9,6 @@ const fs = require('fs');
 const path = require('path');
 
 const Student = db.Student;
-const Profile = db.Profile;
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 

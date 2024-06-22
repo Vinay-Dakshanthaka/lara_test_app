@@ -17,7 +17,7 @@ const saveOrUpdateProfile = async(req, res) => {
             specialization: req.body.specialization,
             highest_education_percent: req.body.highest_education_percent,
             tenth_percentage: req.body.tenth_percentage,
-            twelth_percentage: req.body.twelth_percentage,
+            twelfth_percentage: req.body.twelth_percentage,
             mobile_number: req.body.mobile_number,
             father_name: req.body.father_name,
             father_mobile_number: req.body.father_mobile_number,
@@ -94,6 +94,26 @@ const getProfileDetails = async (req, res) => {
     }
 };
 
+// Get all profile details controller
+const getAllProfileDetails = async (req, res) => {
+    try {
+        // console.log("inside get profile tyr")
+        const student_id = req.student_id;
+        const user = await Student.findByPk(student_id); // Fetch user from database
+        const userRole = user.role; // Get the user's role
+        console.log("role :"+userRole)
+        // Check if the user role is either "PLACEMENT OFFICER" or "SUPER ADMIN"
+        if (userRole !== 'SUPER ADMIN' && userRole !== 'PLACEMENT OFFICER') {
+            return res.status(403).json({ error: 'Access forbidden' });
+        }
+        const profile = await Profile.findAll();
+        res.status(200).send(profile);
+        
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};
+
 const getProfileDetailsById = async (req, res) => {
     try {
         const {student_id} = req.body;
@@ -112,5 +132,6 @@ const getProfileDetailsById = async (req, res) => {
 module.exports = {
     saveOrUpdateProfile,
     getProfileDetails,
+    getAllProfileDetails,
     getProfileDetailsById,
 }
