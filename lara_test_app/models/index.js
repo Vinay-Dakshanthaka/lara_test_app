@@ -34,7 +34,7 @@ db.Profile = require('./profileModel')(sequelize, DataTypes);
 db.Subject = require('./subjectModel')(sequelize, DataTypes);
 db.Topic = require('./topicModel')(sequelize, DataTypes);
 db.TestResults = require('./testResultModel')(sequelize, DataTypes);
-db.cumulativeQuestion = require('./cumulativeQuestionModel')(sequelize, DataTypes);
+db.CumulativeQuestion = require('./cumulativeQuestionModel')(sequelize, DataTypes);
 
 db.Student.hasOne(db.Profile, {
     foreignKey: 'student_id',
@@ -55,6 +55,17 @@ db.Subject.hasMany(db.Topic, {
 
 db.Topic.belongsTo(db.Subject, {
     foreignKey: 'subject_id',
+    onDelete: 'CASCADE'
+});
+
+db.Topic.hasMany(db.CumulativeQuestion, {
+    foreignKey: 'topic_id',
+    as: 'cumulativequestions',
+    onDelete: 'CASCADE'
+});
+
+db.CumulativeQuestion.belongsTo(db.Topic, {
+    foreignKey: 'topic_id',
     onDelete: 'CASCADE'
 });
 

@@ -31,19 +31,19 @@ module.exports = (sequelize, DataTypes) => {
         },
         option_1: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: true
         },
         option_2: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: true
         },
         option_3: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: true
         },
         option_4: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: true
         },
         correct_option: {
             type: DataTypes.TEXT,
@@ -56,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
     CumulativeQuestion.associate = (models) => {
         CumulativeQuestion.belongsTo(models.Topic, {
             foreignKey: 'topic_id',
-            as: 'topic'
+            as: 'topics'
         });
     };
 

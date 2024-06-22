@@ -44,12 +44,12 @@ cumulativeTestRouter.get('/getTestResultsByStudentId',verifyToken,cumulativeTest
 
 cumulativeTestRouter.post('/upload-questions',upload.single('file'),verifyToken, async (req, res) => {
      // Fetch the user's role from the database using the user's ID
-     const studentId = req.studentId; 
+     const studentId = req.student_id; 
      const user = await Student.findByPk(studentId); // Fetch user from database
      const userRole = user.role; // Get the user's role
      console.log("role :"+userRole)
      // Check if the user role is either "ADMIN" or "SUPER ADMIN"
-     if (userRole !== 'ADMIN' && userRole !== 'SUPER ADMIN' && userRole !== 'TRAINER') {
+     if (userRole !== 'SUPER ADMIN' && userRole !== 'PLACEMENT OFFICER') {
          return res.status(403).json({ error: 'Access forbidden' });
      }
     
