@@ -24,11 +24,11 @@ const saveSubject = async (req, res)=>{
             return res.status(403).json({ error: 'Access forbidden' });
         }
 
-        const {name} = req.body
+        const {subject_name} = req.body
 
-        let subject = await Subject.findOne({ where: { name } });
+        let subject = await Subject.findOne({ where: { name :subject_name} });
         if (!subject) {
-            subject = await Subject.create({ name });
+            subject = await Subject.create({ name:subject_name });
         }
 
         // const subject = await Subject.create({
@@ -58,7 +58,7 @@ const updateSubject = async (req, res)=>{
              return res.status(403).json({ error: 'Access forbidden' });
          }
 
-        const {subject_id, name} = req.body
+        const {subject_id, subject_name} = req.body
 
         let subject = await Subject.findByPk(subject_id);
 
@@ -67,7 +67,7 @@ const updateSubject = async (req, res)=>{
         }
 
         // update the subject 
-        subject.name = name;
+        subject.name = subject_name;
 
         await subject.save(subject)
 
@@ -124,8 +124,8 @@ const saveTopic = async (req, res)=>{
              return res.status(403).json({ error: 'Access forbidden' });
          }
 
-        const {name,subject_id} = req.body
-         console.log(" topic name ", name, " : subject id ", subject_id)
+        const {topic_name,subject_id} = req.body
+         console.log(" topic name ", topic_name, " : subject id ", subject_id)
          // Check if the subject_id exists
          const subject = await Subject.findByPk(subject_id);
          if (!subject) {
@@ -133,9 +133,9 @@ const saveTopic = async (req, res)=>{
          }
 
          // Ensure the topic exists
-         let topic = await Topic.findOne({ where: { name, subject_id: subject.subject_id } });
+         let topic = await Topic.findOne({ where: { name:topic_name, subject_id: subject.subject_id } });
          if (!topic) {
-             topic = await Topic.create({ name, subject_id: subject.subject_id });
+             topic = await Topic.create({ name:topic_name, subject_id: subject.subject_id });
          }
 
         res.status(200).send({message : 'successfully saved' , topic});
@@ -148,7 +148,7 @@ const saveTopic = async (req, res)=>{
 
 const updateTopic = async (req, res) => {
     try {
-        const { topic_id, name } = req.body;
+        const { topic_id, topic_name } = req.body;
 
          // Fetch the user's role from the database using the user's ID
          const studentId = req.student_id; 
@@ -160,7 +160,7 @@ const updateTopic = async (req, res) => {
              return res.status(403).json({ error: 'Access forbidden' });
          }
 
-        if (!topic_id || !name) {
+        if (!topic_id || !topic_name) {
             return res.status(400).send({ message: "Both topic_id and topic_name are required." });
         }
 
@@ -170,7 +170,7 @@ const updateTopic = async (req, res) => {
             return res.status(404).send({ message: `No topic found with id ${topic_id}` });
         }
 
-        topic.name = name;
+        topic.name = topic_name;
         await topic.save();
 
         res.status(200).send({
