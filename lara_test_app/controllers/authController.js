@@ -756,6 +756,27 @@ const getProfileImageFor = async (req, res) => {
     }
 };
 
+const updateStudentNameAndPhoneNumber = async (req, res) => {
+    const studentId = req.student_id;
+    const { name, phoneNumber } = req.body;
+
+    const user = Student.findByPk(studentId);
+    if(!user){
+        return res.status(404).send({message: "Student not found"})
+    }
+
+    try {
+        await Student.update(
+            { name:name, phoneNumber:phoneNumber },
+            { where: { student_id: studentId } }
+        );
+        res.status(200).send({ message: 'Student information updated successfully.', name, phoneNumber });
+    } catch (error) {
+        console.error('Error updating student information:', error);
+        res.status(500).send({ message: error.message });
+    }
+}
+
 module.exports = {
     signup,
     verifyByEmail,
@@ -771,4 +792,5 @@ module.exports = {
     getProfileImageFor,
     sendPasswordResetEmail,
     updatePassword,
+    updateStudentNameAndPhoneNumber,
 }

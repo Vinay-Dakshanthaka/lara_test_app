@@ -81,6 +81,7 @@ const saveOrUpdateProfile = async(req, res) => {
 // Get profile details controller
 const getProfileDetails = async (req, res) => {
     try {
+        
         // console.log("inside get profile tyr")
         const student_id = req.student_id;
         const profile = await Profile.findOne({ where: { student_id } });

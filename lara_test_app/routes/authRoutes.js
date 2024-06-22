@@ -36,5 +36,7 @@ authRoute.post('/password-reset-email', authController.sendPasswordResetEmail);
 
 authRoute.post('/update-password', verifyToken, authController.updatePassword);
 
+authRoute.put('/updateStudentNameAndPhoneNumber', verifyToken, authController.updateStudentNameAndPhoneNumber);
+
 
 module.exports = authRoute;
