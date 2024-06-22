@@ -7,6 +7,8 @@ const xlsx = require('xlsx');
 const nodemailer = require('nodemailer'); 
 const fs = require('fs');
 const path = require('path');
+const { Where } = require('sequelize/lib/utils');
+const { where } = require('sequelize');
 
 const Student = db.Student;
 const storage = multer.memoryStorage();
@@ -790,7 +792,5 @@ module.exports = {
     uploadProfileImage,
     getProfileImage,
     getProfileImageFor,
-    sendPasswordResetEmail,
-    updatePassword,
-    updateStudentNameAndPhoneNumber,
+    updateStudentNameAndPhoneNumber
 }
