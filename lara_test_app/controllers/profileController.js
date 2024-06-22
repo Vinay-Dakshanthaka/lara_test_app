@@ -8,7 +8,7 @@ const saveOrUpdateProfile = async(req, res) => {
     try {
         const id = req.student_id;
         //var student_id = "LARA00002";
-        // console.log("student id :",student_id);
+        console.log("student id :",id);
         const profileInfo = {
             name: req.body.name,
             gender: req.body.gender,
@@ -30,12 +30,12 @@ const saveOrUpdateProfile = async(req, res) => {
             city: req.body.city,
             district: req.body.district,
             state: req.body.state,
-            country: req.body.country,
+            country: req.body.country,            
             student_id: id
         };
         // console.log("profle info ", profileInfo)
   
-        // console.log("Student id ", student_id)
+        console.log("Student id ", id)
         //  Check if the profile already exists
          const existingProfile = await Profile.findOne({ where: { student_id:id } });
 
@@ -44,7 +44,7 @@ const saveOrUpdateProfile = async(req, res) => {
 
         if (existingProfile) {
             // If the profile exists, update it
-            await Profile.update(profileInfo, { where: { student_id:id } });
+            await Profile.update(profileInfo, { where: { student_id : id} });
             res.status(200).send({profile: profileInfo, message: 'Profile updated successfully.' });
         } else {
             // If the profile doesn't exist, create a new one
@@ -78,12 +78,11 @@ const saveOrUpdateProfile = async(req, res) => {
 };
 
 
-
 // Get profile details controller
 const getProfileDetails = async (req, res) => {
     try {
         // console.log("inside get profile tyr")
-        const student_id = req.studentId;
+        const student_id = req.student_id;
         const profile = await Profile.findOne({ where: { student_id } });
         if (profile) {
             res.status(200).send(profile);
@@ -94,8 +93,6 @@ const getProfileDetails = async (req, res) => {
         res.status(500).send({ message: error.message });
     }
 };
-
-
 
 const getProfileDetailsById = async (req, res) => {
     try {
