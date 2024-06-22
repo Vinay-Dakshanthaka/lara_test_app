@@ -6,16 +6,22 @@ import ProfileImage from './ProfileImage';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Modal, Button, Form } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 function StudentDashboard() {
   const [student, setStudent] = useState(null);
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState({
+    specialization: 'N/A',
+    address: 'N/A'
+  });
   const [errors, setErrors] = useState({});
   const [details, setDetails] = useState({
     name: '',
     phoneNumber: ''
   });
   const [showModal, setShowModal] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchStudentDetails = async () => {
@@ -65,7 +71,14 @@ function StudentDashboard() {
         console.log("response of profile ", response);
         setProfile(response.data);
       } catch (error) {
-        console.error('Error fetching profile details:', error);
+        if (error.response && error.response.status === 404) {
+          setProfile({
+            specialization: 'N/A',
+            address: 'N/A'
+          });
+        } else {
+          console.error('Error fetching profile details:', error);
+        }
       }
     };
 
@@ -248,6 +261,3 @@ function StudentDashboard() {
 }
 
 export default StudentDashboard;
-
-
-
