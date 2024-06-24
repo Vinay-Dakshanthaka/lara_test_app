@@ -18,6 +18,7 @@ import StartTest from './components/student/StartTest';
 import AllTestResults from './components/student/AllTestResults';
 import DetailedResult from './components/student/DetailedResult';
 import ProtectedRoute from './ProtectedRoute';
+import AllStudentDetails from './components/admin/AllStudentDetails';
 
 const App = () => {
     const location = useLocation();
@@ -47,6 +48,7 @@ const App = () => {
                     <Route path="/start-test" element={<StartTest />} />
                     <Route path="/all-test-results" element={<AllTestResults />} />
                     <Route path="/all-test-results/:test_id" element={<DetailedResult />} />
+                    <Route path="/all-students-details" element={<AllStudentDetails />} />
                 </Route>
             </Routes>
         </>

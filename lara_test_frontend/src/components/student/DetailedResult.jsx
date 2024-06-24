@@ -135,7 +135,7 @@ const DetailedResult = () => {
                             return (
                                 <Button
                                     key={question.cumulative_question_id}
-                                    variant={selectedOption ? (isCorrect ? 'success' : 'danger') : 'secondary'}
+                                    variant={selectedOption ? (isCorrect ? 'success' : 'danger') : 'primary'}
                                     className="m-1"
                                     onClick={() => handleQuestionClick(index)}
                                 >

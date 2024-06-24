@@ -290,7 +290,7 @@ const UpdateProfile = () => {
                                 </div>
                                 <div className="col-md-12 my-2">
                                     <label className="labels">Twelth Percentage</label>
-                                    <input type="number" className="form-control" placeholder="Twelfth Percentage" name="twelth_percentage" value={profile.twelth_percentage} onChange={handleChange} />
+                                    <input type="number" className="form-control" placeholder="Twelth Percentage" name="twelth_percentage" value={profile.twelth_percentage} onChange={handleChange} />
                                     {errors.twelth_percentage && <div className="text-danger">{errors.twelth_percentage}</div>}
                                 </div>
                                 <div className="col-md-12 my-2">
