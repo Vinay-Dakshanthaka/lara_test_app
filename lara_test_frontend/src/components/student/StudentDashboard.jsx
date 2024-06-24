@@ -154,11 +154,11 @@ function StudentDashboard() {
               <div className="card-body text-center">
                 <ProfileImage style={{ width: '150px' }} className="rounded-circle img-fluid profile-image" />
                 <h5 className="my-3">{student.name}</h5>
-                <p className="text-muted mb-1">{profile?.specialization || 'N/A'}</p>
+                <p className="text-muted mb-1">{profile?.highest_education || 'N/A'}</p>
                 <p className="text-muted mb-4">{profile?.address || 'N/A'}</p>
                 
                 <div className="d-flex justify-content-center mb-2">
-                  <button type="button" className="btn btn-primary" onClick={()=>{navigate('/update-profile')}}>Update Profile</button>
+                  <button type="button" className="btn btn-primary" onClick={()=>{navigate('/update-profile')}}>Update Info</button>
                 </div>
               </div>
             </div>
@@ -203,8 +203,8 @@ function StudentDashboard() {
                 </div>
                 <hr />
                 <div className="row">
-                  <div className="col-sm-3">
-                    <button className="btn btn-outline-primary" onClick={handleModalShow}>Update Details</button>
+                  <div className="col-sm-5">
+                    <button className="btn btn-outline-primary" onClick={handleModalShow}>Update Name/Phone </button>
                   </div>
                 </div>
               </div>
