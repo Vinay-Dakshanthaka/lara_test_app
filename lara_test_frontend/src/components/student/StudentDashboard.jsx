@@ -152,7 +152,7 @@ function StudentDashboard() {
           <div className="col-lg-4">
             <div className="card mb-4">
               <div className="card-body text-center">
-                <ProfileImage style={{ width: '150px' }} className="rounded-circle img-fluid profile-image" />
+                <ProfileImage style={{ width: '150px',height: '150px' }} className="rounded-circle img-fluid profile-image" />
                 <h5 className="my-3">{student.name}</h5>
                 <p className="text-muted mb-1">{profile?.specialization || 'N/A'}</p>
                 <p className="text-muted mb-4">{profile?.address || 'N/A'}</p>
