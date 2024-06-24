@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { baseURL } from '../config';
 
+//Previous 
 // const StudentCumulativeTest = () => {
 //     const [subjects, setSubjects] = useState([]);
 //     const [topics, setTopics] = useState([]);
@@ -250,6 +251,7 @@ import { baseURL } from '../config';
 //         </div>
 //     );
 // };
+
 
 const StudentCumulativeTest = () => {
     const [subjects, setSubjects] = useState([]);
@@ -515,6 +517,7 @@ const StudentCumulativeTest = () => {
 };
 
 export default StudentCumulativeTest;
+
 
 
 

@@ -38,10 +38,11 @@ cumulativeTestRouter.post('/getTestResultsByTestId',verifyToken,cumulativeTestCo
 
 cumulativeTestRouter.get('/getTestResultsByStudentId',verifyToken,cumulativeTestController.getTestResultsByStudentId );
 
+cumulativeTestRouter.get('/getAllTopics', verifyToken, cumulativeTestController.getAllTopics);
 
+cumulativeTestRouter.get('/getAllSubjectsWithTopics', verifyToken, cumulativeTestController.getAllSubjectsWithTopics)
 
-
-
+//For Uploading Quesion Topic wise
 cumulativeTestRouter.post('/upload-questions',upload.single('file'),verifyToken, async (req, res) => {
      // Fetch the user's role from the database using the user's ID
      const studentId = req.student_id; 
@@ -69,5 +70,26 @@ cumulativeTestRouter.post('/upload-questions',upload.single('file'),verifyToken,
     }
 });
  
+
+//for uploading Question Topicid wise
+cumulativeTestRouter.post('/uploadQuestionsByTopicId', upload.single('file'), verifyToken, async(req, res) => {
+    const studentId = req.student_id;
+    const user = await Student.findByPk(studentId);
+    const userRole = user.role;
+
+    if(userRole !== 'SUPER ADMIN' && userRole !== 'PLACEMENT OFFICER'){
+        return res.status(403),send({message : "Access Forbidden"});
+    }
+
+    const filePath = req.file.path;
+    try{
+        await cumulativeTestController.processExcelOFTopicId(filePath);
+        res.status(200).send({ message: "Excel data processed successfully." });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message });
+    }   
+})
+
 
 module.exports = cumulativeTestRouter
