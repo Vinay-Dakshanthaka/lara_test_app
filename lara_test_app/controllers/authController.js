@@ -338,6 +338,8 @@ const bulkSignup = async (req, res) => {
                         <p>Your account has been successfully created. Here are your login details:</p>
                         <p><strong>Email:</strong> ${student.email}</p>
                         <p><strong>Password:</strong> password@123</p>
+                        <p> Click the below link to Signin to your Account</p>
+                        <a href="http://localhost:5173/signin" target="_blank">http://localhost:5173/signin</a>
                         <p>We recommend that you change your password after logging in for the first time.</p>
                         <p>Until Your password is updated you won't able to complete the further step.</p>
                         <p>Thank You,</p>
@@ -440,6 +442,8 @@ const signupSingle = async (req, res) => {
                     <p>Your account has been successfully created. Here are your login details:</p>
                     <p><strong>Email:</strong> ${newStudent.email}</p>
                     <p><strong>Password:</strong> password@123</p>
+                    <p> Click the below link to Signin to your Account</p>
+                    <a href="http://localhost:5173/signin" target="_blank">http://localhost:5173/signin</a>
                     <p>We recommend that you change your password after logging in for the first time.</p>
                     <p>Until Your password is updated you won't able to complete the further step.</p>
                     <p>Thank You,</p>
@@ -792,5 +796,8 @@ module.exports = {
     uploadProfileImage,
     getProfileImage,
     getProfileImageFor,
-    updateStudentNameAndPhoneNumber
+    updateStudentNameAndPhoneNumber,
+    sendPasswordResetEmail,
+    updatePassword,
+    resetPassword,
 }
