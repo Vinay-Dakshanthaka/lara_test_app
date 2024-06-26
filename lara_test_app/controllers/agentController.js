@@ -32,11 +32,6 @@ const saveOrUpdateAgent = async(req, res) => {
 
         else{
             const newAgent = await Agent.update({
-                name,
-                company_id,
-                contactNumber,
-                designation,
-                mail_id,
                 state
                 },
                 {
