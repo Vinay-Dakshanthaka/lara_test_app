@@ -14,7 +14,7 @@ const saveCompany = async(req, res) => {
         const student = await Student.findByPk(id);
         const role = student.role;
         
-        if (role !== 'PLACEMENT OFFICER' & role !== 'SUPER ADMIN') {
+        if (role !== 'PLACEMENT OFFICER' && role !== 'SUPER ADMIN') {
             return res.status(403).send({ message: 'Access Forbidden' });
         }
 
@@ -104,9 +104,7 @@ const deleteCompany = async (req, res)=>{
         if (!company) {
             return res.status(404).json({ error: 'No Company found' });
         }
-
-        await company.destroy(company)
-
+        await company.destroy();
         res.status(200).send({message : 'Company Deleted Successfully!!!'});
 
     }catch(error){

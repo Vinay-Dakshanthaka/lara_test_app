@@ -28,8 +28,8 @@ const App = () => {
 
     return (
         // <UploadCompanies/>
-        // <CompaniesList/>
-        <AddAgent/>
+        <CompaniesList/>
+        // <AddAgent/>
         // <>
         //     {!hideSidebarRoutes.includes(location.pathname) && <Sidebar />}
         //     <Routes>
