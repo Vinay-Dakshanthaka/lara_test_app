@@ -9,6 +9,8 @@ const profileRoute = require('./routes/profileRoutes')
 const db = require('./models'); // Ensure this matches your Sequelize setup file path
 const adminRoute = require('./routes/adminRoutes');
 const cumulativeTestRouter = require('./routes/cumulativeTestRoutes');
+const companyRoute = require('./routes/companyRoutes');
+const agentRoute = require('./routes/agentRoutes');
 
 const bodyParser = require('body-parser');
 
@@ -24,6 +26,8 @@ app.use('/api/auth/student', authRoute);
 app.use('/api/student/profile', profileRoute); 
 app.use('/api/admin/activites',adminRoute);
 app.use('/api/test/cumulativeTest',cumulativeTestRouter);
+app.use('/api/company',companyRoute);
+app.use('/api/agent', agentRoute);
 
 // Port
 const PORT = process.env.PORT || 5000;
