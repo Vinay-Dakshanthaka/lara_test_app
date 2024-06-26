@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import { BsBoxArrowLeft, BsGearFill, BsHouse, BsList, BsPen, BsPersonCircle, BsPersonFillGear, BsPersonGear, BsSpeedometer, BsX } from 'react-icons/bs';
+import { BsBoxArrowLeft, BsGear, BsGearFill, BsHouse, BsList, BsPen, BsPersonCircle, BsPersonFillGear, BsPersonGear, BsSpeedometer, BsX } from 'react-icons/bs';
 import './style.css'; // Import custom CSS for sidebar styles
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -145,15 +145,18 @@ const Sidebar = () => {
                             <Accordion className="custom-bg">
                             <Accordion.Item eventKey="0" className='custom-bg accordion-item'>
                                         <Accordion.Header className="custom-bg ">
-                                            <BsPersonFillGear className="nav_icon" />
+                                            <BsGear className="nav_icon" />
                                             <span className="nav_name ms-2">Settings </span>
                                         </Accordion.Header>
                                         <Accordion.Body className="custom-bg">
-                                            <Link to="/bulk-signup" className="nav_link custom-bg margin-bottom-0">
+                                            <Link to="/update-password" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Update Password</span>
                                             </Link>
                                             <Link to="/update-profile" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Update Profile</span>
+                                            </Link>
+                                            <Link to="/delete-account" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name dropdown-link">Delete Account</span>
                                             </Link>
                                         </Accordion.Body>
                                     </Accordion.Item>

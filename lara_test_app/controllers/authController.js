@@ -26,7 +26,20 @@ const signup = async (req, res) => {
         const existingStudent = await Student.findOne({ where: { email } });
 
         if (existingStudent) {
-            return res.status(400).send({ message: 'Email already exists' });
+            if (existingStudent.isActive) {
+                return res.status(400).send({ message: 'Email already exists' });
+            } else {
+                // Reactivate the existing student account
+                const hashedPassword = await bcrypt.hash(password, saltRounds);
+                await existingStudent.update({
+                    name,
+                    phoneNumber: phone,
+                    password: hashedPassword,
+                    role: 'STUDENT',
+                    isActive: true
+                });
+                return res.status(200).send({ message: "Signup success", student: existingStudent });
+            }
         }
 
         // Generate student_id (e.g., "LARA00001")
@@ -42,7 +55,7 @@ const signup = async (req, res) => {
 
         const newIdNumber = lastIdNumber + 1;
         const newCustomId = `LARA${newIdNumber.toString().padStart(5, '0')}`;
-        console.log("Student ID : ", newCustomId)
+        console.log("Student ID : ", newCustomId);
 
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -55,13 +68,15 @@ const signup = async (req, res) => {
             phoneNumber: phone,
             password: hashedPassword,
             role: 'STUDENT',
+            isActive: true
         });
 
         return res.status(200).send({ message: "Signup success", student: newStudent });
     } catch (error) {
         return res.status(500).send({ message: 'Signup failed', errorMessage: error.message });
     }
-}
+};
+
 
 const verifyByEmail = async (req, res) => {
     try {
@@ -73,6 +88,11 @@ const verifyByEmail = async (req, res) => {
 
         // If no student found, return 404
         if (!studentData) {
+            return res.status(404).send({ message: 'No Student Found with this Email Id' });
+        }
+
+        // Check if the student's account is active
+        if (!studentData.isActive) {
             return res.status(404).send({ message: 'No Student Found with this Email Id' });
         }
 
@@ -100,6 +120,7 @@ const verifyByEmail = async (req, res) => {
         return res.status(500).send({ message: 'Internal server error' });
     }
 };
+
 
 
 
@@ -783,6 +804,41 @@ const updateStudentNameAndPhoneNumber = async (req, res) => {
     }
 }
 
+const deleteAccount = async (req, res) => {
+    try {
+        const studentId = req.student_id;
+
+        // Find student data based on student ID
+        const studentData = await Student.findOne({ where: { student_id: studentId } });
+
+        // If no student found, return 404
+        if (!studentData) {
+            return res.status(404).send({ message: 'No Student Found with this ID' });
+        }
+
+        // If the account is already inactive, return 404 not found
+        if (!studentData.isActive) {
+            return res.status(404).send({ message: 'No user found' });
+        }
+
+        // Mark the account as inactive
+        await studentData.update({ isActive: false });
+
+        // Check if profile details exist and delete if they do
+        const profileData = await Profile.findOne({ where: { student_id: studentId } });
+
+        if (profileData) {
+            await Profile.destroy({ where: { student_id: studentId } });
+        }
+
+        return res.status(200).send({ message: 'Account and profile details deleted successfully.' });
+    } catch (error) {
+        // Handle any unexpected errors
+        console.error('Error in deleteAccount:', error);
+        return res.status(500).send({ message: 'Internal server error' });
+    }
+};
+
 module.exports = {
     signup,
     verifyByEmail,
@@ -800,4 +856,5 @@ module.exports = {
     sendPasswordResetEmail,
     updatePassword,
     resetPassword,
+    deleteAccount,
 }

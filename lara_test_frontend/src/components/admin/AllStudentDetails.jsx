@@ -44,14 +44,18 @@ const AllStudentDetails = ({ children, showRole = true }) => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const filteredProfiles = data.profiles.filter((profile) => {
-    const searchTermMatch = profile.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            profile.mobile_number.toLowerCase().includes(searchTerm.toLowerCase());
-    const searchSpecializationMatch = profile.specialization.toLowerCase().includes(searchSpecialization.toLowerCase());
-    const searchEducationMatch = profile.highest_education.toLowerCase().includes(searchEducation.toLowerCase());
+    if (!profile) {
+        return false; // Skip undefined or null profiles
+    }
+
+    const searchTermMatch = (profile.name && profile.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                            (profile.mobile_number && profile.mobile_number.toLowerCase().includes(searchTerm.toLowerCase()));
+    const searchSpecializationMatch = profile.specialization && profile.specialization.toLowerCase().includes(searchSpecialization.toLowerCase());
+    const searchEducationMatch = profile.highest_education && profile.highest_education.toLowerCase().includes(searchEducation.toLowerCase());
     const filterYearMatch = filterYear ? profile.year_of_passout === parseInt(filterYear) : true;
 
     return searchTermMatch && searchSpecializationMatch && searchEducationMatch && filterYearMatch;
-  });
+});
 
   const indexOfLastProfile = currentPage * perPage;
   const indexOfFirstProfile = indexOfLastProfile - perPage;

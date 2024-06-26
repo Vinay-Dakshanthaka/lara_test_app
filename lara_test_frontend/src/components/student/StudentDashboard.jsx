@@ -68,7 +68,7 @@ function StudentDashboard() {
 
       try {
         const response = await axios.get(`${baseURL}/api/student/profile/getProfileDetails`, config);
-        console.log("response of profile ", response);
+        // console.log("response of profile ", response);
         setProfile(response.data);
       } catch (error) {
         if (error.response && error.response.status === 404) {

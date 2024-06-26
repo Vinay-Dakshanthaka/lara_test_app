@@ -19,6 +19,7 @@ import AllTestResults from './components/student/AllTestResults';
 import DetailedResult from './components/student/DetailedResult';
 import ProtectedRoute from './ProtectedRoute';
 import AllStudentDetails from './components/admin/AllStudentDetails';
+import DeleteAccount from './components/DeleteAccount';
 
 const App = () => {
     const location = useLocation();
@@ -49,6 +50,7 @@ const App = () => {
                     <Route path="/all-test-results" element={<AllTestResults />} />
                     <Route path="/all-test-results/:test_id" element={<DetailedResult />} />
                     <Route path="/all-students-details" element={<AllStudentDetails />} />
+                    <Route path="/delete-account" element={<DeleteAccount />} />
                 </Route>
             </Routes>
         </>

@@ -227,7 +227,7 @@ const UpdateProfile = () => {
                     <div className="d-flex flex-column align-items-center text-center p-3 py-5">
                         <ProfileImage className="rounded-circle mt-5" style={{ width: '150px',height:'150px' }} />
                         <div className="edit-icon">
-                            <FontAwesomeIcon icon={faEdit} size="sm" onClick={() => document.getElementById('fileInput').click()} />
+                            <FontAwesomeIcon icon={faEdit} size="sm" onClick={() => document.getElementById('fileInput').click()} style={{cursor:'pointer', width:'20px', height:'20px', marginTop:'10px'}}/>
                             <input
                                 id="fileInput"
                                 type="file"
