@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         designation: DataTypes.STRING,
         mail_id:{
             type: DataTypes.STRING,
+            unique: true,
             allowNull: false
         },
         state:{

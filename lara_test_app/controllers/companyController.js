@@ -1,6 +1,7 @@
 const db = require('../models');
 const multer = require('multer');
 const companyLogo = multer({dest: 'CompanyLogos/'});
+const fs = require('fs');
 
 const Company = db.Company;
 const Student = db.Student;
@@ -40,8 +41,7 @@ const saveCompany = async(req, res) => {
             url,
             general_mail_id,
             phoneNumber,
-            description,
-            //company_logo : filePath
+            description
         });
         return res.status(200).send({message : "Company added succeccfully", company : newCompany });
     } catch(error) {
@@ -77,7 +77,7 @@ const updateCompany = async(req, res) => {
 
         await newCompany.save(newCompany)
 
-        res.status(200).send({message : "Company updated succeccfully", newCompany});
+        return res.status(200).send({message : "Company updated succeccfully", newCompany});
 
     } catch(error) {
         return res.status(500).send({message : error.message});
@@ -128,11 +128,68 @@ const getAllCompanyDetails = async (req, res) => {
     }
 }
 
+const uploadCompanyLogo = async(req, res) => {
+    try{
+
+        const {company_id} = req.query;
+
+        const company = await Company.findByPk(company_id);
+
+        //Check if the file format is valid
+        const fileFormat = req.file.originalname.split('.').pop().toLowerCase();
+        if (!validFileFormats.includes(fileFormat)) {
+            throw new Error('Invalid file format. Supported formats: JPEG, JPG, PNG.');
+        }
+
+        const filePath = req.file.path;
+        company.company_logo = filePath;
+
+        await company.save(company);
+        res.status(200).send({message : 'Company Logo uploaded Successfully!!!', filePath});
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message });
+    }
+}
+
+const getCompanyLogo = async(req, res) => {
+    try{
+
+        const {company_id} = req.body;
+
+        const company = await Company.findByPk(company_id);
+        if (!company) {
+            return res.status(404).send({ message: 'Company not found.' });
+        }
+
+        const file = company.company_logo;
+        if (!file) {
+            return res.status(404).send({ message: 'Image not found.' });
+        }
+
+        fs.readFile(file, (err, data) => {
+            if (err) {
+                return res.status(500).send({ message: 'Error reading image file.' });
+            }
+
+            // Set the appropriate content type
+            res.setHeader('Content-Type', 'image/jpeg'); // Adjust content type based on your image format
+
+            // Send the image file as response
+            // console.log(data)
+            res.status(200).send(data);
+        });
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};
 
 module.exports = {
     saveCompany,
     updateCompany,
     companyLogo,
     deleteCompany,
-    getAllCompanyDetails
+    getAllCompanyDetails,
+    uploadCompanyLogo,
+    getCompanyLogo
 }

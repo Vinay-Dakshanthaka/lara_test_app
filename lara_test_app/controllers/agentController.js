@@ -4,7 +4,7 @@ const Agent = db.Agent;
 const Company = db.Company;
 const Student = db.Student;
 
-const saveOrUpdateAgent = async(req, res) => {
+const saveAgent = async(req, res) => {
     try{
         const id = req.student_id;
         const student = await Student.findByPk(id);
@@ -14,7 +14,7 @@ const saveOrUpdateAgent = async(req, res) => {
             return res.status(403).send({ message: 'Access Forbidden' });
         }
 
-        const {agent_id, name, company_id, contactNumber, designation, mail_id, state} = req.body;
+        const {name, company_id, contactNumber, designation, mail_id} = req.body;
 
         const existingAgent = await Agent.findOne({where: {mail_id}});
 
@@ -31,22 +31,42 @@ const saveOrUpdateAgent = async(req, res) => {
         }
 
         else{
-            const newAgent = await Agent.update({
-                name,
-                company_id,
-                contactNumber,
-                designation,
-                mail_id,
-                state
-                },
-                {
-                    where : { agent_id }
-                })
-            return res.status(200).send({message : "Agent details updated succeccfully", agent : newAgent });
-        }
-        
+            return res.status(404).json({ error: 'Agent email-id already exists' });
+        }   
     } catch(error) {
         return res.status(500).send({message : error.message});
+    }
+}
+
+const updateAgent = async(req, res) => {
+    try{
+        const id = req.student_id;
+        const student = await Student.findByPk(id);
+        const role = student.role;
+        console.log("student");
+        if (role !== 'PLACEMENT OFFICER' & role !== 'SUPER ADMIN') {
+            return res.status(403).send({ message: 'Access Forbidden' });
+        }
+
+        const { mail_id, state } = req.body;
+
+        const existingAgent = await Agent.findOne({where: {mail_id}});
+
+        if(!existingAgent){
+            return res.status(404).json({ error: 'Agent does not exist' });
+        }
+        else{
+            // update the agent-status 
+            existingAgent.state = state;
+
+            await existingAgent.save(existingAgent)
+
+            return res.status(200).send({message : "Agent updated succeccfully", agent : existingAgent});
+
+        }
+    }catch(error){
+        console.log(error);
+        res.status(500).send({ message: error.message });
     }
 }
 
@@ -114,7 +134,8 @@ const getAgentByCompanyId = async (req, res) => {
 }
 
 module.exports = {
-    saveOrUpdateAgent,
+    saveAgent,
+    updateAgent,
     deleteAgent,
     getAllAgentDetails,
     getAgentByCompanyId,
