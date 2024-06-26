@@ -18,38 +18,44 @@ import StartTest from './components/student/StartTest';
 import AllTestResults from './components/student/AllTestResults';
 import DetailedResult from './components/student/DetailedResult';
 import ProtectedRoute from './ProtectedRoute';
+import UploadCompanies from './components/companies/UploadCompanies';
+import CompaniesList from './components/companies/CompaniesList';
+import AddAgent from './components/companies/AddAgent';
 
 const App = () => {
     const location = useLocation();
     const hideSidebarRoutes = ['/signin', '/signup', '/'];
 
     return (
-        <>
-            {!hideSidebarRoutes.includes(location.pathname) && <Sidebar />}
-            <Routes>
-                <Route path="/signin" element={<Signin />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/update-password" element={<UpdatePassword />} />
-                <Route path="/password-update-warning" element={<PasswordUpdateWarning />} />
-                <Route path="/reset-password-email" element={<ResetPasswordEmail />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/" element={<Signin />} /> {/* Default route */}
+        // <UploadCompanies/>
+        // <CompaniesList/>
+        <AddAgent/>
+        // <>
+        //     {!hideSidebarRoutes.includes(location.pathname) && <Sidebar />}
+        //     <Routes>
+        //         <Route path="/signin" element={<Signin />} />
+        //         <Route path="/signup" element={<Signup />} />
+        //         <Route path="/update-password" element={<UpdatePassword />} />
+        //         <Route path="/password-update-warning" element={<PasswordUpdateWarning />} />
+        //         <Route path="/reset-password-email" element={<ResetPasswordEmail />} />
+        //         <Route path="/reset-password" element={<ResetPassword />} />
+        //         <Route path="/" element={<Signin />} /> {/* Default route */}
 
-                {/* Protected Routes */}
-                <Route element={<ProtectedRoute />}>
-                    <Route path="/update-role" element={<UpdateRole />} />
-                    <Route path="/bulk-signup" element={<BulkSignup />} />
-                    <Route path="/add-subject" element={<AddSubject />} />
-                    <Route path="/student-dashboard" element={<StudentDashboard />} />
-                    <Route path="/update-profile" element={<UpdateProfile />} />
-                    <Route path="/cumulative-test" element={<CumulativeTest />} />
-                    <Route path="/student-cumulative-test" element={<StudentCumulativeTest />} />
-                    <Route path="/start-test" element={<StartTest />} />
-                    <Route path="/all-test-results" element={<AllTestResults />} />
-                    <Route path="/all-test-results/:test_id" element={<DetailedResult />} />
-                </Route>
-            </Routes>
-        </>
+        //         {/* Protected Routes */}
+        //         <Route element={<ProtectedRoute />}>
+        //             <Route path="/update-role" element={<UpdateRole />} />
+        //             <Route path="/bulk-signup" element={<BulkSignup />} />
+        //             <Route path="/add-subject" element={<AddSubject />} />
+        //             <Route path="/student-dashboard" element={<StudentDashboard />} />
+        //             <Route path="/update-profile" element={<UpdateProfile />} />
+        //             <Route path="/cumulative-test" element={<CumulativeTest />} />
+        //             <Route path="/student-cumulative-test" element={<StudentCumulativeTest />} />
+        //             <Route path="/start-test" element={<StartTest />} />
+        //             <Route path="/all-test-results" element={<AllTestResults />} />
+        //             <Route path="/all-test-results/:test_id" element={<DetailedResult />} />
+        //         </Route>
+        //     </Routes>
+        // </>
     );
 };
 
