@@ -35,6 +35,11 @@ db.Subject = require('./subjectModel')(sequelize, DataTypes);
 db.Topic = require('./topicModel')(sequelize, DataTypes);
 db.TestResults = require('./testResultModel')(sequelize, DataTypes);
 db.CumulativeQuestion = require('./cumulativeQuestionModel')(sequelize, DataTypes);
+db.Company = require('./companyModel')(sequelize, DataTypes);
+db.Agent = require('./agentModel')(sequelize, DataTypes);
+db.Job = require('./jobModel')(sequelize, DataTypes);
+db.Drive = require('./driveModel')(sequelize, DataTypes);
+db.StudentDrive = require('./student_drive')(sequelize, DataTypes);
 
 db.Student.hasOne(db.Profile, {
     foreignKey: 'student_id',
@@ -66,6 +71,17 @@ db.Topic.hasMany(db.CumulativeQuestion, {
 
 db.CumulativeQuestion.belongsTo(db.Topic, {
     foreignKey: 'topic_id',
+    onDelete: 'CASCADE'
+});
+
+db.Company.hasMany(db.Agent, {
+    foreignKey: 'company_id',
+    as: 'companies',
+    onDelete: 'CASCADE'
+});
+
+db.Agent.belongsTo(db.Company, {
+    foreignKey: 'company_id',
     onDelete: 'CASCADE'
 });
 

@@ -487,6 +487,56 @@ const processExcel = async (filePath, topic_id) => {
         });
     }
 };
+const processExcelOFTopicId = async (filePath) => {
+    const workbook = xlsx.readFile(filePath);
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = xlsx.utils.sheet_to_json(sheet);
+
+    for (const row of rows) {
+        const [
+            topic_id,
+            questionText,
+            difficulty,
+            marks,
+            option1,
+            option2,
+            option3,
+            option4,
+            correctOptionIndex
+        ] = [
+            row["Topic id"],
+            row["Question Text"],
+            row.Difficulty,
+            row.Marks,
+            row["Option 1"],
+            row["Option 2"],
+            row["Option 3"],
+            row["Option 4"],
+            row["Correct Option"]
+        ];
+
+        const checkTopicId = await Topic.findByPk(topic_id)
+        if(!checkTopicId){
+            console.log("topic id doesnot exist");
+            continue;
+        }
+        // Create the cumulative question
+        await CumulativeQuestion.create({
+            question_description: questionText,
+            topic_id: topic_id,
+            difficulty_level: difficulty,
+            no_of_marks_allocated: marks,
+            option_1: option1,
+            option_2: option2,
+            option_3: option3,
+            option_4: option4,
+            correct_option: correctOptionIndex
+        });
+    }
+};
+
+
+
 
 
 const saveTestResults = async (req, res) => {
@@ -594,6 +644,60 @@ const getTestResultsByStudentId = async (req, res) => {
     }
 }
 
+const getAllTopics = async(req, res) => {
+    try {
+        const id = req.student_id;
+        const user = await Student.findOne({ where: { student_id: id } });
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const userRole = user.role;
+        console.log("UserRole", userRole);
+
+        if (userRole !== 'SUPER ADMIN' && userRole !== 'PLACEMENT OFFICER') {
+            return res.status(403).json({ error: 'Access forbidden' });
+        }
+
+        const topics = await Topic.findAll();
+        if (!topics || topics.length === 0) {
+            return res.status(404).send({ message: "Topics are not available" });
+        }
+
+        return res.status(200).send({ message: "Available Topics are", topics });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ message: error.message });
+    }
+};
+
+const getAllSubjectsWithTopics = async(req, res) => {
+    const id = req.student_id;
+    const user = await Student.findOne({ where: { student_id: id } });
+    if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+
+    const userRole = user.role;
+    console.log("UserRole", userRole);
+
+    if (userRole !== 'SUPER ADMIN' && userRole !== 'PLACEMENT OFFICER') {
+        return res.status(403).json({ error: 'Access forbidden' });
+    }
+    try {
+        const subjects = await Subject.findAll({
+            include: {
+                model: Topic,
+                as: 'topics'
+            }
+        });
+        res.json(subjects);
+    } catch (error) {
+        console.error('Error fetching subjects with topics:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 
 module.exports = {
     saveSubject,  
@@ -613,4 +717,7 @@ module.exports = {
     saveTestResults,    
     getTestResultsByTestId,
     getTestResultsByStudentId,
+    getAllTopics,
+    getAllSubjectsWithTopics,
+    processExcelOFTopicId
 }
