@@ -85,6 +85,12 @@ const Sidebar = () => {
                                             <span className="nav_name ms-2">Dashboard</span>
                                         </Accordion.Header>
                                         <Accordion.Body className="custom-bg">
+                                            <Link to="/add-companies" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name dropdown-link">Add Companies</span>
+                                            </Link>
+                                            <Link to="/companies-list" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name dropdown-link">Companies List</span>
+                                            </Link>
                                             <Link to="/all-students-details" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name custom-bg dropdown-link ">Students Info</span>
                                             </Link>
@@ -118,6 +124,9 @@ const Sidebar = () => {
                                             {/* <Link to="/update-role" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name custom-bg dropdown-link ">Update Role</span>
                                             </Link> */}
+                                            <Link to="/add-companies" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name dropdown-link">Add Companies</span>
+                                            </Link>
                                             <Link to="/bulk-signup" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Bulk Signup</span>
                                             </Link>
@@ -143,23 +152,23 @@ const Sidebar = () => {
                         </Link>
                         <div className="nav_list">
                             <Accordion className="custom-bg">
-                            <Accordion.Item eventKey="0" className='custom-bg accordion-item'>
-                                        <Accordion.Header className="custom-bg ">
-                                            <BsGear className="nav_icon" />
-                                            <span className="nav_name ms-2">Settings </span>
-                                        </Accordion.Header>
-                                        <Accordion.Body className="custom-bg">
-                                            <Link to="/update-password" className="nav_link custom-bg margin-bottom-0">
-                                                <span className="nav_name dropdown-link">Update Password</span>
-                                            </Link>
-                                            <Link to="/update-profile" className="nav_link custom-bg margin-bottom-0">
-                                                <span className="nav_name dropdown-link">Update Profile</span>
-                                            </Link>
-                                            <Link to="/delete-account" className="nav_link custom-bg margin-bottom-0">
-                                                <span className="nav_name dropdown-link">Delete Account</span>
-                                            </Link>
-                                        </Accordion.Body>
-                                    </Accordion.Item>
+                                <Accordion.Item eventKey="0" className='custom-bg accordion-item'>
+                                    <Accordion.Header className="custom-bg ">
+                                        <BsGear className="nav_icon" />
+                                        <span className="nav_name ms-2">Settings </span>
+                                    </Accordion.Header>
+                                    <Accordion.Body className="custom-bg">
+                                        <Link to="/update-password" className="nav_link custom-bg margin-bottom-0">
+                                            <span className="nav_name dropdown-link">Update Password</span>
+                                        </Link>
+                                        <Link to="/update-profile" className="nav_link custom-bg margin-bottom-0">
+                                            <span className="nav_name dropdown-link">Update Profile</span>
+                                        </Link>
+                                        <Link to="/delete-account" className="nav_link custom-bg margin-bottom-0">
+                                            <span className="nav_name dropdown-link">Delete Account</span>
+                                        </Link>
+                                    </Accordion.Body>
+                                </Accordion.Item>
                             </Accordion>
                         </div>
                     </div>
