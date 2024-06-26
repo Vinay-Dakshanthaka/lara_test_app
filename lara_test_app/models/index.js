@@ -37,6 +37,9 @@ db.TestResults = require('./testResultModel')(sequelize, DataTypes);
 db.CumulativeQuestion = require('./cumulativeQuestionModel')(sequelize, DataTypes);
 db.Company = require('./companyModel')(sequelize, DataTypes);
 db.Agent = require('./agentModel')(sequelize, DataTypes);
+db.Job = require('./jobModel')(sequelize, DataTypes);
+db.Drive = require('./driveModel')(sequelize, DataTypes);
+db.StudentDrive = require('./student_drive')(sequelize, DataTypes);
 
 db.Student.hasOne(db.Profile, {
     foreignKey: 'student_id',
