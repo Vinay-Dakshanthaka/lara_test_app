@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import "./styles/uploadcompanies.css";
+import axios from "axios";
+import { baseURL } from "../config";
+import { ToastContainer, toast } from "react-toastify";
 
 const UploadCompanies = () => {
   const [companyInfo, setCompanyInfo] = useState({
-    name: '',
-    address: '',
-    type: '',
-    url: '',
-    mailId: '',
-    phoneNumber: '',
-    description: '',
+    name: "",
+    address: "",
+    type: "",
+    url: "",
+    general_mail_id: "",
+    phoneNumber: "",
+    description: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -32,22 +35,46 @@ const UploadCompanies = () => {
     } else if (!/^https?:\/\/\S+$/.test(companyInfo.url)) {
       tempErrors.url = "URL is invalid.";
     }
-    if (!companyInfo.mailId) {
-      tempErrors.mailId = "Mail ID is required.";
-    } else if (!/\S+@\S+\.\S+/.test(companyInfo.mailId)) {
-      tempErrors.mailId = "Mail ID is invalid.";
+    if (!companyInfo.general_mail_id) {
+      tempErrors.general_mail_id = "Mail ID is required.";
+    } else if (!/\S+@\S+\.\S+/.test(companyInfo.general_mail_id)) {
+      tempErrors.general_mail_id = "Mail ID is invalid.";
     }
-    if (!companyInfo.phoneNumber) tempErrors.phoneNumber = "Phone Number is required.";
-    if (!companyInfo.description) tempErrors.description = "Description is required.";
+    if (!companyInfo.phoneNumber)
+      tempErrors.phoneNumber = "Phone Number is required.";
+    if (!companyInfo.description)
+      tempErrors.description = "Description is required.";
 
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      console.log(companyInfo);
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      try {
+        await axios.post(
+          `${baseURL}/api/company/saveCompany`,
+          companyInfo,
+          config
+        );
+        toast.success("Company Added Successfully");
+      } catch (error) {
+        console.log("Entered Catch block");
+        console.error(error);
+        toast.error("Failed to Add Comapny");
+      }
     }
   };
 
@@ -125,7 +152,7 @@ const UploadCompanies = () => {
                     type="email"
                     className="form-control"
                     placeholder="Mail ID"
-                    name="mailId"
+                    name="general_mail_id"
                     value={companyInfo.mailId}
                     onChange={handleChange}
                   />
@@ -161,19 +188,12 @@ const UploadCompanies = () => {
                     <div className="text-danger">{errors.description}</div>
                   )}
                 </div>
-                <div className="col-md-12 my-2">
-                  <label className="labels">Upload Company Logo</label>
-                  <input
-                    type="file"
-                    className="form-control"
-                    placeholder=""
-                    name="companyLogo"
-                    // onChange={handleFileChange}
-                  />
-                </div>
               </div>
               <div className="mt-5 text-center">
-                <button className="btn btn-primary profile-button" type="submit">
+                <button
+                  className="btn btn-primary profile-button"
+                  type="submit"
+                >
                   Save Company Info
                 </button>
               </div>
@@ -181,7 +201,9 @@ const UploadCompanies = () => {
           </div>
         </div>
       </div>
+      <ToastContainer/>
     </div>
+    
   );
 };
 

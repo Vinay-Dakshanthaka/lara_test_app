@@ -31,8 +31,15 @@ const saveAgent = async(req, res) => {
         }
 
         else{
-            return res.status(404).json({ error: 'Agent email-id already exists' });
-        }   
+            const newAgent = await Agent.update({
+                state
+                },
+                {
+                    where : { agent_id }
+                })
+            return res.status(200).send({message : "Agent details updated succeccfully", agent : newAgent });
+        }
+        
     } catch(error) {
         return res.status(500).send({message : error.message});
     }
