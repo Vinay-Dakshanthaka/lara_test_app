@@ -7,6 +7,8 @@ const xlsx = require('xlsx');
 const nodemailer = require('nodemailer'); 
 const fs = require('fs');
 const path = require('path');
+const { Where } = require('sequelize/lib/utils');
+const { where } = require('sequelize');
 
 const Student = db.Student;
 const storage = multer.memoryStorage();
@@ -147,6 +149,7 @@ const getStudentDetailsById = async (req, res) => {
 
 const getStudentDetails = async (req, res) => {
     try {
+        console.log("1");
         const studentId = req.student_id; // Extracted from the token
         const student = await Student.findByPk(studentId, {
             attributes: { exclude:['password'] }
@@ -154,30 +157,14 @@ const getStudentDetails = async (req, res) => {
         if (!student) {
             return res.status(404).send({ message: 'Student not found' });
         }
+        console.log("Student",student);
         res.status(200).send(student);
     } catch (error) {
         res.status(500).send({ message: error.message });
     }
 };
 
-const getAllStudentDetails = async (req, res)=>{
-    try{
-        const student_id = req.student_id;
 
-        const studentData = await Student.findByPk(student_id);
-        const role = studentData.role;
-
-        if (role !== 'PLACEMENT OFFICER' & role !== 'SUPER ADMIN') {
-            return res.status(403).send({ message: 'Access Forbidden' });
-        }
-
-        const allStudents = await Student.findAll({ attributes: { exclude: ['password'] } });
-
-        return res.json({ allStudents })
-    } catch (error) {
-        return res.status(500).send({ message: error.message })
-    }
-}
 
 
 // const bulkSignup = async (req, res) => {
@@ -351,6 +338,8 @@ const bulkSignup = async (req, res) => {
                         <p>Your account has been successfully created. Here are your login details:</p>
                         <p><strong>Email:</strong> ${student.email}</p>
                         <p><strong>Password:</strong> password@123</p>
+                        <p> Click the below link to Signin to your Account</p>
+                        <a href="http://localhost:5173/signin" target="_blank">http://localhost:5173/signin</a>
                         <p>We recommend that you change your password after logging in for the first time.</p>
                         <p>Until Your password is updated you won't able to complete the further step.</p>
                         <p>Thank You,</p>
@@ -368,13 +357,13 @@ const bulkSignup = async (req, res) => {
 
         if (emailErrors.length > 0) {
             return res.status(200).send({
-                message: 'Bulk signup success with some email errors',
+                message: 'Bulk signup success with some unsent emails ',
                 students: createdStudents,
                 emailErrors
             });
         } else {
             return res.status(200).send({
-                message: 'Bulk signup success',
+                message: 'Bulk signup success and email sent successfully',
                 students: createdStudents
             });
         }
@@ -453,6 +442,8 @@ const signupSingle = async (req, res) => {
                     <p>Your account has been successfully created. Here are your login details:</p>
                     <p><strong>Email:</strong> ${newStudent.email}</p>
                     <p><strong>Password:</strong> password@123</p>
+                    <p> Click the below link to Signin to your Account</p>
+                    <a href="http://localhost:5173/signin" target="_blank">http://localhost:5173/signin</a>
                     <p>We recommend that you change your password after logging in for the first time.</p>
                     <p>Until Your password is updated you won't able to complete the further step.</p>
                     <p>Thank You,</p>
@@ -463,7 +454,7 @@ const signupSingle = async (req, res) => {
 
         try {
             await transporter.sendMail(mailOptions);
-            return res.status(200).send({ message: 'Signup success', student: newStudent });
+            return res.status(200).send({ message: 'Account Created successfylly. Email Sent', student: newStudent });
         } catch (emailError) {
             console.error('Error sending email:', emailError);
             return res.status(200).send({
@@ -479,27 +470,28 @@ const signupSingle = async (req, res) => {
 
 const updatePassword = async (req, res) => {
     try {
-        console.log("Starting password update process");
+        // console.log("Starting password update process");
 
-        const studentId = req.student_id;
-        console.log(req.studentId)
-        console.log("Extracted studentId from request:", studentId);
+        const studentId =  req.student_id
+        console.log('student id ', studentId)
+        // console.log(req.studentId)
+        // console.log("Extracted studentId from request:", studentId);
 
         const student = await Student.findOne({ where: { student_id: studentId } });
         if (!student) {
             return res.status(404).json({ error: 'Student not found' });
         }
-        console.log("Fetched student from database:", student);
+        // console.log("Fetched student from database:", student);
 
         const existingPassword = student.password;
-        console.log("Existing password from database:", existingPassword);
+        // console.log("Existing password from database:", existingPassword);
 
         const { oldPassword, newPassword } = req.body;
-        console.log("Received old password and new password:", oldPassword, ":", newPassword);
+        // console.log("Received old password and new password:", oldPassword, ":", newPassword);
 
         // Compare the provided password with the hashed password in the database
         const passwordMatch = await bcrypt.compare(oldPassword, existingPassword);
-        console.log("Password match result:", passwordMatch);
+        // console.log("Password match result:", passwordMatch);
 
         // Check if the old password matches the existing password
         if (!passwordMatch) {
@@ -508,10 +500,10 @@ const updatePassword = async (req, res) => {
 
         // Update the password with the new password
         const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-        console.log("Hashed new password:", hashedPassword);
+        // console.log("Hashed new password:", hashedPassword);
 
         await Student.update({ password: hashedPassword }, { where: { student_id: studentId } });
-        console.log("Password updated in database");
+        // console.log("Password updated in database");
 
         res.status(200).send({ message: 'Password updated successfully.' });
     } catch (error) {
@@ -671,6 +663,7 @@ const resetPassword = async (req, res) => {
 const validFileFormats = ['jpeg', 'jpg', 'png'];
 
 const uploadProfileImage = async (req, res) => {
+    console.log("222222222222222222");
     try {
         const studentId = req.student_id;
         console.log("id :"+studentId);
@@ -701,6 +694,7 @@ const uploadProfileImage = async (req, res) => {
 };
 
 const getProfileImage = async (req, res) => {
+    console.log("111111111111111");
     try {
         const id = req.student_id;
         const profile = await Student.findOne({ where: { student_id: id } });
@@ -768,13 +762,33 @@ const getProfileImageFor = async (req, res) => {
     }
 };
 
+const updateStudentNameAndPhoneNumber = async (req, res) => {
+    const studentId = req.student_id;
+    const { name, phoneNumber } = req.body;
+
+    const user = Student.findByPk(studentId);
+    if(!user){
+        return res.status(404).send({message: "Student not found"})
+    }
+
+    try {
+        await Student.update(
+            { name:name, phoneNumber:phoneNumber },
+            { where: { student_id: studentId } }
+        );
+        res.status(200).send({ message: 'Student information updated successfully.', name, phoneNumber });
+    } catch (error) {
+        console.error('Error updating student information:', error);
+        res.status(500).send({ message: error.message });
+    }
+}
+
 module.exports = {
     signup,
     verifyByEmail,
     verifyByPhone,
     getStudentDetailsById,
     getStudentDetails,
-    getAllStudentDetails,
     imgUpload,
     upload,
     bulkSignup,
@@ -782,4 +796,8 @@ module.exports = {
     uploadProfileImage,
     getProfileImage,
     getProfileImageFor,
+    updateStudentNameAndPhoneNumber,
+    sendPasswordResetEmail,
+    updatePassword,
+    resetPassword,
 }

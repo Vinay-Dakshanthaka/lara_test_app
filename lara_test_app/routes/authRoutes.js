@@ -22,16 +22,22 @@ authRoute.get('/student-details',verifyToken,authController.getStudentDetailsByI
 
 authRoute.get('/getStudentDetails',verifyToken,authController.getStudentDetails);
 
-authRoute.get('/all-student-details',verifyToken,authController.getAllStudentDetails);
-
 authRoute.post('/bulk-signup', upload.single('file'),verifyToken,authController.bulkSignup);
 
 authRoute.post('/single-signup',verifyToken, authController.signupSingle);
 
-authRoute.post('/uploadProfileImage', imgUpload.single('file'), verifyToken, authController.uploadProfileImage);
+authRoute.post('/uploadProfileImage', imgUpload.single('image'), verifyToken, authController.uploadProfileImage);
 
 authRoute.get('/getProfileImage',verifyToken, authController.getProfileImage);
 
 authRoute.get('/getProfileImageFor', authController.getProfileImageFor);
+
+authRoute.post('/password-reset-email', authController.sendPasswordResetEmail);
+
+authRoute.post('/reset-password', authController.resetPassword);
+
+authRoute.post('/update-password',verifyToken, authController.updatePassword);
+
+authRoute.put('/updateStudentNameAndPhoneNumber', verifyToken, authController.updateStudentNameAndPhoneNumber);
 
 module.exports = authRoute;

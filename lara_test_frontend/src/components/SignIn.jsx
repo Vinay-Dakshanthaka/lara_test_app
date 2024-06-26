@@ -4,8 +4,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BsEye, BsEyeSlash } from 'react-icons/bs'; // Using react-icons for bootstrap icons
-import {  useNavigate } from 'react-router-dom';
-import { baseURL } from '../config';
+import { useNavigate } from 'react-router-dom';
+import { baseURL } from './config';
 import './style.css';
 
 const Signin = () => {
@@ -20,8 +20,6 @@ const Signin = () => {
     const navigate = useNavigate();
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -43,7 +41,6 @@ const Signin = () => {
         let error;
         switch (name) {
             case 'email':
-                // const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 error = !emailPattern.test(value) ? 'Please enter a valid email' : '';
                 break;
             case 'password':
@@ -72,46 +69,47 @@ const Signin = () => {
             setErrors(validationErrors);
             return;
         }
-    
+
         setIsLoading(true);
-    
+
         try {
             const response = await axios.post(`${baseURL}/api/auth/student/verifyByEmail`, formData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
-    
+
             if (response.status === 200) {
                 const { token, role } = response.data;
                 localStorage.setItem('token', token);
                 localStorage.setItem('role', role);
-                localStorage.removeItem('passwordUpdated'); // Remove the flag if it exists
+                localStorage.removeItem('passwordUpdateRequired'); // Remove the flag if it exists
                 toast.success('Signin successful!');
-                setTimeout(() => {
-                    navigate('/dashboard');
-                }, 2000);
-            } else if (response.status === 400) {
-                toast.warning('Password update required.');
-                localStorage.setItem('token', response.data.token); // Save token for future use
-                setTimeout(() => {
-                    navigate('/password-update-warning');
-                }, 2000);
+                if (role === 'SUPER ADMIN') {
+                    setTimeout(() => {
+                        navigate('/update-role');
+                    }, 2000);
+                } else if (role === 'STUDENT') {
+                    setTimeout(() => {
+                        navigate('/student-dashboard');
+                    }, 2000);
+                }
             } else {
                 toast.error('Signin failed. Please try again.');
             }
         } catch (error) {
             if (error.response) {
-                if (error.response.status === 404) {
-                    toast.error('User Not Exist!!');
-                } else if (error.response.status === 401) {
-                    toast.error('Invalid Password!!');
-                } else if (error.response.status === 400) {
-                    toast.warning('Password update required.');
+                if (error.response.status === 400) {
+                    toast.warning('Login Success: Password update required.');
                     localStorage.setItem('token', error.response.data.token); // Save token for future use
+                    localStorage.setItem('passwordUpdateRequired', 'true'); // Set the flag
                     setTimeout(() => {
                         navigate('/password-update-warning');
                     }, 2000);
+                } else if (error.response.status === 404) {
+                    toast.error('User Not Exist!!');
+                } else if (error.response.status === 401) {
+                    toast.error('Invalid Password!!');
                 } else {
                     toast.error('Signin failed. Please try again.');
                 }
@@ -124,7 +122,7 @@ const Signin = () => {
             setIsLoading(false);
         }
     };
-    
+
     return (
         <div className="container d-flex justify-content-center align-items-center vh-100" style={{ backgroundColor: '#f0f2f5' }}>
             <div className="card p-4 shadow-lg" style={{ width: '400px', maxWidth: '100%', borderRadius: '20px', background: '#ecf0f3', boxShadow: '7px 7px 15px #cbced1, -7px -7px 15px #ffffff' }}>
@@ -173,9 +171,9 @@ const Signin = () => {
                 </form>
                 <div className="mt-3 text-center">
                     <span style={{ color: '#555' }}>Don&apos;t have an account? </span>
-                    <button onClick={()=>{navigate('/signup')}}  className='link'>Sign Up</button>
+                    <button onClick={() => { navigate('/signup') }} className='link'>Sign Up</button>
                 </div>
-                    <button onClick={() => { navigate('/reset-password-email') }} className='link'>Forgot Password?</button>
+                <button onClick={() => { navigate('/reset-password-email') }} className='link'>Forgot Password?</button>
             </div>
             <ToastContainer />
         </div>

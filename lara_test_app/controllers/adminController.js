@@ -26,8 +26,29 @@ const updateRole = async (req,res)=>{
     }
 }
 
+const getAllStudentDetails = async (req, res)=>{
+    try{
+        console.log("1");
+        const student_id = req.student_id;
+
+        const studentData = await Student.findByPk(student_id);
+        const role = studentData.role;
+
+        if (role !== 'PLACEMENT OFFICER' & role !== 'SUPER ADMIN') {
+            return res.status(403).send({ message: 'Access Forbidden' });
+        }
+
+        const allStudents = await Student.findAll({ attributes: { exclude: ['password'] } });
+
+        return res.json({ allStudents })
+    } catch (error) {
+        return res.status(500).send({ message: error.message })
+    }
+}
+
 
 
 module.exports = {
     updateRole,
+    getAllStudentDetails,
 }

@@ -24,11 +24,11 @@ const saveSubject = async (req, res)=>{
             return res.status(403).json({ error: 'Access forbidden' });
         }
 
-        const {name} = req.body
+        const {subject_name} = req.body
 
-        let subject = await Subject.findOne({ where: { name } });
+        let subject = await Subject.findOne({ where: { name :subject_name} });
         if (!subject) {
-            subject = await Subject.create({ name });
+            subject = await Subject.create({ name:subject_name });
         }
 
         // const subject = await Subject.create({
@@ -58,7 +58,7 @@ const updateSubject = async (req, res)=>{
              return res.status(403).json({ error: 'Access forbidden' });
          }
 
-        const {subject_id, name} = req.body
+        const {subject_id, subject_name} = req.body
 
         let subject = await Subject.findByPk(subject_id);
 
@@ -67,7 +67,7 @@ const updateSubject = async (req, res)=>{
         }
 
         // update the subject 
-        subject.name = name;
+        subject.name = subject_name;
 
         await subject.save(subject)
 
@@ -124,8 +124,8 @@ const saveTopic = async (req, res)=>{
              return res.status(403).json({ error: 'Access forbidden' });
          }
 
-        const {name,subject_id} = req.body
-         console.log(" topic name ", name, " : subject id ", subject_id)
+        const {topic_name,subject_id} = req.body
+         console.log(" topic name ", topic_name, " : subject id ", subject_id)
          // Check if the subject_id exists
          const subject = await Subject.findByPk(subject_id);
          if (!subject) {
@@ -133,9 +133,9 @@ const saveTopic = async (req, res)=>{
          }
 
          // Ensure the topic exists
-         let topic = await Topic.findOne({ where: { name, subject_id: subject.subject_id } });
+         let topic = await Topic.findOne({ where: { name:topic_name, subject_id: subject.subject_id } });
          if (!topic) {
-             topic = await Topic.create({ name, subject_id: subject.subject_id });
+             topic = await Topic.create({ name:topic_name, subject_id: subject.subject_id });
          }
 
         res.status(200).send({message : 'successfully saved' , topic});
@@ -148,7 +148,7 @@ const saveTopic = async (req, res)=>{
 
 const updateTopic = async (req, res) => {
     try {
-        const { topic_id, name } = req.body;
+        const { topic_id, topic_name } = req.body;
 
          // Fetch the user's role from the database using the user's ID
          const studentId = req.student_id; 
@@ -160,7 +160,7 @@ const updateTopic = async (req, res) => {
              return res.status(403).json({ error: 'Access forbidden' });
          }
 
-        if (!topic_id || !name) {
+        if (!topic_id || !topic_name) {
             return res.status(400).send({ message: "Both topic_id and topic_name are required." });
         }
 
@@ -170,7 +170,7 @@ const updateTopic = async (req, res) => {
             return res.status(404).send({ message: `No topic found with id ${topic_id}` });
         }
 
-        topic.name = name;
+        topic.name = topic_name;
         await topic.save();
 
         res.status(200).send({
@@ -487,6 +487,56 @@ const processExcel = async (filePath, topic_id) => {
         });
     }
 };
+const processExcelOFTopicId = async (filePath) => {
+    const workbook = xlsx.readFile(filePath);
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = xlsx.utils.sheet_to_json(sheet);
+
+    for (const row of rows) {
+        const [
+            topic_id,
+            questionText,
+            difficulty,
+            marks,
+            option1,
+            option2,
+            option3,
+            option4,
+            correctOptionIndex
+        ] = [
+            row["Topic id"],
+            row["Question Text"],
+            row.Difficulty,
+            row.Marks,
+            row["Option 1"],
+            row["Option 2"],
+            row["Option 3"],
+            row["Option 4"],
+            row["Correct Option"]
+        ];
+
+        const checkTopicId = await Topic.findByPk(topic_id)
+        if(!checkTopicId){
+            console.log("topic id doesnot exist");
+            continue;
+        }
+        // Create the cumulative question
+        await CumulativeQuestion.create({
+            question_description: questionText,
+            topic_id: topic_id,
+            difficulty_level: difficulty,
+            no_of_marks_allocated: marks,
+            option_1: option1,
+            option_2: option2,
+            option_3: option3,
+            option_4: option4,
+            correct_option: correctOptionIndex
+        });
+    }
+};
+
+
+
 
 
 const saveTestResults = async (req, res) => {
@@ -594,6 +644,60 @@ const getTestResultsByStudentId = async (req, res) => {
     }
 }
 
+const getAllTopics = async(req, res) => {
+    try {
+        const id = req.student_id;
+        const user = await Student.findOne({ where: { student_id: id } });
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const userRole = user.role;
+        console.log("UserRole", userRole);
+
+        if (userRole !== 'SUPER ADMIN' && userRole !== 'PLACEMENT OFFICER') {
+            return res.status(403).json({ error: 'Access forbidden' });
+        }
+
+        const topics = await Topic.findAll();
+        if (!topics || topics.length === 0) {
+            return res.status(404).send({ message: "Topics are not available" });
+        }
+
+        return res.status(200).send({ message: "Available Topics are", topics });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ message: error.message });
+    }
+};
+
+const getAllSubjectsWithTopics = async(req, res) => {
+    const id = req.student_id;
+    const user = await Student.findOne({ where: { student_id: id } });
+    if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+
+    const userRole = user.role;
+    console.log("UserRole", userRole);
+
+    if (userRole !== 'SUPER ADMIN' && userRole !== 'PLACEMENT OFFICER') {
+        return res.status(403).json({ error: 'Access forbidden' });
+    }
+    try {
+        const subjects = await Subject.findAll({
+            include: {
+                model: Topic,
+                as: 'topics'
+            }
+        });
+        res.json(subjects);
+    } catch (error) {
+        console.error('Error fetching subjects with topics:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 
 module.exports = {
     saveSubject,  
@@ -613,4 +717,7 @@ module.exports = {
     saveTestResults,    
     getTestResultsByTestId,
     getTestResultsByStudentId,
+    getAllTopics,
+    getAllSubjectsWithTopics,
+    processExcelOFTopicId
 }

@@ -17,7 +17,7 @@ const saveOrUpdateProfile = async(req, res) => {
             specialization: req.body.specialization,
             highest_education_percent: req.body.highest_education_percent,
             tenth_percentage: req.body.tenth_percentage,
-            twelfth_percentage: req.body.twelth_percentage,
+            twelth_percentage: req.body.twelth_percentage,
             mobile_number: req.body.mobile_number,
             father_name: req.body.father_name,
             father_mobile_number: req.body.father_mobile_number,
@@ -81,6 +81,7 @@ const saveOrUpdateProfile = async(req, res) => {
 // Get profile details controller
 const getProfileDetails = async (req, res) => {
     try {
+        
         // console.log("inside get profile tyr")
         const student_id = req.student_id;
         const profile = await Profile.findOne({ where: { student_id } });
