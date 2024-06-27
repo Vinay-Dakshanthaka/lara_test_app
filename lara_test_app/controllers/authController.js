@@ -684,7 +684,7 @@ const resetPassword = async (req, res) => {
 const validFileFormats = ['jpeg', 'jpg', 'png'];
 
 const uploadProfileImage = async (req, res) => {
-    console.log("222222222222222222");
+    // console.log("222222222222222222");
     try {
         const studentId = req.student_id;
         console.log("id :"+studentId);

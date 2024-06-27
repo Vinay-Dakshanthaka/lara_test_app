@@ -126,6 +126,7 @@ const getAllCompanyDetails = async (req, res) => {
     }
 }
 
+
 const uploadCompanyLogo = async(req, res) => {
     try{
 
@@ -153,7 +154,7 @@ const uploadCompanyLogo = async(req, res) => {
 const getCompanyLogo = async(req, res) => {
     try{
 
-        const {company_id} = req.body;
+        const {company_id} = req.query;
 
         const company = await Company.findByPk(company_id);
         if (!company) {

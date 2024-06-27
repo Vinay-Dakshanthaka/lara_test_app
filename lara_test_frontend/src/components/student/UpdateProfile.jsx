@@ -156,6 +156,8 @@ const UpdateProfile = () => {
             setShowConfirmModal(false);
             setShowWarningToast(true);
             return;
+
+            
         }
 
         const formData = new FormData();
