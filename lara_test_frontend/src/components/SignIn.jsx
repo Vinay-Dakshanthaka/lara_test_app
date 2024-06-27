@@ -93,6 +93,10 @@ const Signin = () => {
                     setTimeout(() => {
                         navigate('/student-dashboard');
                     }, 2000);
+                } else if (role === 'PLACEMENT OFFICER') {
+                    setTimeout(() => {
+                        navigate('/bulk-signup');
+                    }, 2000);
                 }
             } else {
                 toast.error('Signin failed. Please try again.');

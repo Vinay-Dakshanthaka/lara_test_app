@@ -62,7 +62,7 @@ const CompaniesList = () => {
 
   const handleAddAgent = (companyId) => {
     console.log('Adding agent for company with ID:', companyId);
-    navigate(`/add-agent/${companyId}`);
+    navigate(`/add-company-agent`);
   };
 
   const handleUpdateCompany = (companyId) => {
@@ -151,9 +151,10 @@ const CompaniesList = () => {
                 </ul>
               </td>
               <td>
+                
                 <Dropdown>
-                  <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                    <i className="fas fa-ellipsis-h"></i>
+                 <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+                 Manage &nbsp;<i className="fas fa-ellipsis-h"></i>
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     <Dropdown.Item onClick={() => handleViewAgents(company.company_id)}>View Agents</Dropdown.Item>

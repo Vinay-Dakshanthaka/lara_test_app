@@ -40,4 +40,6 @@ authRoute.post('/update-password',verifyToken, authController.updatePassword);
 
 authRoute.put('/updateStudentNameAndPhoneNumber', verifyToken, authController.updateStudentNameAndPhoneNumber);
 
+authRoute.put('/deleteAccount', verifyToken, authController.deleteAccount);
+
 module.exports = authRoute;

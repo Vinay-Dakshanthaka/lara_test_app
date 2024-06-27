@@ -168,6 +168,9 @@ const UpdatePassword = () => {
                             'Update Password'
                         )}
                     </Button>
+                    <div className="container text-center my-2">
+                        <button onClick={() => { navigate('/reset-password-email') }} className='link'>Forgot Password?</button>
+                    </div>
                 </Form>
             </div>
             <ToastContainer />
