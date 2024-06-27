@@ -55,7 +55,7 @@ const Sidebar = () => {
     };
 
     return (
-        <div>
+        <div className='sidebar'>
             {/* Header */}
             <header className="header">
                 <div className="header_toggle" onClick={toggleSidebar}>

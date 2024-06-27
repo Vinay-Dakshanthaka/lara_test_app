@@ -22,6 +22,7 @@ import AllStudentDetails from './components/admin/AllStudentDetails';
 import DeleteAccount from './components/DeleteAccount';
 import UploadCompanies from './components/companies/UploadCompanies';
 import CompaniesList from './components/companies/CompaniesList';
+import AddAgent from './components/companies/AddAgent';
 
 const App = () => {
     const location = useLocation();
@@ -55,6 +56,7 @@ const App = () => {
                     <Route path="/delete-account" element={<DeleteAccount />} />
                     <Route path="/add-companies" element={<UploadCompanies />} />
                     <Route path="/companies-list" element={<CompaniesList />} />
+                    <Route path="/add-company-agent" element={<AddAgent />} />
                 </Route>
             </Routes>
         </>

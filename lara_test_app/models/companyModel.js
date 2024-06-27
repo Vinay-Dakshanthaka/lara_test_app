@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         address: DataTypes.STRING,
-        type: {
+        company_type: {
             type : DataTypes.STRING,
             allowNull: false
         },
@@ -25,6 +25,11 @@ module.exports = (sequelize, DataTypes) => {
         phoneNumber: {
             type : DataTypes.STRING,
             allowNull: false
+        },
+        isActive:{
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: true
         },
         description: DataTypes.STRING,
         company_logo: DataTypes.STRING,
