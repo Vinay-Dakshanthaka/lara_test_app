@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import { BsBoxArrowLeft, BsHouse, BsList, BsPen, BsPersonCircle, BsSpeedometer, BsX } from 'react-icons/bs';
+import { BsBoxArrowLeft, BsGear, BsGearFill, BsHouse, BsList, BsPen, BsPersonCircle, BsPersonFillGear, BsPersonGear, BsSpeedometer, BsX } from 'react-icons/bs';
 import './style.css'; // Import custom CSS for sidebar styles
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -55,7 +55,7 @@ const Sidebar = () => {
     };
 
     return (
-        <div>
+        <div className='sidebar'>
             {/* Header */}
             <header className="header">
                 <div className="header_toggle" onClick={toggleSidebar}>
@@ -63,21 +63,21 @@ const Sidebar = () => {
                 </div>
                 <div className="header_img">
                     {/* <img src="..." alt="Profile" /> */}
-                    <ProfileImage/>
+                    <ProfileImage />
                 </div>
             </header>
 
             {/* Sidebar */}
             <div ref={sidebarRef} className={`l-navbar ${sidebarOpen ? 'show' : ''}`}>
                 <nav className="nav">
-                    <div>
+                    <div className='ms-2'>
                         <Link to="#" className="nav_logo mt-2">
                             <span className="nav_logo-name mt-3">
                                 <BsPersonCircle className='fs-4' />
                             </span>
                         </Link>
                         <div className="nav_list">
-                            {isLoggedIn && (role === 'SUPER ADMIN' || role === 'PLACEMENT OFFICER') && (
+                            {isLoggedIn && (role === 'SUPER ADMIN') && (
                                 <Accordion className="custom-bg">
                                     <Accordion.Item eventKey="0" className='custom-bg accordion-item'>
                                         <Accordion.Header className="custom-bg ">
@@ -85,8 +85,47 @@ const Sidebar = () => {
                                             <span className="nav_name ms-2">Dashboard</span>
                                         </Accordion.Header>
                                         <Accordion.Body className="custom-bg">
+                                            <Link to="/add-companies" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name dropdown-link">Add Companies</span>
+                                            </Link>
+                                            <Link to="/companies-list" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name dropdown-link">Companies List</span>
+                                            </Link>
+                                            <Link to="/all-students-details" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name custom-bg dropdown-link ">Students Info</span>
+                                            </Link>
                                             <Link to="/update-role" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name custom-bg dropdown-link ">Update Role</span>
+                                            </Link>
+                                            <Link to="/bulk-signup" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name dropdown-link">Bulk Signup </span>
+                                            </Link>
+                                            {/* <Link to="/add-subject" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name dropdown-link">Add Subject</span>
+                                            </Link> */}
+                                            <Link to="/cumulative-test" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name dropdown-link">Cumulative Test</span>
+                                            </Link>
+                                            {/* Add more links here as needed */}
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                </Accordion>
+                            )}
+                        </div>
+                        <div className="nav_list">
+                            {isLoggedIn && (role === 'PLACEMENT OFFICER') && (
+                                <Accordion className="custom-bg">
+                                    <Accordion.Item eventKey="0" className='custom-bg accordion-item'>
+                                        <Accordion.Header className="custom-bg ">
+                                            <BsSpeedometer className="nav_icon" />
+                                            <span className="nav_name ms-2">Dashboard</span>
+                                        </Accordion.Header>
+                                        <Accordion.Body className="custom-bg">
+                                            {/* <Link to="/update-role" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name custom-bg dropdown-link ">Update Role</span>
+                                            </Link> */}
+                                            <Link to="/add-companies" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name dropdown-link">Add Companies</span>
                                             </Link>
                                             <Link to="/bulk-signup" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Bulk Signup</span>
@@ -104,14 +143,34 @@ const Sidebar = () => {
                             )}
                         </div>
                         <Link to="/student-dashboard" className="nav_link">
-                                <BsHouse className='nav_icon' />
-                                <span className="nav_name">Home</span>
+                            <BsHouse className='nav_icon' />
+                            <span className="nav_name">Home</span>
                         </Link>
                         <Link to="/student-cumulative-test" className="nav_link">
-                                <BsPen className='nav_icon' />
-                                <span className="nav_name">Write Test</span>
+                            <BsPen className='nav_icon' />
+                            <span className="nav_name">Write Test</span>
                         </Link>
-                        
+                        <div className="nav_list">
+                            <Accordion className="custom-bg">
+                                <Accordion.Item eventKey="0" className='custom-bg accordion-item'>
+                                    <Accordion.Header className="custom-bg ">
+                                        <BsGear className="nav_icon" />
+                                        <span className="nav_name ms-2">Settings </span>
+                                    </Accordion.Header>
+                                    <Accordion.Body className="custom-bg">
+                                        <Link to="/update-password" className="nav_link custom-bg margin-bottom-0">
+                                            <span className="nav_name dropdown-link">Update Password</span>
+                                        </Link>
+                                        <Link to="/update-profile" className="nav_link custom-bg margin-bottom-0">
+                                            <span className="nav_name dropdown-link">Update Profile</span>
+                                        </Link>
+                                        <Link to="/delete-account" className="nav_link custom-bg margin-bottom-0">
+                                            <span className="nav_name dropdown-link">Delete Account</span>
+                                        </Link>
+                                    </Accordion.Body>
+                                </Accordion.Item>
+                            </Accordion>
+                        </div>
                     </div>
                     <div className="nav_link" onClick={handleLogout}>
                         <BsBoxArrowLeft className='nav_icon' style={{ cursor: 'pointer' }} />

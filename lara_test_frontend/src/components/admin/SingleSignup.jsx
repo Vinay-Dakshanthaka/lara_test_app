@@ -9,7 +9,7 @@ import { baseURL } from '../config';
 const SingleSignup = () => {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false); // New state for submit status
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -39,7 +39,7 @@ const SingleSignup = () => {
 
     const body = { email };
 
-    setIsSubmitting(true); // Disable the button and show spinner
+    setIsSubmitting(true);
 
     try {
       const response = await axios.post(`${baseURL}/api/auth/student/single-signup`, body, config);
@@ -53,7 +53,7 @@ const SingleSignup = () => {
         toast.error('Something went wrong');
       }
     } finally {
-      setIsSubmitting(false); // Enable the button and hide spinner
+      setIsSubmitting(false);
     }
   };
 

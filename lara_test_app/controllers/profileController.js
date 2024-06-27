@@ -98,22 +98,29 @@ const getProfileDetails = async (req, res) => {
 // Get all profile details controller
 const getAllProfileDetails = async (req, res) => {
     try {
-        // console.log("inside get profile tyr")
-        const student_id = req.student_id;
-        const user = await Student.findByPk(student_id); // Fetch user from database
-        const userRole = user.role; // Get the user's role
-        console.log("role :"+userRole)
-        // Check if the user role is either "PLACEMENT OFFICER" or "SUPER ADMIN"
-        if (userRole !== 'SUPER ADMIN' && userRole !== 'PLACEMENT OFFICER') {
-            return res.status(403).json({ error: 'Access forbidden' });
-        }
-        const profile = await Profile.findAll();
-        res.status(200).send(profile);
-        
+      const student_id = req.student_id;
+      const student = await Student.findByPk(student_id);
+  
+      if (!student) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      const userRole = student.role;
+      console.log("role :" + userRole);
+  
+      if (userRole !== 'SUPER ADMIN' && userRole !== 'PLACEMENT OFFICER') {
+        return res.status(403).json({ error: 'Access forbidden' });
+      }
+  
+      const profiles = await Profile.findAll();
+  
+      res.status(200).json({ students: student, profiles: profiles || [] });
+  
     } catch (error) {
-        res.status(500).send({ message: error.message });
+      res.status(500).send({ message: error.message });
     }
-};
+  };
+  
 
 const getProfileDetailsById = async (req, res) => {
     try {

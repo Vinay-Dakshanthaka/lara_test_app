@@ -80,7 +80,7 @@ const DetailedResult = () => {
                 <Col><h6>Obtained Marks: {obtained_marks}</h6></Col>
             </Row>
             <div className="row">
-                <div className="col-lg" style={{ maxHeight: '75vh', overflowY: 'auto' }}>
+                <div className="col-lg" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
                     {cumulativequestions.map((question, index) => {
                         const selectedOption = question_ans_data[question.cumulative_question_id];
                         const isCorrect = selectedOption === question.correct_option;
@@ -135,7 +135,7 @@ const DetailedResult = () => {
                             return (
                                 <Button
                                     key={question.cumulative_question_id}
-                                    variant={selectedOption ? (isCorrect ? 'success' : 'danger') : 'secondary'}
+                                    variant={selectedOption ? (isCorrect ? 'success' : 'danger') : 'primary'}
                                     className="m-1"
                                     onClick={() => handleQuestionClick(index)}
                                 >

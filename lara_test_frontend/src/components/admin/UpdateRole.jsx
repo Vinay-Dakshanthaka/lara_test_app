@@ -11,76 +11,74 @@ const UpdateRole = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedRoles, setSelectedRoles] = useState({});
 
   useEffect(() => {
-    const fetchStudentDetails = async () => {
-      const token = localStorage.getItem('token'); // Retrieve token from localStorage
-      if (!token) {
-        // Handle case where token is not found in localStorage
-        console.error('No token found');
-        return;
-      }
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`, // Include token in request headers
-        },
-      };
-
-      try {
-        const response = await axios.get(`${baseURL}/api/admin/activites/all-student-details`, config);
-        setStudents(response.data.allStudents); // Access the allStudents array
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching student details:', error);
-      }
-    };
-
     fetchStudentDetails();
   }, []);
 
-  // Function to handle role update
-  const handleUpdateRole = async (id, newRole) => {
-    const token = localStorage.getItem('token'); // Retrieve token from localStorage
+  const fetchStudentDetails = async () => {
+    const token = localStorage.getItem('token');
     if (!token) {
-      // Handle case where token is not found in localStorage
       console.error('No token found');
       return;
     }
 
     const config = {
       headers: {
-        Authorization: `Bearer ${token}`, // Include token in request headers
+        Authorization: `Bearer ${token}`,
       },
     };
 
     try {
-      const response = await axios.post(
+      const response = await axios.get(`${baseURL}/api/admin/activites/all-student-details`, config);
+      setStudents(response.data.allStudents);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching student details:', error);
+    }
+  };
+
+  const handleUpdateRole = async (id) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('No token found');
+      return;
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const newRole = selectedRoles[id];
+      await axios.post(
         `${baseURL}/api/admin/activites/update-role`,
         { id, role: newRole },
         config
       );
       toast.success('Role updated successfully');
-      // Update the local state after successful update (if needed)
-      // Example: Refresh student data after update
-      // fetchStudentDetails();
+      fetchStudentDetails(); // Refetch student details to update the state
     } catch (error) {
       console.error('Error updating role:', error);
       toast.error('Something went wrong!!!');
     }
   };
 
-  // Function to handle pagination
+  const handleRoleChange = (id, newRole) => {
+    setSelectedRoles((prevState) => ({ ...prevState, [id]: newRole }));
+  };
+
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Function to filter students based on search term
   const filteredStudents = students.filter((student) =>
     student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.phoneNumber.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Calculate indexes for pagination
   const indexOfLastStudent = currentPage * perPage;
   const indexOfFirstStudent = indexOfLastStudent - perPage;
   const currentStudents = filteredStudents.slice(indexOfFirstStudent, indexOfLastStudent);
@@ -91,7 +89,7 @@ const UpdateRole = () => {
 
   return (
     <div className="container mt-5">
-      <h1>Student Details</h1>
+      <h1>Update Role</h1>
       <div className="mb-3">
         <input
           type="text"
@@ -119,9 +117,8 @@ const UpdateRole = () => {
               <td>{student.phoneNumber}</td>
               <td>
                 <select
-                  defaultValue={student.role}
-                  data-id={student.student_id}
-                  onChange={(e) => handleUpdateRole(student.student_id, e.target.value)}
+                  value={selectedRoles[student.student_id] || student.role}
+                  onChange={(e) => handleRoleChange(student.student_id, e.target.value)}
                 >
                   <option value="PLACEMENT OFFICER">PLACEMENT OFFICER</option>
                   <option value="STUDENT">STUDENT</option>
@@ -129,8 +126,9 @@ const UpdateRole = () => {
               </td>
               <td>
                 <button
-                  className="btn" style={{ borderRadius: '10px', background: '#4CAF50', borderColor: '#4CAF50', color:'#fff' }}
-                  onClick={() => handleUpdateRole(student.student_id, document.querySelector(`select[data-id="${student.student_id}"]`).value)}
+                  className="btn"
+                  style={{ borderRadius: '10px', background: '#4CAF50', borderColor: '#4CAF50', color: '#fff' }}
+                  onClick={() => handleUpdateRole(student.student_id)}
                 >
                   Update
                 </button>

@@ -23,9 +23,10 @@ module.exports = (sequelize, DataTypes) => {
             unique: true,
             allowNull: false
         },
-        state:{
-            type: DataTypes.ENUM('ACTIVE', 'INACTIVE'),
-            allowNull: false
+        isActive:{
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue : true
         }
     },{
         timestamps: false
@@ -35,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
         Agent.belongsTo(models.Company, {
             foreignKey: 'company_id',
             as: 'companies'
-        });
+        }); 
     }
 
     return Agent;
