@@ -1,9 +1,8 @@
 module.exports = (sequelize, DataTypes) => {
     const Company = sequelize.define("Company", {
         company_id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
+            type: DataTypes.STRING,
+            primaryKey: true
         },
         name: {
             type: DataTypes.STRING,
@@ -26,11 +25,6 @@ module.exports = (sequelize, DataTypes) => {
             type : DataTypes.STRING,
             allowNull: false
         },
-        // isActive:{
-        //     type: DataTypes.BOOLEAN,
-        //     allowNull: false,
-        //     defaultValue: true
-        // },
         description: DataTypes.STRING,
         company_logo: DataTypes.STRING,
         
@@ -46,7 +40,12 @@ module.exports = (sequelize, DataTypes) => {
     Company.associate = (models) => {
         Company.hasMany(models.Agent, {
             foreignKey: 'company_id',
-            as: 'agents'
+            as: 'agents',
+            onDelete: 'CASCADE'
+        });
+        Company.hasMany(models.Job, {
+            foreignKey: 'company_id',
+            as: 'jobs'
         });
     };
 

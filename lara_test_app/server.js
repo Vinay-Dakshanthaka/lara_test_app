@@ -11,6 +11,7 @@ const adminRoute = require('./routes/adminRoutes');
 const cumulativeTestRouter = require('./routes/cumulativeTestRoutes');
 const companyRoute = require('./routes/companyRoutes');
 const agentRoute = require('./routes/agentRoutes');
+const jobRoute = require('./routes/jobRoutes');
 
 const bodyParser = require('body-parser');
 
@@ -28,6 +29,7 @@ app.use('/api/admin/activites',adminRoute);
 app.use('/api/test/cumulativeTest',cumulativeTestRouter);
 app.use('/api/company',companyRoute);
 app.use('/api/agent', agentRoute);
+app.use('/api/job', jobRoute);
 
 // Port
 const PORT = process.env.PORT || 8080;

@@ -2,14 +2,24 @@ const { DataTypes } = require("sequelize");
 const { sequelize } = require(".");
 
 module.exports = (sequelize, DataTypes) => {
-    const StudentDrive = sequelize.define("StudentDrive", {
+    const Student_Drive = sequelize.define("Student_Drive", {
         student_id : {
-            type : DataTypes.STRING,
-            allowNull : false
+            type: DataTypes.STRING,
+            allowNull: false,
+            primaryKey: true,
+            references: {
+                model: 'Student',
+                key: 'student_id'
+            }
         },
         drive_id : {
-            type : DataTypes.INTEGER,
-            allowNull : false
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            primaryKey: true,
+            references: {
+                model: 'Drive',
+                key: 'drive_id'
+            }
         },
         round_1 : {
             type : DataTypes.BOOLEAN,
@@ -34,6 +44,9 @@ module.exports = (sequelize, DataTypes) => {
         result: {
             type: DataTypes.ENUM('ACCEPTED', 'REJECTED')
         }
+    }, {
+        tableName: 'Student_Drive',
+        timestamps: false 
     });
-    return StudentDrive;
+    return Student_Drive;
 }

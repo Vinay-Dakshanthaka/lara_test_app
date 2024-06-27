@@ -21,7 +21,19 @@ module.exports = (sequelize, DataTypes) => {
         },
         job_location : {
             type : DataTypes.STRING
+        },
+        company_id : {
+            type : DataTypes.STRING,
+            allowNull : false
         }
     });
+
+    Job.associate = (models) => {
+        Job.belongsTo(models.Company, {
+            foreignKey: 'company_id',
+            as: 'companies'
+        });
+    }
+
     return Job;
 }
