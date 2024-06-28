@@ -125,18 +125,18 @@ const saveTopic = async (req, res)=>{
          }
 
         const {topic_name,subject_id} = req.body
-         console.log(" topic name ", topic_name, " : subject id ", subject_id)
-         // Check if the subject_id exists
-         const subject = await Subject.findByPk(subject_id);
-         if (!subject) {
-             return res.status(400).send({ message: "Subject not found." });
-         }
+        console.log(" topic name ", topic_name, " : subject id ", subject_id)
+        // Check if the subject_id exists
+        const subject = await Subject.findByPk(subject_id);
+        if (!subject) {
+            return res.status(400).send({ message: "Subject not found." });
+        }
 
-         // Ensure the topic exists
-         let topic = await Topic.findOne({ where: { name:topic_name, subject_id: subject.subject_id } });
-         if (!topic) {
-             topic = await Topic.create({ name:topic_name, subject_id: subject.subject_id });
-         }
+        // Ensure the topic exists
+        let topic = await Topic.findOne({ where: { name:topic_name, subject_id: subject.subject_id } });
+        if (!topic) {
+            topic = await Topic.create({ name:topic_name, subject_id: subject.subject_id });
+        }
 
         res.status(200).send({message : 'successfully saved' , topic});
 
