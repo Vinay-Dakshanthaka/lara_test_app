@@ -1,0 +1,12 @@
+const express = require('express');
+const driveRoute = express.Router();
+const verifyToken = require('../middleware/authMiddleware');
+const driveController = require('../controllers/driveController');
+
+driveRoute.post('/saveDrive', verifyToken, driveController.saveDrive);
+driveRoute.post('/updateDrive', verifyToken, driveController.updateDrive);
+driveRoute.get('/getAllDrives', verifyToken, driveController.getAllDrives);
+driveRoute.get('/getDrivesByCompanyId', verifyToken, driveController.getDrivesByCompanyId);
+driveRoute.get('/getDrivesByJobId', verifyToken, driveController.getDrivesByJobId)
+
+module.exports = driveRoute;
