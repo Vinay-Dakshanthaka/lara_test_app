@@ -43,3 +43,15 @@ db.sequelize.sync({ force: false })
     .catch(error => {
         console.error('Error synchronizing database:', error);
     });
+
+
+
+    // job.name = name;
+    //     job.description = description;
+    //     job.no_of_openings = no_of_openings;
+    //     job.job_location = job_location;
+    //     job.position = position;
+
+    //     await job.save();
+
+    //     res.status(200).send({message : 'Job successfully updated' , job});
