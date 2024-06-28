@@ -9,7 +9,7 @@ const saveJob = async(req, res) => {
         const student = await db.Student.findByPk(student_id);
         const role = student.role;
         
-        if(role !== 'PLACEMENT OFFICER' & role !== 'SUPER ADMIN')
+        if(role !== 'PLACEMENT OFFICER' && role !== 'SUPER ADMIN')
             res.status(403).send({message : 'Access Forbidden'});
 
         const {name, description, no_of_openings, job_location, company_id, position} = req.body;
@@ -29,6 +29,9 @@ const saveJob = async(req, res) => {
     }
     
 }
+
+
+
 
 const updateJob = async(req, res) => {
     try{
@@ -125,16 +128,16 @@ const getJobsBycompanyId = async(req, res) => {
         // if(role !== 'PLACEMENT OFFICER' & role !== 'SUPER ADMIN')
         //     res.status(403).send({message : 'Access Forbidden'});
 
-        const {company_id} = req.body;
+        const {company_id} = req.query;
 
         // const company = await Company.findByPk(company_id);
         // if(!company)
         //     res.status(403).send({message : 'Company not found'});
 
-        let job = await Job.findOne({where : {company_id}});
-        if(!job)
+        let job = await Job.findAll({where : {company_id}});
+        if(!job){
             res.status(403).send({message : 'Job not found'});
-
+        }
         res.status(200).send({job});
     } catch(error){
         console.log(error);
