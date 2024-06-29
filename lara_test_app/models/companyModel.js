@@ -10,48 +10,38 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         address: DataTypes.STRING,
-        company_type: {
-            type : DataTypes.STRING,
-            allowNull: false
+        companyType_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'CompanyTypes',
+                key: 'companyType_id'
+            }
         },
         url: {
-            type : DataTypes.STRING,
+            type: DataTypes.STRING,
             allowNull: false
         },
         general_mail_id: {
-            type : DataTypes.STRING,
+            type: DataTypes.STRING,
             allowNull: false
         },
         phoneNumber: {
-            type : DataTypes.STRING,
+            type: DataTypes.STRING,
             allowNull: false
         },
-        isActive:{
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-            defaultValue: true
-        },
         description: DataTypes.STRING,
-        company_logo: DataTypes.STRING,
-        
-        
-        // imagePath: {
-        //     type: DataTypes.STRING, 
-        //     allowNull: true, 
-        //   }
-    },{
+        company_logo: DataTypes.STRING
+    }, {
         timestamps: false // Disable createdAt and updatedAt
     });
 
     Company.associate = (models) => {
-        Company.hasMany(models.Agent, {
-            foreignKey: 'company_id',
-            as: 'agents'
-        });
-    };
+        Company.belongsTo(models.CompanyType, {
+            foreignKey: 'companyType_id',
+            as: 'companyType'
+        }); 
+    };  
 
     return Company;
 };
-
-
-//IF any rows are added/Deleted please Type SQL query here For implementing in DataBase
