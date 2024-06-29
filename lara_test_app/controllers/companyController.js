@@ -20,26 +20,36 @@ const saveCompany = async (req, res) => {
             return res.status(403).send({ message: 'Access Forbidden' });
         }
 
-        const { name, address, companyType_id, url, general_mail_id, phoneNumber, description } = req.body;
+        const {name, address, company_type, url, general_mail_id, phoneNumber, description} = req.body;
 
         console.log('comapany Id :', companyType_id)
         const existingCompany = await Company.findOne({ where: { general_mail_id } });
 
-        if (existingCompany) {
-            return res.status(400).send({ message: "Company already exists" });
+        if(existingCompany){
+            return res.status(400).send({message : "Company already exists"})
         }
 
-        const compnayType = await db.CompanyType.findOne({where:{companyType_id}});
-        console.log("company type : ", compnayType)
+        // Generate company_id
+	    const companyName = name.substring(0, 2).toUpperCase();
+        const lastCompany = await Company.findOne({
+            order: [['company_id', 'DESC']]
+        });
 
-        if(!compnayType){
-            return res.status(404).send({message:"Company type not found"})
+        let lastIdNumber = 0;
+        if (lastCompany && lastCompany.company_id) {
+            const lastId = lastCompany.company_id;
+            lastIdNumber = parseInt(lastId.replace(lastId.substring(0, 3), ''), 10);
         }
+
+        const newIdNumber = lastIdNumber + 1;
+        const newCustomId = `${companyName}${newIdNumber.toString().padStart(5, '0')}`;
+        console.log("COMPANY ID : ", newCustomId);
 
         const newCompany = await Company.create({
+            company_id: newCustomId,
             name,
             address,
-            companyType_id,
+            company_type,
             url,
             general_mail_id,
             phoneNumber,
@@ -63,32 +73,30 @@ const updateCompany = async (req, res) => {
             return res.status(403).send({ message: 'Access Forbidden' });
         }
 
-        const { company_id, name, address, companyType_id, url, general_mail_id, phoneNumber, description } = req.body;
+        const {company_id, name, address, type, url, general_mail_id, phoneNumber, contactPerson} = req.body;
 
-        const company = await Company.findByPk(company_id);
+        const newCompany = await Company.findByPk(company_id);
 
-        if (!company) {
+        if (!newCompany) {
             return res.status(404).json({ error: 'No Company found' });
         }
+                // update the subject 
+        newCompany.name = name;
+        newCompany.address = address;
+        newCompany.company_type = type;
+        newCompany.url = url;
+        newCompany.general_mail_id = general_mail_id;
+        newCompany.phoneNumber = phoneNumber;
+        newCompany.description = description;
 
-        // Update the company details
-        company.name = name;
-        company.address = address;
-        company.companyType_id = companyType_id;
-        company.url = url;
-        company.general_mail_id = general_mail_id;
-        company.phoneNumber = phoneNumber;
-        company.description = description;
+        await newCompany.save(newCompany)
 
-        await company.save();
+        return res.status(200).send({message : "Company updated succeccfully", newCompany});
 
-        return res.status(200).send({ message: "Company updated successfully", company });
-    } catch (error) {
-        return res.status(500).send({ message: error.message });
+    } catch(error) {
+        return res.status(500).send({message : error.message});
     }
 }
-
-
 
 // const deleteCompany = async (req, res)=>{
 //     try{
@@ -139,10 +147,11 @@ const getAllCompanyDetails = async (req, res) => {
     }
 }
 
+
 const uploadCompanyLogo = async(req, res) => {
     try{
 
-        const {company_id} = req.query;
+        const {company_id} = req.body;
 
         const company = await Company.findByPk(company_id);
 
@@ -166,7 +175,7 @@ const uploadCompanyLogo = async(req, res) => {
 const getCompanyLogo = async(req, res) => {
     try{
 
-        const {company_id} = req.body;
+        const {company_id} = req.query;
 
         const company = await Company.findByPk(company_id);
         if (!company) {
@@ -310,7 +319,7 @@ module.exports = {
     saveCompany,
     updateCompany,
     companyLogo,
-    // deleteCompany,
+    //deleteCompany,
     getAllCompanyDetails,
     uploadCompanyLogo,
     getCompanyLogo,

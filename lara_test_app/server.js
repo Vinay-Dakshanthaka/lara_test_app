@@ -11,6 +11,8 @@ const adminRoute = require('./routes/adminRoutes');
 const cumulativeTestRouter = require('./routes/cumulativeTestRoutes');
 const companyRoute = require('./routes/companyRoutes');
 const agentRoute = require('./routes/agentRoutes');
+const jobRoute = require('./routes/jobRoutes');
+const driveRoute = require('./routes/driveRoutes');
 
 const bodyParser = require('body-parser');
 
@@ -28,6 +30,8 @@ app.use('/api/admin/activites',adminRoute);
 app.use('/api/test/cumulativeTest',cumulativeTestRouter);
 app.use('/api/company',companyRoute); 
 app.use('/api/agent', agentRoute);
+app.use('/api/job', jobRoute);
+app.use('/api/drive', driveRoute);
 
 // Port
 const PORT = process.env.PORT || 8080;
@@ -41,3 +45,15 @@ db.sequelize.sync({ force: false })
     .catch(error => {
         console.error('Error synchronizing database:', error);
     });
+
+
+
+    // job.name = name;
+    //     job.description = description;
+    //     job.no_of_openings = no_of_openings;
+    //     job.job_location = job_location;
+    //     job.position = position;
+
+    //     await job.save();
+
+    //     res.status(200).send({message : 'Job successfully updated' , job});

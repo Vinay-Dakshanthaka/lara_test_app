@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
             autoIncrement : true
         },
         company_id : {
-            type : DataTypes.INTEGER,
+            type : DataTypes.STRING,
             allowNull : false
         },
         job_id : {

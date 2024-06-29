@@ -39,8 +39,7 @@ db.Company = require('./companyModel')(sequelize, DataTypes);
 db.Agent = require('./agentModel')(sequelize, DataTypes);
 db.Job = require('./jobModel')(sequelize, DataTypes);
 db.Drive = require('./driveModel')(sequelize, DataTypes);
-db.StudentDrive = require('./student_drive')(sequelize, DataTypes);
-db.CompanyType = require('./companyTypeModel')(sequelize, DataTypes);
+db.Student_Drive = require('./studentDrive.js')(sequelize, DataTypes);
 
 db.Student.hasOne(db.Profile, {
     foreignKey: 'student_id',
@@ -86,14 +85,8 @@ db.Agent.belongsTo(db.Company, {
     onDelete: 'CASCADE'
 });
 
-db.Company.belongsTo(db.CompanyType, {
-    foreignKey: 'companyType_id',
-    as: 'companyType'
-});
-
-db.CompanyType.hasMany(db.Company, {
-    foreignKey: 'companyType_id',
-    as: 'companies'
-});
+//ManyToMany between Student & Drive
+db.Student.belongsToMany(db.Drive, { through: 'Student_Drive', foreignKey: 'student_id' });
+db.Drive.belongsToMany(db.Student, { through: 'Student_Drive', foreignKey: 'drive_id' });
 
 module.exports = db;

@@ -1,22 +1,17 @@
 module.exports = (sequelize, DataTypes) => {
     const Company = sequelize.define("Company", {
         company_id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
+            type: DataTypes.STRING,
+            primaryKey: true
         },
         name: {
             type: DataTypes.STRING,
             allowNull: false
         },
         address: DataTypes.STRING,
-        companyType_id: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'CompanyTypes',
-                key: 'companyType_id'
-            }
+        type: {
+            type : DataTypes.STRING,
+            allowNull: false
         },
         url: {
             type: DataTypes.STRING,
@@ -37,11 +32,16 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Company.associate = (models) => {
-        Company.belongsTo(models.CompanyType, {
-            foreignKey: 'companyType_id',
-            as: 'companyType'
-        }); 
-    };  
+        Company.hasMany(models.Agent, {
+            foreignKey: 'company_id',
+            as: 'agents',
+            onDelete: 'CASCADE'
+        });
+        Company.hasMany(models.Job, {
+            foreignKey: 'company_id',
+            as: 'jobs'
+        });
+    };
 
     return Company;
 };

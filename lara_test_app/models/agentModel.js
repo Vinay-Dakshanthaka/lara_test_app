@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         company_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false
         },
         contactNumber: {
@@ -35,7 +35,8 @@ module.exports = (sequelize, DataTypes) => {
     Agent.associate = (models) => {
         Agent.belongsTo(models.Company, {
             foreignKey: 'company_id',
-            as: 'companies'
+            as: 'companies',
+            onDelete: 'CASCADE'
         }); 
     }
 
