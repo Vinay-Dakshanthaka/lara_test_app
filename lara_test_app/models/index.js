@@ -40,6 +40,7 @@ db.Agent = require('./agentModel')(sequelize, DataTypes);
 db.Job = require('./jobModel')(sequelize, DataTypes);
 db.Drive = require('./driveModel')(sequelize, DataTypes);
 db.Student_Drive = require('./studentDrive.js')(sequelize, DataTypes);
+db.WebinarsTrainings = require('./WebinarTrainings.js')(sequelize, DataTypes);
 
 db.Student.hasOne(db.Profile, {
     foreignKey: 'student_id',

@@ -13,6 +13,7 @@ const companyRoute = require('./routes/companyRoutes');
 const agentRoute = require('./routes/agentRoutes');
 const jobRoute = require('./routes/jobRoutes');
 const driveRoute = require('./routes/driveRoutes');
+const WebinarTraingsRoute = require('./routes/WebinarTrainingsRoutes')
 
 const bodyParser = require('body-parser');
 
@@ -32,6 +33,7 @@ app.use('/api/company',companyRoute);
 app.use('/api/agent', agentRoute);
 app.use('/api/job', jobRoute);
 app.use('/api/drive', driveRoute);
+app.use('/api/webinars', WebinarTraingsRoute)
 
 // Port
 const PORT = process.env.PORT || 8080;

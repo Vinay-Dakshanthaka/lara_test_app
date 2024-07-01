@@ -82,7 +82,7 @@ const getDrivesByCompanyId = async (req, res) => {
       console.log(error);
       res.status(500).send({ message: "Error Fetching Drives" });
     }
-  };
+};
   
 const getDrivesByJobId = async (req, res) => {
   try {
