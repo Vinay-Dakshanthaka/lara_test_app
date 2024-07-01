@@ -43,9 +43,9 @@ module.exports = (sequelize, DataTypes) => {
             as: 'agents',
             onDelete: 'CASCADE'
         });
-        Company.hasMany(models.Job, {
+        Company.hasMany(models.Drive, {
             foreignKey: 'company_id',
-            as: 'jobs'
+            as: 'drives'
         });
     };
 

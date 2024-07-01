@@ -8,14 +8,25 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey : true,
             autoIncrement : true
         },
+        job_title : {
+            type : DataTypes.STRING,
+            allowNull : false
+        },
+        job_description : {
+            type : DataTypes.STRING,
+            allowNull : false
+        },
         company_id : {
             type : DataTypes.STRING,
             allowNull : false
         },
-        job_id : {
-            type : DataTypes.INTEGER,
-            allowNull : false
-        },
+        no_of_openings : DataTypes.INTEGER,
+        position : DataTypes.STRING,
+        job_location : DataTypes.STRING,
+        // job_id : {
+        //     type : DataTypes.INTEGER,
+        //     allowNull : false
+        // },
         drive_date : {
             type : DataTypes.STRING,
             allowNull : false
@@ -25,5 +36,13 @@ module.exports = (sequelize, DataTypes) => {
             allowNull : false
         }
     });
+
+    Drive.associate = (models) => {
+        Drive.belongsTo(models.Company, {
+            foreignKey: 'company_id',
+            as: 'companies'
+        });
+    }
+
     return Drive;
 }

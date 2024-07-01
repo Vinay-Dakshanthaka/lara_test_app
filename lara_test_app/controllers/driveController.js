@@ -1,11 +1,8 @@
 const db = require("../models");
-const jwt = require("jsonwebtoken");
-const multer = require("multer");
-const { Sequelize } = require("sequelize");
-const xlsx = require("xlsx");
 
 const Drive = db.Drive;
 const Student = db.Student;
+const Company = db.Company;
 
 const saveDrive = async (req, res) => {
   try {
@@ -17,17 +14,26 @@ const saveDrive = async (req, res) => {
       res.status(403).send({ message: "Access Forbidden" });
     }
 
-    const { company_id, job_id, drive_date, drive_location } = req.body;
+    const { job_title, job_description, company_id, no_of_openings, position, job_location, drive_date, drive_location } = req.body;
+    
+    const company = await Company.findByPk(company_id);
+    if(!company)
+      res.status(403).send({message : 'Company not found'});
 
-    const newDrive = await Drive.create({
-      company_id,
-      job_id,
-      drive_date,
-      drive_location,
-    });
-    res
-      .status(200)
-      .send({ message: "Drive Created Successfully", newDrive: newDrive });
+    let drive = await Drive.findOne({where : {job_title : job_title, company_id : company_id}});
+    if(!drive){
+      const newDrive = await Drive.create({
+        job_title,
+        job_description,
+        company_id,
+        no_of_openings,
+        position,
+        job_location,
+        drive_date,
+        drive_location,
+      });
+      res.status(200).send({ message: "Drive Created Successfully", newDrive: newDrive });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: error.message });
@@ -42,13 +48,20 @@ const updateDrive = async (req, res) => {
     if (userRole !== "SUPER ADMIN" && userRole !== "PLACEMENT OFFICER") {
       res.status(403).send({ message: "Access Forbidden" });
     }
-    const { drive_id, drive_date, drive_location } = req.body;
-    const existingDrive = await Drive.findOne({ where: { drive_id:drive_id } });
+    const { drive_id, job_title, job_description, no_of_openings, position, job_location, drive_date, drive_location } = req.body;
+    const existingDrive = await Drive.findByPk(drive_id);
     if (!existingDrive) {
       res.status(404).send({ message: "Drive Doesnot exist" });
     }
+    existingDrive.job_title = job_title;
+    existingDrive.job_description = job_description;
+    existingDrive.no_of_openings = no_of_openings;
+    existingDrive.position = position;
+    existingDrive.job_location = job_location;
     existingDrive.drive_date = drive_date;
     existingDrive.drive_location = drive_location;
+
+    await existingDrive.save();
     return res.status(200).send({ message: "Drive Updated Successfully", drive: existingDrive });
   } catch (error) {
     console.log(error);
