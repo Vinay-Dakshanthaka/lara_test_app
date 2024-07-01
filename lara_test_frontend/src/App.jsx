@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import UpdatePassword from './components/UpdatePassword';
 import PasswordUpdateWarning from './components/PasswordUpdateWarning';
@@ -23,10 +23,13 @@ import DeleteAccount from './components/DeleteAccount';
 import UploadCompanies from './components/companies/UploadCompanies';
 import CompaniesList from './components/companies/CompaniesList';
 import AddAgent from './components/companies/AddAgent';
+import AddJobs from './components/companies/AddJobs';
+import ViewJobs from './components/companies/ViewJobs';
 
 const App = () => {
     const location = useLocation();
     const hideSidebarRoutes = ['/signin', '/signup', '/'];
+    const [selectedCompanyId, setSelectedCompanyId] = useState(null);
 
     return (
         <>
@@ -55,8 +58,12 @@ const App = () => {
                     <Route path="/all-students-details" element={<AllStudentDetails />} />
                     <Route path="/delete-account" element={<DeleteAccount />} />
                     <Route path="/add-companies" element={<UploadCompanies />} />
-                    <Route path="/companies-list" element={<CompaniesList />} />
+                    <Route path="/companies-list" element={<CompaniesList setSelectedCompanyId={setSelectedCompanyId}/>} />
                     <Route path="/add-company-agent" element={<AddAgent />} />
+
+                    {/* Routes added by Abhilash */}
+                    <Route path="/add-job" element = {<AddJobs selectedCompanyId={selectedCompanyId}/>}/>
+                    <Route path='/view-jobs/:company_id' element={<ViewJobs/>}/>
                 </Route>
             </Routes>
         </>

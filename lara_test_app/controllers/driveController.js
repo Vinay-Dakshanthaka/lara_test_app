@@ -95,21 +95,21 @@ const getDrivesByCompanyId = async (req, res) => {
       console.log(error);
       res.status(500).send({ message: "Error Fetching Drives" });
     }
-  };
+};
   
-  const getDrivesByJobId = async (req, res) => {
-    try {
-      const { job_id } = req.query;
-      const drives = await Drive.findAll({ where: { job_id } });
-      if (!drives) {
-        return res.status(404).send({ message: "No Drives Found for this Job" });
-      }
-      res.status(200).send({ drives });
-    } catch (error) {
-      console.log(error);
-      res.status(500).send({ message: "Error Fetching Drives" });
+const getDrivesByJobId = async (req, res) => {
+  try {
+    const { job_id } = req.query;
+    const drives = await Drive.findAll({ where: { job_id } });
+    if (!drives) {
+      return res.status(404).send({ message: "No Drives Found for this Job" });
     }
-  };
+    res.status(200).send({ drives });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "Error Fetching Drives" });
+  }
+};
 
 
 module.exports = {
@@ -118,5 +118,5 @@ module.exports = {
   getAllDrives,
   getDrivesByCompanyId,
   getDrivesByJobId,
-  
+
 };
