@@ -2,13 +2,13 @@ const { DataTypes } = require("sequelize");
 const { sequelize } = require(".");
 
 module.exports = (sequelize, DataTypes) => {
-    const Job_Skill = sequelize.define("Job_Skill", {
-        job_id : {
-            type: DataTypes.INTEGER,
+    const Student_Skill = sequelize.define("Student_Skill", {
+        student_id : {
+            type: DataTypes.STRING,
             allowNull: false,
             references: {
-                model: 'Job',
-                key: 'job_id'
+                model: 'Student',
+                key: 'student_id'
             }
         },
         skill_id : {
@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
             }
         }
     }, {
-        tableName: 'Job_Skill',
+        tableName: 'Student_Skill',
         timestamps: false 
     });
-    return Job_Skill;
+    return Student_Skill;
 }

@@ -11,8 +11,8 @@ const adminRoute = require('./routes/adminRoutes');
 const cumulativeTestRouter = require('./routes/cumulativeTestRoutes');
 const companyRoute = require('./routes/companyRoutes');
 const agentRoute = require('./routes/agentRoutes');
-const jobRoute = require('./routes/jobRoutes');
 const driveRoute = require('./routes/driveRoutes');
+const jobRoute = require('./routes/jobRoutes')
 const skillRoute = require('./routes/skillRoutes');
 const WebinarTraingsRoute = require('./routes/WebinarTrainingsRoutes')
 
@@ -32,7 +32,7 @@ app.use('/api/admin/activites',adminRoute);
 app.use('/api/test/cumulativeTest',cumulativeTestRouter);
 app.use('/api/company',companyRoute);
 app.use('/api/agent', agentRoute);
-//app.use('/api/job', jobRoute);
+app.use('/api/job', jobRoute);
 app.use('/api/drive', driveRoute);
 app.use('/api/skill', skillRoute);
 app.use('/api/webinars', WebinarTraingsRoute)

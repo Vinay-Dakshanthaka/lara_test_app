@@ -37,11 +37,12 @@ db.TestResults = require('./testResultModel')(sequelize, DataTypes);
 db.CumulativeQuestion = require('./cumulativeQuestionModel')(sequelize, DataTypes);
 db.Company = require('./companyModel')(sequelize, DataTypes);
 db.Agent = require('./agentModel')(sequelize, DataTypes);
-//db.Job = require('./jobModel')(sequelize, DataTypes);
 db.Drive = require('./driveModel')(sequelize, DataTypes);
-db.Student_Drive = require('./studentDrive.js')(sequelize, DataTypes);
+db.Job = require('./jobModel')(sequelize, DataTypes);
+db.Student_Job = require('./studentJob.js')(sequelize, DataTypes);
 db.Skill = require('./skillModel.js')(sequelize, DataTypes);
-//db.Job_Skill = require('./jobSkill.js')(sequelize, DataTypes);
+db.Job_Skill = require('./jobSkill.js')(sequelize, DataTypes);
+db.Student_Skill = require('./studentSkill.js')(sequelize, DataTypes);
 db.WebinarsTrainings = require('./WebinarTrainings.js')(sequelize, DataTypes);
 
 db.Student.hasOne(db.Profile, {
@@ -99,23 +100,27 @@ db.Drive.belongsTo(db.Company, {
     onDelete: 'CASCADE'
 });
 
-// db.Job.hasOne(db.Drive, {
-//     foreignKey: 'job_id',
-//     as: 'drives',
-//     onDelete: 'CASCADE'
-// });
+db.Drive.hasMany(db.Job, {
+    foreignKey: 'drive_id',
+    as: 'jobs',
+    onDelete: 'CASCADE'
+});
 
-// db.Drive.belongsTo(db.Job, {
-//     foreignKey: 'job_id',
-//     onDelete: 'CASCADE'
-// });
+db.Job.belongsTo(db.Drive, {
+    foreignKey: 'drive_id',
+    onDelete: 'CASCADE'
+});
 
-//ManyToMany between Student & Drive
-db.Student.belongsToMany(db.Drive, { through: 'Student_Drive', foreignKey: 'student_id' });
-db.Drive.belongsToMany(db.Student, { through: 'Student_Drive', foreignKey: 'drive_id' });
+//ManyToMany between Student & Job
+db.Student.belongsToMany(db.Job, { through: 'Student_Job', foreignKey: 'student_id' });
+db.Job.belongsToMany(db.Student, { through: 'Student_Job', foreignKey: 'job_id' });
 
 //ManyToMany between Job & Skill
-// db.Job.belongsToMany(db.Skill, { through: 'Job_Skill', foreignKey: 'job_id' });
-// db.Skill.belongsToMany(db.Job, { through: 'Job_Skill', foreignKey: 'skill_id' });
+db.Job.belongsToMany(db.Skill, { through: 'Job_Skill', foreignKey: 'job_id' });
+db.Skill.belongsToMany(db.Job, { through: 'Job_Skill', foreignKey: 'skill_id' });
+
+//ManyToMany between Student & Skill
+db.Student.belongsToMany(db.Skill, { through: 'Student_Skill', foreignKey: 'student_id' });
+db.Skill.belongsToMany(db.Student, { through: 'Student_Skill', foreignKey: 'skill_id' });
 
 module.exports = db;
