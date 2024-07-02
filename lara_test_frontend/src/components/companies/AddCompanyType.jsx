@@ -37,7 +37,7 @@ const AddCompanyType = () => {
     };
 
     fetchCompanyTypes();
-  }, [companyTypes]);
+  }, []); // Adding an empty dependency array to run the effect only once on mount
 
   const handleEditClick = (type) => {
     setSelectedType(type);

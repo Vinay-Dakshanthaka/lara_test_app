@@ -10,27 +10,80 @@ const CompanyType = db.CompanyType;
 
 const validFileFormats = ['jpeg', 'jpg', 'png'];
 
+// const saveCompany = async (req, res) => {
+//     try {
+//         const id = req.student_id;
+//         const student = await Student.findByPk(id);
+//         const role = student.role;
+
+//         if (role !== 'PLACEMENT OFFICER' && role !== 'SUPER ADMIN') {
+//             return res.status(403).send({ message: 'Access Forbidden' });
+//         }
+
+//         const { name, address, url, general_mail_id, phoneNumber, description, companyType_id } = req.body;
+
+//         if (!companyType_id) {
+//             return res.status(400).send({ message: "Company type is required" });
+//         }
+
+//         const existingCompany = await Company.findOne({ where: { general_mail_id } });
+
+//         if (existingCompany) {
+//             return res.status(400).send({ message: "Company already exists" });
+//         }
+
+//         const companyName = name.substring(0, 2).toUpperCase();
+//         const lastCompany = await Company.findOne({
+//             order: [['company_id', 'DESC']]
+//         });
+
+//         let lastIdNumber = 0;
+//         if (lastCompany && lastCompany.company_id) {
+//             const lastId = lastCompany.company_id;
+//             lastIdNumber = parseInt(lastId.replace(lastId.substring(0, 3), ''), 10);
+//         }
+
+//         const newIdNumber = lastIdNumber + 1;
+//         const newCustomId = `${companyName}${newIdNumber.toString().padStart(5, '0')}`;
+
+//         const newCompany = await Company.create({
+//             company_id: newCustomId,
+//             name,
+//             address,
+//             companyType_id, // Include companyType_id here
+//             url,
+//             general_mail_id,
+//             phoneNumber,
+//             description
+//         });
+
+//         return res.status(200).send({ message: "Company added successfully", company: newCompany });
+//     } catch (error) {
+//         return res.status(500).send({ message: error.message });
+//     }
+// };
+
+
 const saveCompany = async (req, res) => {
     try {
         const id = req.student_id;
         const student = await Student.findByPk(id);
         const role = student.role;
-
+        
         if (role !== 'PLACEMENT OFFICER' && role !== 'SUPER ADMIN') {
             return res.status(403).send({ message: 'Access Forbidden' });
         }
 
-        const {name, address, company_type, url, general_mail_id, phoneNumber, description} = req.body;
+        const { name, address, companyType_id, url, general_mail_id, phoneNumber, description } = req.body;
 
-        console.log('comapany Id :', companyType_id)
         const existingCompany = await Company.findOne({ where: { general_mail_id } });
 
-        if(existingCompany){
-            return res.status(400).send({message : "Company already exists"})
+        if (existingCompany) {
+            return res.status(400).send({ message: "Company already exists" });
         }
 
         // Generate company_id
-	    const companyName = name.substring(0, 2).toUpperCase();
+        const companyName = name.substring(0, 2).toUpperCase(); 
         const lastCompany = await Company.findOne({
             order: [['company_id', 'DESC']]
         });
@@ -49,13 +102,12 @@ const saveCompany = async (req, res) => {
             company_id: newCustomId,
             name,
             address,
-            company_type,
+            companyType_id,
             url,
             general_mail_id,
             phoneNumber,
             description
         });
-
         return res.status(200).send({ message: "Company added successfully", company: newCompany });
     } catch (error) {
         return res.status(500).send({ message: error.message });
@@ -303,7 +355,7 @@ const getAllCompanyTypes = async (req, res) => {
         if (role !== 'PLACEMENT OFFICER' && role !== 'SUPER ADMIN') {
             return res.status(403).send({ message: 'Access Forbidden' });
         }
-
+        
         const activeCompanyTypes = await CompanyType.findAll({
             where: { isActive: true }
         });

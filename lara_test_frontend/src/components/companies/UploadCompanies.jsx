@@ -33,7 +33,8 @@ const UploadCompanies = () => {
             Authorization: `Bearer ${token}`,
           },
         };
-        const response = await axios.get(`${baseURL}/api/company/getAllCompanyTypes`,config);
+        const response = await axios.get(`${baseURL}/api/company/getAllCompanyTypes`, config);
+        // console.log('response type ', response.data);
         setCompanyTypes(response.data.companyTypes); // Access the array within the nested object
       } catch (error) {
         console.error("Failed to fetch company types", error);
@@ -41,7 +42,7 @@ const UploadCompanies = () => {
     };
 
     fetchCompanyTypes();
-  }, []);
+  }, []); // Adding an empty dependency array to run the effect only once on mount
 
   const handleChange = (e) => {
     const { name, value } = e.target;

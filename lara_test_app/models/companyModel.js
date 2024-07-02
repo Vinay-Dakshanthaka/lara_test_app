@@ -9,25 +9,27 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         address: DataTypes.STRING,
-        type: {
+        url: {
             type : DataTypes.STRING,
             allowNull: false
         },
-        url: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
         general_mail_id: {
-            type: DataTypes.STRING,
+            type : DataTypes.STRING,
             allowNull: false
         },
         phoneNumber: {
-            type: DataTypes.STRING,
+            type : DataTypes.STRING,
             allowNull: false
         },
         description: DataTypes.STRING,
-        company_logo: DataTypes.STRING
-    }, {
+        company_logo: DataTypes.STRING,
+        
+        
+        // imagePath: {
+        //     type: DataTypes.STRING, 
+        //     allowNull: true, 
+        //   }
+    },{
         timestamps: false // Disable createdAt and updatedAt
     });
 
@@ -37,11 +39,14 @@ module.exports = (sequelize, DataTypes) => {
             as: 'agents',
             onDelete: 'CASCADE'
         });
-        Company.hasMany(models.Job, {
+        Company.hasMany(models.Drive, {
             foreignKey: 'company_id',
-            as: 'jobs'
+            as: 'drives'
         });
     };
 
     return Company;
 };
+
+
+//IF any rows are added/Deleted please Type SQL query here For implementing in DataBase
