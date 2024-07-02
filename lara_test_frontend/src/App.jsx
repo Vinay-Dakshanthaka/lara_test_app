@@ -27,6 +27,7 @@ import AddJobs from './components/companies/AddJobs';
 import ViewJobs from './components/companies/ViewJobs';
 import WebinarList from './components/companies/WebinarList';
 import WebinarForm from './components/companies/WebinarForm';
+import AddDrive from './components/companies/AddDrive';
 
 const App = () => {
     const location = useLocation();
@@ -64,7 +65,8 @@ const App = () => {
                     <Route path="/add-company-agent" element={<AddAgent />} />
 
                     {/* Routes added by Abhilash */}
-                    <Route path="/add-job" element = {<AddJobs selectedCompanyId={selectedCompanyId}/>}/>
+                    {/* <Route path="/add-job" element = {<AddJobs selectedCompanyId={selectedCompanyId}/>}/> */}
+                    <Route path="/add-drive" element = {<AddDrive selectedCompanyId={selectedCompanyId}/>}/>
                     <Route path='/view-jobs/:company_id' element={<ViewJobs/>}/>
                     <Route path='/add-webinar' element={<WebinarForm/>}/>
                     <Route path='/webinar-list' element={<WebinarList/>}/>
