@@ -95,11 +95,13 @@ a {
 }
 
 .nav {
-    height: 100%;
+    height: auto;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    overflow: hidden;
+    /* overflow: hidden; */
+    overflow-y: auto;
+    overflow-x: hidden;
     position: relative; /* Ensure relative positioning for .nav_toggle */
 }
 

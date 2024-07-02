@@ -106,6 +106,24 @@ const Sidebar = () => {
                                             <Link to="/cumulative-test" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Cumulative Test</span>
                                             </Link>
+                                            {/* <Link to="/webinar-list" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name dropdown-link">Webinars</span>
+                                            </Link> */}
+                                            <Accordion className="custom-bg nested-accordion">
+                                                <Accordion.Item eventKey="1" className='custom-bg accordion-item'>
+                                                <Accordion.Header className="custom-bg ">
+                                                    <span className="nav_name ms-2">Webinars</span>
+                                                </Accordion.Header>
+                                                <Accordion.Body className="custom-bg">
+                                                    <Link to="/add-webinar" className="nav_link custom-bg margin-bottom-0">
+                                                    <span className="nav_name dropdown-link">Add Webinar</span>
+                                                    </Link>
+                                                    <Link to="/webinar-list" className="nav_link custom-bg margin-bottom-0">
+                                                    <span className="nav_name dropdown-link">View Webinars</span>
+                                                    </Link>
+                                                </Accordion.Body>
+                                                </Accordion.Item>
+                                            </Accordion>
                                             {/* Add more links here as needed */}
                                         </Accordion.Body>
                                     </Accordion.Item>
@@ -136,6 +154,22 @@ const Sidebar = () => {
                                             <Link to="/cumulative-test" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Cumulative Test</span>
                                             </Link>
+                                            {/* Link Added By Abhilash for Webinars */}
+                                            <Accordion className="custom-bg nested-accordion">
+                                                <Accordion.Item eventKey="1" className='custom-bg accordion-item'>
+                                                <Accordion.Header className="custom-bg ">
+                                                    <span className="nav_name ms-2">Webinars</span>
+                                                </Accordion.Header>
+                                                <Accordion.Body className="custom-bg">
+                                                    <Link to="/add-webinar" className="nav_link custom-bg margin-bottom-0">
+                                                    <span className="nav_name dropdown-link">Add Webinar</span>
+                                                    </Link>
+                                                    <Link to="/webinar-list" className="nav_link custom-bg margin-bottom-0">
+                                                    <span className="nav_name dropdown-link">View Webinars</span>
+                                                    </Link>
+                                                </Accordion.Body>
+                                                </Accordion.Item>
+                                            </Accordion>
                                             {/* Add more links here as needed */}
                                         </Accordion.Body>
                                     </Accordion.Item>

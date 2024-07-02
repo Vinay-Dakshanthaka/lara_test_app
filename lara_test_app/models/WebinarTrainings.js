@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         duration: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false
         },
         speaker: {
@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
         
     }, {
         timestamps: true,
-        tableName: 'WebinarsTrainings'
+     //   tableName: 'WebinarsTrainings'
     });
 
     return WebinarsTrainings;

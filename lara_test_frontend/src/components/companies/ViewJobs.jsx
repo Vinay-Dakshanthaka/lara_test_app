@@ -9,6 +9,8 @@ const ViewJobs = () => {
   const { company_id } = useParams(); // Get company_id from URL route parameter
   const navigate = useNavigate();
 
+  
+
   useEffect(() => {
     const fetchJobs = async () => {
       try {
@@ -25,7 +27,7 @@ const ViewJobs = () => {
         };
 
         const response = await axios.get(
-          `${baseURL}/api/job/getJobsBycompanyId`,
+          `${baseURL}/api/drive/getDrivesByCompanyId`,
           {
             params: { company_id },
             headers: {
@@ -34,9 +36,8 @@ const ViewJobs = () => {
           }
         );
 
-        console.log(response.data.job);
-
-        setJobs(response.data.job);
+        console.log(response.data.drives);
+        setJobs(response.data.drives);
       } catch (error) {
         console.error('Error fetching jobs:', error);
         toast.error('Failed to fetch jobs');

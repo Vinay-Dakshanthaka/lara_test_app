@@ -8,11 +8,13 @@ const AddJobs = ({ selectedCompanyId }) => {
   console.log("CompanyId", selectedCompanyId);
     const [jobData, setJobData] = useState({
         company_id: selectedCompanyId,
-        name: '',
+        job_title: '',
         position: '',
-        description: '',
+        job_description: '',
         job_location: '',
-        no_of_openings: ''
+        no_of_openings: '',
+        drive_date: '',
+        drive_location:''
     });
 
     const handleChange = (e) => {
@@ -35,7 +37,7 @@ const AddJobs = ({ selectedCompanyId }) => {
             };
 
             const response = await axios.post(
-                `${baseURL}/api/job/saveJob`,
+                `${baseURL}/api/drive/saveDrive`,
                 jobData,
                 config
             );
@@ -51,12 +53,12 @@ const AddJobs = ({ selectedCompanyId }) => {
             <h2 className="text-center mb-4">Add Job</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label>Name</label>
+                    <label>Job Title</label>
                     <input
                         type="text"
                         className="form-control"
-                        name="name"
-                        value={jobData.name}
+                        name="job_title"
+                        value={jobData.job_title}
                         onChange={handleChange}
                         required
                     />
@@ -84,11 +86,11 @@ const AddJobs = ({ selectedCompanyId }) => {
                     />
                 </div>
                 <div className="form-group">
-                    <label>Description</label>
+                    <label>Job Description</label>
                     <textarea
                         className="form-control"
-                        name="description"
-                        value={jobData.description}
+                        name="job_description"
+                        value={jobData.job_description}
                         onChange={handleChange}
                         rows="3"
                         required
@@ -101,6 +103,28 @@ const AddJobs = ({ selectedCompanyId }) => {
                         className="form-control"
                         name="job_location"
                         value={jobData.job_location}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label>Drive Date</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        name="drive_date"
+                        value={jobData.drive_date}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label>Drive Location</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        name="drive_location"
+                        value={jobData.drive_location}
                         onChange={handleChange}
                         required
                     />
