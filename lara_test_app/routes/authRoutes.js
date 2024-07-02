@@ -42,4 +42,8 @@ authRoute.put('/updateStudentNameAndPhoneNumber', verifyToken, authController.up
 
 authRoute.put('/deleteAccount', verifyToken, authController.deleteAccount);
 
+authRoute.post('/addSkillsToStudent', verifyToken, authController.addSkillsToStudent);
+
+authRoute.delete('/removeSkillFromStudent', verifyToken, authController.removeSkillFromStudent);
+
 module.exports = authRoute;

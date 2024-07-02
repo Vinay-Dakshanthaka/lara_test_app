@@ -11,6 +11,8 @@ const { Where } = require('sequelize/lib/utils');
 const { where } = require('sequelize');
 
 const Student = db.Student;
+const Skill = db.Skill;
+const Student_Skill = db.Student_Skill;
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -839,6 +841,58 @@ const deleteAccount = async (req, res) => {
     }
 };
 
+const addSkillsToStudent = async (req, res) => {
+    try {
+        const { student_id, skill_ids } = req.body; 
+  
+        if (!student_id || !skill_ids) {
+            return res.status(400).json({ error: 'Missing skillId or studentId in request body' });
+        }
+  
+        const student = await Student.findByPk(student_id);
+  
+        if (!student) {
+            return res.status(404).json({ error: 'No student found' });
+        }
+  
+        const skills = await Skill.findAll({ where: { skill_ids } });
+  
+        // Ensure all skills exist
+        if (skills.length !== skill_ids.length) {
+            return res.status(404).json({ error: 'One or more skills not found' });
+        }
+  
+        await Promise.all(skill_ids.map(async skill_id => {
+            await Student_Skill.create({
+                skill_id: skill_id,
+                student_id: student_id
+            });
+        }));
+  
+        res.status(200).json({ message: 'Skills added to the student successfully.' });
+    } catch (error) {
+        console.error('Failed to add skills to the student.', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
+  const removeSkillFromStudent = async (req, res) => {
+    try {
+        const { student_id, skill_id } = req.body; 
+  
+        if (!student_id || !skill_id) {
+            return res.status(400).json({ error: 'Missing studentId or skillId in request body' });
+        }
+  
+        await Student_Skill.destroy({ where: { student_id, skill_id } });
+  
+        res.status(200).json({ message: 'Skill removed from student successfully.' });
+    } catch (error) {
+        console.error('Failed to remove skill from student.', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
 module.exports = {
     signup,
     verifyByEmail,
@@ -857,4 +911,6 @@ module.exports = {
     updatePassword,
     resetPassword,
     deleteAccount,
+    addSkillsToStudent,
+    removeSkillFromStudent
 }

@@ -8,21 +8,10 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey : true,
             autoIncrement : true
         },
-        job_title : {
-            type : DataTypes.STRING,
-            allowNull : false
-        },
-        job_description : {
-            type : DataTypes.STRING,
-            allowNull : false
-        },
         company_id : {
             type : DataTypes.STRING,
             allowNull : false
         },
-        no_of_openings : DataTypes.INTEGER,
-        position : DataTypes.STRING,
-        job_location : DataTypes.STRING,
         // job_id : {
         //     type : DataTypes.INTEGER,
         //     allowNull : false
@@ -41,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
         Drive.belongsTo(models.Company, {
             foreignKey: 'company_id',
             as: 'companies'
+        });
+        Drive.hasMany(models.Job, {
+            foreignKey: 'drive_id',
+            as: 'jobs'
         });
     }
 
