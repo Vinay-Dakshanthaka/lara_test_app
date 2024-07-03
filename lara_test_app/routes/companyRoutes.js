@@ -9,7 +9,15 @@ companyRoute.post('/saveCompany', verifyToken, companyController.saveCompany);
 companyRoute.put('/updateCompany',verifyToken,companyController.updateCompany);
 //companyRoute.delete('/deleteCompany',verifyToken,companyController.deleteCompany);
 companyRoute.get('/getAllCompanyDetails',verifyToken,companyController.getAllCompanyDetails);
+
 companyRoute.post('/uploadCompanyLogo', companyLogo.single('image'), verifyToken,companyController.uploadCompanyLogo);
+
 companyRoute.get('/getCompanyLogo',verifyToken,companyController.getCompanyLogo);
+
+companyRoute.post('/saveCompanyType',verifyToken,companyController.saveCompanyType);
+
+companyRoute.post('/updateCompanyType',verifyToken,companyController.updateCompanyType);
+
+companyRoute.get('/getAllCompanyTypes',verifyToken,companyController.getAllCompanyTypes);
 
 module.exports = companyRoute

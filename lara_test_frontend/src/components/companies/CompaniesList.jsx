@@ -95,8 +95,7 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
 
       return `data:${response.headers["content-type"]};base64,${base64Image}`;
     } catch (error) {
-      console.error("Error fetching company logo:", error);
-      toast.error("Error fetching company logo");
+      // console.error("Error fetching company logo:", error); 
       return defaultLogo;
     }
   };
@@ -239,9 +238,13 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
     }
   };
 
-  const handleSelectCompany = (companyId) => {
-    navigate(`/view-jobs/${companyId}`);
-  };
+  // const handleSelectCompany = (companyId) => {
+  //   navigate(`/view-jobs/${companyId}`);
+  // };
+
+  const handleViewDrives = (companyId) => {
+    navigate(`/view-drives/${companyId}`)
+  }
   // const handleSelectCompany = async (companyId) => {
   //   try {
   //     const token = localStorage.getItem('token');
@@ -372,9 +375,9 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
                       Delete Company
                     </Dropdown.Item>
                     <Dropdown.Item
-                      onClick={() => handleSelectCompany(company.company_id)}
+                      onClick={() => handleViewDrives(company.company_id)}
                     >
-                      View Jobs
+                      View Drives
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>

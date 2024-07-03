@@ -4,8 +4,9 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 
 function AddDrive(selectedCompanyId) {
+    console.log("selectedCompanyId", selectedCompanyId.selectedCompanyId);
     const [driveData, setDriveData] = useState({
-        company_id: selectedCompanyId,
+        company_id: selectedCompanyId.selectedCompanyId,
         drive_date: '',
         drive_location:''
     });

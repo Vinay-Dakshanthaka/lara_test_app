@@ -126,7 +126,7 @@ const getJobsByDriveId = async(req, res) => {
         // if(role !== 'PLACEMENT OFFICER' & role !== 'SUPER ADMIN')
         //     res.status(403).send({message : 'Access Forbidden'});
 
-        const {drive_id} = req.body;
+        const {drive_id} = req.query;
 
         // const company = await Company.findByPk(company_id);
         // if(!company)

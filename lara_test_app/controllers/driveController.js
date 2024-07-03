@@ -18,7 +18,7 @@ const saveDrive = async (req, res) => {
     }
 
     const { company_id, drive_date, drive_location } = req.body;
-    
+    // console.log(company_id);
     const company = await Company.findByPk(company_id);
     if(!company)
       res.status(403).send({message : 'Company not found'});

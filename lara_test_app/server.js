@@ -30,7 +30,7 @@ app.use('/api/auth/student', authRoute);
 app.use('/api/student/profile', profileRoute); 
 app.use('/api/admin/activites',adminRoute);
 app.use('/api/test/cumulativeTest',cumulativeTestRouter);
-app.use('/api/company',companyRoute);
+app.use('/api/company',companyRoute); 
 app.use('/api/agent', agentRoute);
 app.use('/api/job', jobRoute);
 app.use('/api/drive', driveRoute);
@@ -49,5 +49,4 @@ db.sequelize.sync({ force: false })
     .catch(error => {
         console.error('Error synchronizing database:', error);
     });
-
 
