@@ -190,8 +190,14 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
     }
   };
 
-  const handleEditClick = () => {
-    fileInputRef.current.click();
+  const fileInputRefs = useRef({});
+
+  const handleEditClick = (companyId) => {
+    if (fileInputRefs.current[companyId]) {
+      fileInputRefs.current[companyId].click();
+    } else {
+      console.error(`File input ref not found for company ID ${companyId}`);
+    }
   };
 
   const handleImageUpload = async (event, companyId) => {
@@ -235,7 +241,19 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
       );
 
       toast.success("Company logo uploaded successfully");
-      window.location.reload();
+
+      // Update the company list with the new logo
+      const updatedCompanies = await Promise.all(
+        companies.map(async (company) => {
+          if (company.company_id === companyId) {
+            const logoPath = await fetchCompanyLogo(companyId);
+            return { ...company, company_logo: logoPath };
+          }
+          return company;
+        })
+      );
+
+      setCompanies(updatedCompanies);
     } catch (error) {
       console.error("Error uploading company logo:", error);
       toast.error("Error uploading company logo");
@@ -262,7 +280,7 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
             <th>Address</th>
             <th>Phone</th>
             <th>Email</th>
-            <th>Agents</th>
+            {/* <th>Agents</th> */}
             <th>Options</th>
           </tr>
         </thead>
@@ -270,11 +288,11 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
           {companies.map((company) => (
             <tr key={company.company_id}>
               <td>
-                <div className="edit-icon display-inline">
+              <div className="edit-icon display-inline">
                   <FontAwesomeIcon
                     icon={faEdit}
                     size="sm"
-                    onClick={handleEditClick}
+                    onClick={() => handleEditClick(company.company_id)}
                     style={{
                       cursor: "pointer",
                       width: "20px",
@@ -283,11 +301,11 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
                     }}
                   />
                   <input
-                    id="fileInput"
+                    id={`fileInput-${company.company_id}`}
                     type="file"
                     accept="image/jpeg, image/png"
                     style={{ display: "none" }}
-                    ref={fileInputRef}
+                    ref={(el) => (fileInputRefs.current[company.company_id] = el)}
                     onChange={(e) => handleImageUpload(e, company.company_id)}
                   />
                 </div>
@@ -303,7 +321,7 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
               <td>{company.address}</td>
               <td>{company.phoneNumber}</td>
               <td>{company.general_mail_id}</td>
-              <td>
+              {/* <td>
                 <ul>
                   {agents
                     .filter((agent) => agent.company_id === company.company_id)
@@ -313,7 +331,7 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
                       </li>
                     ))}
                 </ul>
-              </td>
+              </td> */}
               <td>
                 <Dropdown>
                   <Dropdown.Toggle variant="secondary" id="dropdown-basic">
