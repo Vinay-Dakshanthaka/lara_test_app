@@ -16,7 +16,7 @@ const AddJobs = () => {
     job_location: "",
     no_of_openings: "",
     year_of_exp: "",
-    designation: "",
+    position: "",
     total_rounds: "",
   });
 
@@ -96,7 +96,7 @@ const AddJobs = () => {
         job_location: "",
         no_of_openings: "",
         year_of_exp: "",
-        designation: "",
+        position: "",
         total_rounds: "",
       });
       setSelectedSkills([]);
@@ -185,12 +185,12 @@ const AddJobs = () => {
         </div>
 
         <div className="mb-3">
-          <label htmlFor="designation" className="form-label">designation</label>
+          <label htmlFor="position" className="form-label">position</label>
           <input
             type="text"
-            id="designation"
-            name="designation"
-            value={job.designation}
+            id="position"
+            name="position"
+            value={job.position}
             onChange={handleChange}
             className="form-control"
           />
