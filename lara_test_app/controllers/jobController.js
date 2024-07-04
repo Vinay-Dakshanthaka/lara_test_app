@@ -27,11 +27,11 @@ const saveJob = async(req, res) => {
             return res.status(403).send({message : 'Drive not found'});
 
         const job = await Job.create({job_title, description, no_of_openings, year_of_exp, job_location, position, total_rounds, drive_id});
-        res.status(200).send({message : 'successfully saved' , job});
+        return res.status(200).send({message : 'successfully saved' , job});
         
     } catch(error){
         console.log(error);
-        res.status(500).send({message : error.message});
+        return res.status(500).send({message : error.message});
     }
     
 }
@@ -58,10 +58,10 @@ const updateJob = async(req, res) => {
         await Job.update({job_title, description, no_of_openings, job_location, position, total_rounds, year_of_exp}, {where : {job_id}});
         job = await Job.findByPk(job_id);
         
-        res.status(200).send({message : 'Job successfully updated' , job});
+        return res.status(200).send({message : 'Job successfully updated' , job});
     } catch(error){
         console.log(error);
-        res.status(500).send({message : error.message});
+        return res.status(500).send({message : error.message});
     }
     
 }
@@ -87,10 +87,10 @@ const deleteJob = async(req, res) => {
 
         await Job.destroy({where : {job_id}});
 
-        res.status(200).send({message : 'Job successfully deleted'});
+        return res.status(200).send({message : 'Job successfully deleted'});
     } catch(error){
         console.log(error);
-        res.status(500).send({message : error.message});
+        return res.status(500).send({message : error.message});
     }
     
 }
@@ -114,10 +114,10 @@ const getJobByJobId = async(req, res) => {
         if(!job)
             return res.status(403).send({message : 'Job not found'});
 
-        res.status(200).send({job});
+        return res.status(200).send({job});
     } catch(error){
         console.log(error);
-        res.status(500).send({message : error.message});
+        return res.status(500).send({message : error.message});
     }
     
 }
@@ -142,10 +142,10 @@ const getJobsByDriveId = async(req, res) => {
         if(job.length === 0)
             return res.status(404).send({message : 'Job not found'});
 
-        res.status(200).send({job});
+        return res.status(200).send({job});
     } catch(error){
         console.log(error);
-        res.status(500).send({message : error.message});
+        return res.status(500).send({message : error.message});
     }  
 }
 
@@ -180,10 +180,10 @@ const addSkillsToJob = async (req, res) => {
             });
         }));
   
-        res.status(200).json({ message: 'Skills added to job successfully.' });
+        return res.status(200).json({ message: 'Skills added to job successfully.' });
     } catch (error) {
         console.error('Failed to add skills to job.', error);
-        res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({ error: 'Internal server error' });
     }
 };
 
@@ -197,10 +197,10 @@ const  removeSkillFromJob = async (req, res) => {
   
         await Job_Skill.destroy({ where: { job_id, skill_id } });
   
-        res.status(200).json({ message: 'Skill removed from job successfully.' });
+        return res.status(200).json({ message: 'Skill removed from job successfully.' });
     } catch (error) {
         console.error('Failed to remove skill from job.', error);
-        res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({ error: 'Internal server error' });
     }
 };
 
@@ -222,10 +222,10 @@ const getStudentsForJobWithSkills = async(req, res) => {
         const studentIds = Array.from(studentIdsSet);
 
         const student = await Student.findAll({ where : { student_id : studentIds, isActive : true}, attributes : { exclude : ['password'] }});
-        res.status(200).send({ student });
+        return res.status(200).send({ student });
     }
     catch(error){
-        res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({ error: 'Internal server error' });
     }
 }
 
@@ -248,29 +248,28 @@ const sendDriveToStudents = async(req, res) => {
         if(!job)
             return res.status(404).json({ error: 'Job not found' });
 
-        const drive = await Drive.findByPk(job.drive_id);
-        if(!drive)
-            return res.status(404).json({ error: 'Drive not found' });
+        // const drive = await Drive.findByPk(job.drive_id);
+        // if(!drive)
+        //     return res.status(404).json({ error: 'Drive not found' });
 
-        const company = await Company.findByPk(drive.company_id);
-        if(!company)
-            return res.status(404).json({ error: 'company not found' });
+        // const company = await Company.findByPk(drive.company_id);
+        // if(!company)
+        //     return res.status(404).json({ error: 'company not found' });
 
-        const agent = (await Agent.findOne({where : {company_id : company.company_id, isActive : true}}));
-        if(!agent)
-            return res.status(404).json({ error: 'Active agent not found' });
+        // const agent = (await Agent.findOne({where : {company_id : company.company_id, isActive : true}}));
+        // if(!agent)
+        //     return res.status(404).json({ error: 'Active agent not found' });
         
-        const skill_ids = (await Job_Skill.findAll({where : {job_id}, attributes : ['skill_id']})).map(job_skill => job_skill.skill_id);
+        // const skill_ids = (await Job_Skill.findAll({where : {job_id}, attributes : ['skill_id']})).map(job_skill => job_skill.skill_id);
         
-        const skills = await Skill.findAll({where : {skill_id : skill_ids}, attributes : ['name']});
-        if(skills.length === 0)
-            return res.status(404).json({ error: 'Skills not added to the job.' });
+        // const skills = await Skill.findAll({where : {skill_id : skill_ids}, attributes : ['name']});
+        // if(skills.length === 0)
+        //     return res.status(404).json({ error: 'Skills not added to the job.' });
 
         const studentEmails = (await Student.findAll({ where : {student_id : student_ids }})).map(student => student.email);
         const emailErrors = [];
         for (const email of studentEmails) {
-            const skillsList = skills.map(val => `<li>${val.name}</li>`).join('');
-            console.log(skillsList);
+            // const skillsList = skills.map(val => `<li>${val.name}</li>`).join('');
             const mailOptions = {
                 from: 'lara.placementcell@gmail.com',
                 to: email,
@@ -349,6 +348,22 @@ const sendDriveToStudents = async(req, res) => {
 }
 
 
+const getSkillsByJobId = async(req, res) => {
+    try{
+        const {job_id} = req.body;
+        const skill_ids = (await Job_Skill.findAll({ where : { job_id }})).map(job_skill => job_skill.skill_id);
+
+        const skills = (await Skill.findAll({ where : { skill_id : skill_ids }})).map(skill => skill.name);
+        if(skills.length === 0)
+            return res.status(400).send({message : "Skills not found for the job"});
+
+        return res.status(200).send(skills);
+    }
+    catch(error){
+        return res.status(500).send({ message: 'Internal server error' });
+    }
+}
+
 module.exports = {
     saveJob,
     updateJob,
@@ -358,5 +373,6 @@ module.exports = {
     addSkillsToJob,
     removeSkillFromJob,
     getStudentsForJobWithSkills,
-    sendDriveToStudents
+    sendDriveToStudents,
+    getSkillsByJobId
 }

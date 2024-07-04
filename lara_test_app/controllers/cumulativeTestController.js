@@ -41,7 +41,7 @@ const saveSubject = async (req, res)=>{
 
     }catch(error){
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -71,11 +71,11 @@ const updateSubject = async (req, res)=>{
 
         await subject.save(subject)
 
-        res.status(200).send(subject);
+        return res.status(200).send(subject);
 
     }catch(error){
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -102,11 +102,11 @@ const deleteSubject = async (req, res)=>{
 
         await subject.destroy(subject)
 
-        res.status(200).send({message : 'Subject Deleted Successfully!!!'});
+        return res.status(200).send({message : 'Subject Deleted Successfully!!!'});
 
     }catch(error){
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -138,11 +138,11 @@ const saveTopic = async (req, res)=>{
             topic = await Topic.create({ name:topic_name, subject_id: subject.subject_id });
         }
 
-        res.status(200).send({message : 'successfully saved' , topic});
+        return res.status(200).send({message : 'successfully saved' , topic});
 
     }catch(error){
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -173,14 +173,14 @@ const updateTopic = async (req, res) => {
         topic.name = topic_name;
         await topic.save();
 
-        res.status(200).send({
+        return res.status(200).send({
             message:"Update Success!!",
             topic:topic
         });
 
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -207,11 +207,11 @@ const deleteTopic = async (req, res)=>{
 
         await topic.destroy(topic)
 
-        res.status(200).send({message : 'Topic Deleted Successfully!!!'});
+        return res.status(200).send({message : 'Topic Deleted Successfully!!!'});
 
     }catch(error){
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -220,11 +220,11 @@ const getAllSubjects = async (req, res) => {
         // Fetch all subjects from the database
         const subjects = await Subject.findAll();
 
-        res.status(200).json(subjects);
+        return res.status(200).json(subjects);
 
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -239,13 +239,13 @@ const getSubjectById = async (req, res) => {
         
         if (subject) {
             console.log("subject found", subject)
-            res.status(200).json(subject);
+            return res.status(200).json(subject);
         } else {
-            res.status(404).send({ message: "Subject not found" });
+            return res.status(404).send({ message: "Subject not found" });
         }
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -260,13 +260,13 @@ const getTopicsBySubjectId = async (req, res) => {
         
         if (topics.length > 0) {
             console.log("topics found", topics)
-            res.status(200).json(topics);
+            return res.status(200).json(topics);
         } else {
-            res.status(404).send({ message: "No topics found for the given subject ID" });
+            return res.status(404).send({ message: "No topics found for the given subject ID" });
         }
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -282,13 +282,13 @@ const getTopicById = async (req, res) => {
         
         if (topic) {
             console.log("Topic found", topic)
-            res.status(200).json(topic);
+            return res.status(200).json(topic);
         } else {
-            res.status(404).send({ message: "Topic not found" });
+            return res.status(404).send({ message: "Topic not found" });
         }
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -304,10 +304,10 @@ const getAllSubjectsAndTopics = async (req, res) => {
             ],
         });
 
-        res.status(200).json(subjects);
+        return res.status(200).json(subjects);
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -346,13 +346,13 @@ const getQuestionsByTopicIds = async (req, res) => {
         }
 
         if (allQuestions.length > 0) {
-            res.status(200).json(allQuestions);
+            return res.status(200).json(allQuestions);
         } else {
-            res.status(404).send({ message: "Questions not found" });
+            return res.status(404).send({ message: "Questions not found" });
         }
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 };
 
@@ -382,10 +382,10 @@ const getQuestionCountsByTopicIds = async (req, res) => {
             });
         }
 
-        res.status(200).json(questionCounts);
+        return res.status(200).json(questionCounts);
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 };
 
@@ -559,11 +559,11 @@ const saveTestResults = async (req, res) => {
             student_id:studentId
         });
 
-        res.status(200).send(testResult);
+        return res.status(200).send(testResult);
 
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -607,10 +607,10 @@ const getTestResultsByTestId = async (req, res) => {
             cumulativequestions: cumulativeQuestions
         };
 
-        res.status(200).json(response);
+        return res.status(200).json(response);
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 };
 
@@ -635,12 +635,12 @@ const getTestResultsByStudentId = async (req, res) => {
             return res.status(404).send({ message: "Test result not found for the student" });
         }
         else{
-            res.status(200).send(testResults);
+            return res.status(200).send(testResults);
         }
 
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -691,10 +691,10 @@ const getAllSubjectsWithTopics = async(req, res) => {
                 as: 'topics'
             }
         });
-        res.json(subjects);
+        return res.json(subjects);
     } catch (error) {
         console.error('Error fetching subjects with topics:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({ error: 'Internal server error' });
     }
 }
 
