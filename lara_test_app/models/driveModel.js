@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
             type : DataTypes.STRING,
             allowNull : false
         },
+        drive_time : {
+            type : DataTypes.STRING,
+            allowNull : false
+        },
         drive_location : {
             type : DataTypes.STRING,
             allowNull : false

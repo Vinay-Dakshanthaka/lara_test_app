@@ -14,17 +14,17 @@ const updateRole = async (req,res)=>{
         const userRole = userData.role;
 
         if(userRole !== 'SUPER ADMIN'){
-            res.status(403).send({message:'Access Forbidden'});
+            return res.status(403).send({message:'Access Forbidden'});
         }
 
         const {id, role} = req.body;
 
         await Student.update({role},{where:{student_id:id}})
 
-        res.status(200).send({message:'Role updated successfully'})
+        return res.status(200).send({message:'Role updated successfully'})
 
     } catch (error) {
-        res.status(500).send({message:error.message})
+        return res.status(500).send({message:error.message})
     }
 }
 

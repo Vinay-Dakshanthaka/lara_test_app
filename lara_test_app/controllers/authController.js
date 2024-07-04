@@ -19,7 +19,9 @@ const upload = multer({ storage: storage });
 const jwtSecret = process.env.JWT_SECRET;
 // No. of salt rounds hash the password using bcrypt 
 const saltRounds = 10;
- 
+
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
 const signup = async (req, res) => {
     try {
         const { name, email, phone, password } = req.body;
@@ -181,9 +183,9 @@ const getStudentDetails = async (req, res) => {
             return res.status(404).send({ message: 'Student not found' });
         }
         console.log("Student",student);
-        res.status(200).send(student);
+        return res.status(200).send(student);
     } catch (error) {
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 };
 
@@ -269,9 +271,10 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+
 const bulkSignup = async (req, res) => {
     try {
-
+        const invalidEmails = [];
         const student_id = req.student_id;
         const userData = await Student.findOne({
             where: { student_id }
@@ -316,6 +319,11 @@ const bulkSignup = async (req, res) => {
 
         for (const row of rows) {
             const email = row.email;
+            if(!(emailRegex.test(email))){
+                invalidEmails.push(email);
+                continue;
+            }
+
             if (!email || existingEmails.has(email)) {
                 continue;
             }
@@ -364,7 +372,7 @@ const bulkSignup = async (req, res) => {
                         <p> Click the below link to Signin to your Account</p>
                         <a href="http://localhost:5173/signin" target="_blank">http://localhost:5173/signin</a>
                         <p>We recommend that you change your password after logging in for the first time.</p>
-                        <p>Until Your password is updated you won't able to complete the further step.</p>
+                        <p>Until Your password is updated you won't be able to complete the further step.</p>
                         <p>Thank You,</p>
                         <p>Lara Technologies Team</p>
                     </div>
@@ -381,7 +389,7 @@ const bulkSignup = async (req, res) => {
         if (emailErrors.length > 0) {
             return res.status(200).send({
                 message: 'Bulk signup success with some unsent emails ',
-                students: createdStudents,
+                invalidEmails: invalidEmails,
                 emailErrors
             });
         } else {
@@ -468,7 +476,7 @@ const signupSingle = async (req, res) => {
                     <p> Click the below link to Signin to your Account</p>
                     <a href="http://localhost:5173/signin" target="_blank">http://localhost:5173/signin</a>
                     <p>We recommend that you change your password after logging in for the first time.</p>
-                    <p>Until Your password is updated you won't able to complete the further step.</p>
+                    <p>Until Your password is updated you won't be able to complete the further step.</p>
                     <p>Thank You,</p>
                     <p>Lara Technologies Team</p>
                 </div>
@@ -854,14 +862,12 @@ const addSkillsToStudent = async (req, res) => {
         if (!student) {
             return res.status(404).json({ error: 'No student found' });
         }
-  
-        const skills = await Skill.findAll({ where: { skill_ids } });
-  
+        
+        const skills = await Skill.findAll({ where: { skill_id : skill_ids } });
         // Ensure all skills exist
         if (skills.length !== skill_ids.length) {
             return res.status(404).json({ error: 'One or more skills not found' });
         }
-  
         await Promise.all(skill_ids.map(async skill_id => {
             await Student_Skill.create({
                 skill_id: skill_id,
@@ -869,14 +875,14 @@ const addSkillsToStudent = async (req, res) => {
             });
         }));
   
-        res.status(200).json({ message: 'Skills added to the student successfully.' });
+        return res.status(200).json({ message: 'Skills added to the student successfully.' });
     } catch (error) {
         console.error('Failed to add skills to the student.', error);
-        res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({ error: 'Internal server error' });
     }
-  };
+};
 
-  const removeSkillFromStudent = async (req, res) => {
+const removeSkillFromStudent = async (req, res) => {
     try {
         const { student_id, skill_id } = req.body; 
   
@@ -886,12 +892,12 @@ const addSkillsToStudent = async (req, res) => {
   
         await Student_Skill.destroy({ where: { student_id, skill_id } });
   
-        res.status(200).json({ message: 'Skill removed from student successfully.' });
+        return res.status(200).json({ message: 'Skill removed from student successfully.' });
     } catch (error) {
         console.error('Failed to remove skill from student.', error);
-        res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({ error: 'Internal server error' });
     }
-  };
+};
 
 module.exports = {
     signup,

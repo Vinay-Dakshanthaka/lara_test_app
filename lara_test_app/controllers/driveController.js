@@ -14,7 +14,7 @@ const saveDrive = async (req, res) => {
     const userRole = user.role;
 
     if (userRole !== "SUPER ADMIN" && userRole !== "PLACEMENT OFFICER") {
-      res.status(403).send({ message: "Access Forbidden" });
+      return res.status(403).send({ message: "Access Forbidden" });
     }
 
     const { company_id, drive_date, drive_location } = req.body;
@@ -22,7 +22,7 @@ const saveDrive = async (req, res) => {
     // console.log(company_id);
     const company = await Company.findByPk(company_id);
     if(!company)
-      res.status(403).send({message : 'Company not found'});
+      return res.status(403).send({message : 'Company not found'});
     
     const newDrive = await Drive.create({
       company_id,
@@ -43,12 +43,12 @@ const updateDrive = async (req, res) => {
     const user = await Student.findByPk(id);
     const userRole = user.role;
     if (userRole !== "SUPER ADMIN" && userRole !== "PLACEMENT OFFICER") {
-      res.status(403).send({ message: "Access Forbidden" });
+      return res.status(403).send({ message: "Access Forbidden" });
     }
     const { drive_id, drive_date, drive_location } = req.body;
     const existingDrive = await Drive.findByPk(drive_id);
     if (!existingDrive) {
-      res.status(404).send({ message: "Drive doesn't exist" });
+      return res.status(404).send({ message: "Drive doesn't exist" });
     }
     existingDrive.drive_date = drive_date;
     existingDrive.drive_location = drive_location;
@@ -103,76 +103,76 @@ const getDrivesByCompanyId = async (req, res) => {
 //   }
 // };
 
-const addSkillsToDrive = async (req, res) => {
-  try {
-      const { drive_id, skill_ids } = req.body; 
+// const addSkillsToDrive = async (req, res) => {
+//   try {
+//       const { drive_id, skill_ids } = req.body; 
 
-      if (!drive_id || !skill_ids) {
-          return res.status(400).json({ error: 'Missing skillId or driveId in request body' });
-      }
+//       if (!drive_id || !skill_ids) {
+//           return res.status(400).json({ error: 'Missing skillId or driveId in request body' });
+//       }
 
-      // Fetch the drive from the database using the driveId
-      const drive = await Drive.findByPk(drive_id);
+//       // Fetch the drive from the database using the driveId
+//       const drive = await Drive.findByPk(drive_id);
 
-      // Ensure the drive exists
-      if (!drive) {
-          return res.status(404).json({ error: 'Drive not found' });
-      }
+//       // Ensure the drive exists
+//       if (!drive) {
+//           return res.status(404).json({ error: 'Drive not found' });
+//       }
 
-      // Fetch all skills from the database using the skillIds
-      const skills = await Skill.findAll({ where: { skill_ids } });
+//       // Fetch all skills from the database using the skillIds
+//       const skills = await Skill.findAll({ where: { skill_ids } });
 
-      // Ensure all skills exist
-      if (skills.length !== skill_ids.length) {
-          return res.status(404).json({ error: 'One or more skills not found' });
-      }
+//       // Ensure all skills exist
+//       if (skills.length !== skill_ids.length) {
+//           return res.status(404).json({ error: 'One or more skills not found' });
+//       }
 
-      // Associate the drive with the skill by creating records in the DriveSkill table
-      await Promise.all(skill_ids.map(async skill_id => {
-          await Drive_Skill.create({
-              skill_id: skill_id,
-              drive_id: drive_id
-          });
-      }));
+//       // Associate the drive with the skill by creating records in the DriveSkill table
+//       await Promise.all(skill_ids.map(async skill_id => {
+//           await Drive_Skill.create({
+//               skill_id: skill_id,
+//               drive_id: drive_id
+//           });
+//       }));
 
-      res.status(200).json({ message: 'Skills added to drive successfully.' });
-  } catch (error) {
-      console.error('Failed to add skills to drive.', error);
-      res.status(500).json({ error: 'Internal server error' });
-  }
-};
+//       res.status(200).json({ message: 'Skills added to drive successfully.' });
+//   } catch (error) {
+//       console.error('Failed to add skills to drive.', error);
+//       res.status(500).json({ error: 'Internal server error' });
+//   }
+// };
 
-const removeSkillFromDrive = async (req, res) => {
-  try {
-      const { drive_id, skill_id } = req.body; 
+// const removeSkillFromDrive = async (req, res) => {
+//   try {
+//       const { drive_id, skill_id } = req.body; 
 
-      if (!drive_id || !skill_id) {
-          return res.status(400).json({ error: 'Missing driveId or skillId in request body' });
-      }
+//       if (!drive_id || !skill_id) {
+//           return res.status(400).json({ error: 'Missing driveId or skillId in request body' });
+//       }
 
-      await Drive_Skill.destroy({ where: { drive_id, skill_id } });
+//       await Drive_Skill.destroy({ where: { drive_id, skill_id } });
 
-      res.status(200).json({ message: 'Skill removed from drive successfully.' });
-  } catch (error) {
-      console.error('Failed to remove skill from drive.', error);
-      res.status(500).json({ error: 'Internal server error' });
-  }
-};
+//       res.status(200).json({ message: 'Skill removed from drive successfully.' });
+//   } catch (error) {
+//       console.error('Failed to remove skill from drive.', error);
+//       res.status(500).json({ error: 'Internal server error' });
+//   }
+// };
 
-const getStudentsByDriveId = async(req, res) => {
-  try{
-    const {drive_id} = req.body;
-    const skills = await Drive_Skill.findAll({ where : { drive_id }});
-    const skillIds = skills.map(skill => skill.dataValues.skill_id);
-    console.log("Skills",skills);
-    console.log("Skills",skillIds);
-    const student = await Student_Skill.findAll({ where : { skill_id: skillIds}});
-    console.log(student.student_id, "studentsssssssssssssssssssssssssssssssssssssssssssssssssssssss");
-  }
-  catch(error){
-    return res.status(500).send(error);
-  }
-}
+// const getStudentsByDriveId = async(req, res) => {
+//   try{
+//     const {drive_id} = req.body;
+//     const skills = await Drive_Skill.findAll({ where : { drive_id }});
+//     const skillIds = skills.map(skill => skill.dataValues.skill_id);
+//     console.log("Skills",skills);
+//     console.log("Skills",skillIds);
+//     const student = await Student_Skill.findAll({ where : { skill_id: skillIds}});
+//     console.log(student.student_id, "studentsssssssssssssssssssssssssssssssssssssssssssssssssssssss");
+//   }
+//   catch(error){
+//     return res.status(500).send(error);
+//   }
+// }
 
 module.exports = {
   saveDrive,
@@ -180,7 +180,7 @@ module.exports = {
   getAllDrives,
   getDrivesByCompanyId,
   //getDrivesByJobId,
-  addSkillsToDrive,
-  removeSkillFromDrive,
-  getStudentsByDriveId,
+  // addSkillsToDrive,
+  // removeSkillFromDrive,
+  // getStudentsByDriveId,
 };

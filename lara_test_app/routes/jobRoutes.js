@@ -10,5 +10,7 @@ jobRoute.get('/getJobByJobId', verifyToken, jobController.getJobByJobId);
 jobRoute.get('/getJobsByDriveId', verifyToken, jobController.getJobsByDriveId);
 jobRoute.post('/addSkillsToJob', verifyToken, jobController.addSkillsToJob);
 jobRoute.delete('/removeSkillFromJob', verifyToken, jobController.removeSkillFromJob);
+jobRoute.get('/getStudentsForJobWithSkills', verifyToken, jobController.getStudentsForJobWithSkills);
+jobRoute.post('/sendDriveToStudents', verifyToken, jobController.sendDriveToStudents);
 
 module.exports = jobRoute
