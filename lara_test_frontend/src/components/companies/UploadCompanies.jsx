@@ -97,8 +97,12 @@ const UploadCompanies = () => {
         toast.success("Company Added Successfully");
       } catch (error) {
         console.log("Entered Catch block");
+        if(error.response.status === 400){
+          toast.error('Company mail id already exist ')
+        }else{
+          toast.error("Failed to Add Company");
+        }
         console.error(error);
-        toast.error("Failed to Add Company");
       }
     }
   };

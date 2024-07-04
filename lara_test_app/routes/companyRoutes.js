@@ -10,6 +10,8 @@ companyRoute.put('/updateCompany',verifyToken,companyController.updateCompany);
 //companyRoute.delete('/deleteCompany',verifyToken,companyController.deleteCompany);
 companyRoute.get('/getAllCompanyDetails',verifyToken,companyController.getAllCompanyDetails);
 
+companyRoute.get('/company/:company_id',verifyToken,companyController.getCompanyDetailsById);
+
 companyRoute.post('/uploadCompanyLogo', companyLogo.single('image'), verifyToken,companyController.uploadCompanyLogo);
 
 companyRoute.get('/getCompanyLogo',verifyToken,companyController.getCompanyLogo);

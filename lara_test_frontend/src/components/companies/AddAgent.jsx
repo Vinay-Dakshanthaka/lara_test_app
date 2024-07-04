@@ -1,15 +1,22 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { baseURL } from "../config";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { toast } from "react-toastify";
 import "./styles/uploadcompanies.css";
 
 function AddAgent() {
+  const { companyId } = useParams();
+  // console.log('company id : ', companyId);
   const [agentInfo, setAgentInfo] = useState({
     name: "",
     contactNumber: "",
     designation: "",
     mail_id: "",
   });
-
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,10 +43,40 @@ function AddAgent() {
     return Object.keys(tempErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      console.log(agentInfo);
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.log("No token found");
+          return;
+        }
+
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+
+        const response = await axios.post(
+          `${baseURL}/api/agent/saveAgent`,
+          {
+            company_id: companyId,
+            ...agentInfo,
+          },
+          config
+        );
+
+        toast.success("Agent added successfully");
+        navigate(`/view-agents/${companyId}`);
+      } catch (error) {
+        if(error.response.status === 400){
+          toast.error('Email Id Exists')
+        }
+        console.error("Error adding agent:", error);
+        // toast.error("Error adding agent");
+      }
     }
   };
 

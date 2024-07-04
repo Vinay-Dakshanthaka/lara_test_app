@@ -5,357 +5,6 @@ import { baseURL } from '../config';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
-// const AddJobs = ({ selectedCompanyId }) => {
-//   console.log("CompanyId", selectedCompanyId);
-//     const [jobData, setJobData] = useState({
-//         company_id: selectedCompanyId,
-//         job_title: '',
-//         designation: '',
-//         job_description: '',
-//         job_location: '',
-//         no_of_openings: '',
-//         drive_date: '',
-//         drive_location:''
-//     });
-
-//     const handleChange = (e) => {
-//         setJobData({ ...jobData, [e.target.name]: e.target.value });
-//     };
-
-//     const handleSubmit = async (e) => {
-//         e.preventDefault();
-//         try {
-//             const token = localStorage.getItem('token');
-//             if (!token) {
-//                 console.log('No token found');
-//                 return;
-//             }
-
-//             const config = {
-//                 headers: {
-//                     Authorization: `Bearer ${token}`,
-//                 },
-//             };
-
-//             const response = await axios.post(
-//                 `${baseURL}/api/drive/saveDrive`,
-//                 jobData,
-//                 config
-//             );
-//             toast.success('Job added successfully');
-//         } catch (error) {
-//             console.error('Error adding job:', error);
-//             toast.error('Failed to add job');
-//         }
-//     };
-
-//     return (
-//         <div className="container mt-5">
-//             <h2 className="text-center mb-4">Add Job</h2>
-//             <form onSubmit={handleSubmit}>
-//                 <div className="form-group">
-//                     <label>Job Title</label>
-//                     <input
-//                         type="text"
-//                         className="form-control"
-//                         name="job_title"
-//                         value={jobData.job_title}
-//                         onChange={handleChange}
-//                         required
-//                     />
-//                 </div>
-//                 <div className="form-group">
-//                     <label>designation</label>
-//                     <input
-//                         type="text"
-//                         className="form-control"
-//                         name="designation"
-//                         value={jobData.designation}
-//                         onChange={handleChange}
-//                         required
-//                     />
-//                 </div>
-//                 <div className="form-group">
-//                     <label>Openings</label>
-//                     <input
-//                         type="number"
-//                         className="form-control"
-//                         name="no_of_openings"
-//                         value={jobData.no_of_openings}
-//                         onChange={handleChange}
-//                         required
-//                     />
-//                 </div>
-//                 <div className="form-group">
-//                     <label>Job Description</label>
-//                     <textarea
-//                         className="form-control"
-//                         name="job_description"
-//                         value={jobData.job_description}
-//                         onChange={handleChange}
-//                         rows="3"
-//                         required
-//                     ></textarea>
-//                 </div>
-//                 <div className="form-group">
-//                     <label>Job Location</label>
-//                     <input
-//                         type="text"
-//                         className="form-control"
-//                         name="job_location"
-//                         value={jobData.job_location}
-//                         onChange={handleChange}
-//                         required
-//                     />
-//                 </div>
-//                 <div className="form-group">
-//                     <label>Drive Date</label>
-//                     <input
-//                         type="text"
-//                         className="form-control"
-//                         name="drive_date"
-//                         value={jobData.drive_date}
-//                         onChange={handleChange}
-//                         required
-//                     />
-//                 </div>
-//                 <div className="form-group">
-//                     <label>Drive Location</label>
-//                     <input
-//                         type="text"
-//                         className="form-control"
-//                         name="drive_location"
-//                         value={jobData.drive_location}
-//                         onChange={handleChange}
-//                         required
-//                     />
-//                 </div>
-//                 <button type="submit" className="btn btn-primary">
-//                     Add Job
-//                 </button>
-//             </form>
-//         </div>
-//     );
-// };
-
-// export default AddJobs;
-
-// function AddJob() {
-//   const { job_id } = useParams();
-//   const [job, setJob] = useState({
-//     job_title: "",
-//     description: "",
-//     job_location: "",
-//     no_of_openings: "",
-//     year_of_exp: "",
-//     designation: "",
-//     total_rounds: ""
-//   });
-//   const [skills, setSkills] = useState([]);
-//   const [availableSkills, setAvailableSkills] = useState([]);
-//   const [selectedSkill, setSelectedSkill] = useState("");
-
-//   useEffect(() => {
-//     // Fetch job details
-//     const fetchJobDetails = async () => {
-//       try {
-//         const token = localStorage.getItem("token");
-//         if (!token) {
-//           console.error("No token found");
-//           return;
-//         }
-
-//         const config = {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         };
-
-//         const response = await axios.get(`${baseURL}/api/jobs/${job_id}`, config);
-//         setJob(response.data.job);
-//       } catch (error) {
-//         console.error("Error fetching job details:", error);
-//         toast.error("Failed to fetch job details");
-//       }
-//     };
-
-//     // Fetch available skills
-//     const fetchAvailableSkills = async () => {
-//       try {
-//         const token = localStorage.getItem("token");
-//         if (!token) {
-//           console.error("No token found");
-//           return;
-//         }
-
-//         const config = {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         };
-
-//         const response = await axios.get(`${baseURL}/api/skills`, config);
-//         setAvailableSkills(response.data.skills);
-//       } catch (error) {
-//         console.error("Error fetching available skills:", error);
-//         toast.error("Failed to fetch available skills");
-//       }
-//     };
-
-//     fetchJobDetails();
-//     fetchAvailableSkills();
-//   }, [job_id]);
-
-//   useEffect(() => {
-//     // Fetch skills associated with the job
-//     const fetchJobSkills = async () => {
-//       try {
-//         const token = localStorage.getItem("token");
-//         if (!token) {
-//           console.error("No token found");
-//           return;
-//         }
-
-//         const config = {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         };
-
-//         const response = await axios.get(`${baseURL}/api/jobs/${job_id}/skills`, config);
-//         setSkills(response.data.skills);
-//       } catch (error) {
-//         console.error("Error fetching job skills:", error);
-//         toast.error("Failed to fetch job skills");
-//       }
-//     };
-
-//     fetchJobSkills();
-//   }, [job_id]);
-
-//   const handleAddSkillToJob = async () => {
-//     try {
-//       const token = localStorage.getItem("token");
-//       if (!token) {
-//         console.error("No token found");
-//         return;
-//       }
-
-//       const config = {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       };
-
-//       await axios.post(
-//         `${baseURL}/api/jobs/${job_id}/addSkill`,
-//         { skill_id: selectedSkill },
-//         config
-//       );
-
-//       toast.success("Skill added to job successfully");
-//       setSelectedSkill("");
-//       // Refresh skills associated with the job
-//       const response = await axios.get(`${baseURL}/api/jobs/${job_id}/skills`, config);
-//       setSkills(response.data.skills);
-//     } catch (error) {
-//       console.error("Error adding skill to job:", error);
-//       toast.error("Failed to add skill to job");
-//     }
-//   };
-
-//   const handleRemoveSkillFromJob = async (skill_id) => {
-//     try {
-//       const token = localStorage.getItem("token");
-//       if (!token) {
-//         console.error("No token found");
-//         return;
-//       }
-
-//       const config = {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//         data: { skill_id },
-//       };
-
-//       await axios.delete(`${baseURL}/api/jobs/${job_id}/removeSkill`, config);
-
-//       toast.success("Skill removed from job successfully");
-//       // Refresh skills associated with the job
-//       const response = await axios.get(`${baseURL}/api/jobs/${job_id}/skills`, config);
-//       setSkills(response.data.skills);
-//     } catch (error) {
-//       console.error("Error removing skill from job:", error);
-//       toast.error("Failed to remove skill from job");
-//     }
-//   };
-
-//   return (
-//     <div className="container mt-5">
-//       <h2 className="text-center mb-4">Manage Job Skills</h2>
-//       <div className="row">
-//         <div className="col-md-6">
-//           <h4>Job Details</h4>
-//           <ul>
-//             <li>Job Title: {job.job_title}</li>
-//             <li>Description: {job.description}</li>
-//             <li>Location: {job.job_location}</li>
-//             <li>No. of Openings: {job.no_of_openings}</li>
-//             <li>Years of Experience: {job.year_of_exp}</li>
-//             <li>designation: {job.designation}</li>
-//             <li>Total Rounds: {job.total_rounds}</li>
-//           </ul>
-//         </div>
-//         <div className="col-md-6">
-//           <h4>Add Skills to Job</h4>
-//           <div className="input-group mb-3">
-//             <select
-//               className="custom-select"
-//               value={selectedSkill}
-//               onChange={(e) => setSelectedSkill(e.target.value)}
-//             >
-//               <option value="">Select Skill</option>
-//               {availableSkills.map((skill) => (
-//                 <option key={skill.id} value={skill.id}>
-//                   {skill.name}
-//                 </option>
-//               ))}
-//             </select>
-//             <div className="input-group-append">
-//               <button
-//                 className="btn btn-primary"
-//                 type="button"
-//                 onClick={handleAddSkillToJob}
-//               >
-//                 Add Skill
-//               </button>
-//             </div>
-//           </div>
-//           <h4>Skills Associated with Job</h4>
-//           <ul className="list-group">
-//             {skills.map((skill) => (
-//               <li
-//                 key={skill.id}
-//                 className="list-group-item d-flex justify-content-between align-items-center"
-//               >
-//                 {skill.name}
-//                 <button
-//                   className="btn btn-danger btn-sm"
-//                   onClick={() => handleRemoveSkillFromJob(skill.id)}
-//                 >
-//                   Remove
-//                 </button>
-//               </li>
-//             ))}
-//           </ul>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-
 import ManageSkills from "./ManageSkills";
 
 const AddJobs = () => {
@@ -430,7 +79,6 @@ const AddJobs = () => {
       );
       const { data } = response;
       console.log("Job added successfully:", data);
-
       // Associate selected skills with the job using Job_Skill table
       console.log("skill_ids", selectedSkills);
       console.log("job_id", data.job.job_id);
@@ -439,6 +87,7 @@ const AddJobs = () => {
         { job_id: data.job.job_id, skill_ids: selectedSkills },
         config
       );
+      toast.success('Job added successfuly!')
 
       // Clear form state or navigate to job list page
       setJob({
@@ -453,6 +102,7 @@ const AddJobs = () => {
       setSelectedSkills([]);
     } catch (error) {
       console.error("Failed to add job or skills", error);
+      toast.error('Something went wrong!!')
     }
   };
 
@@ -470,7 +120,7 @@ const AddJobs = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container mt-5">
   <div className="row">
     <div className="col-md-8 offset-md-2">
       <h2>Add Job</h2>
@@ -584,6 +234,7 @@ const AddJobs = () => {
       </form>
     </div>
   </div>
+  <ToastContainer />
 </div>
 
   );

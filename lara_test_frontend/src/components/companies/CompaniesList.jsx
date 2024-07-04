@@ -494,32 +494,36 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
     }
   };
 
-  const handleViewAgents = async (companyId) => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.log("No token found");
-        return;
-      }
+  // const handleViewAgents = async (companyId) => {
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     if (!token) {
+  //       console.log("No token found");
+  //       return;
+  //     }
 
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
+  //     const config = {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     };
 
-      const response = await axios.post(
-        `${baseURL}/api/agent/getAgentByCompanyId`,
-        { companyId },
-        config
-      );
+  //     const response = await axios.post(
+  //       `${baseURL}/api/agent/getAgentByCompanyId`,
+  //       { companyId },
+  //       config
+  //     );
 
-      setAgents(response.data);
-    } catch (error) {
-      console.error("Error fetching agents:", error);
-      toast.error("Error fetching agents");
-    }
-  };
+  //     setAgents(response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching agents:", error);
+  //     toast.error("Error fetching agents");
+  //   }
+  // };
+
+  const handleViewAgents = async (companyId)=>{
+    navigate(`/view-agents/${companyId}`)
+  }
 
   const handeleAddDrive = (companyId) => {
     setSelectedCompanyId(companyId);
@@ -644,9 +648,8 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
   };
 
   const handleViewDrives = (companyId) => {
-    navigate(`/view-drives/${companyId}`);
-  };
-
+    navigate(`/view-drives/${companyId}`)
+  }
   return (
     <div className="container mt-5">
       <h2 className="text-center mb-4">List of Companies</h2>
@@ -660,7 +663,7 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
             <th>Address</th>
             <th>Phone</th>
             <th>Email</th>
-            <th>Agents</th>
+            {/* <th>Agents</th> */}
             <th>Options</th>
           </tr>
         </thead>
@@ -668,7 +671,7 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
           {companies.map((company) => (
             <tr key={company.company_id}>
               <td>
-                <div className="edit-icon display-inline">
+              <div className="edit-icon display-inline">
                   <FontAwesomeIcon
                     icon={faEdit}
                     size="sm"
@@ -701,7 +704,7 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
               <td>{company.address}</td>
               <td>{company.phoneNumber}</td>
               <td>{company.general_mail_id}</td>
-              <td>
+              {/* <td>
                 <ul>
                   {agents
                     .filter((agent) => agent.company_id === company.company_id)
@@ -711,7 +714,7 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
                       </li>
                     ))}
                 </ul>
-              </td>
+              </td> */}
               <td>
                 <Dropdown>
                   <Dropdown.Toggle variant="secondary" id="dropdown-basic">

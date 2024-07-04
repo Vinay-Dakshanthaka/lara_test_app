@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import WebinarForm from './WebinarForm';
 import { baseURL } from '../config';
+import { ToastContainer, toast } from 'react-toastify';
 
 const WebinarList = () => {
     const [webinars, setWebinars] = useState([]);
@@ -30,8 +31,10 @@ const WebinarList = () => {
       try {
         await axios.delete(`${baseURL}/api/webinars/delete-webinars`, { data: { id }, ...config });
         fetchWebinars();
+        toast.success('Webinar/Training deleted Successfully!!')
       } catch (error) {
         console.error(error);
+        toast.error('Something went wrong!!')
       }
     };
   
@@ -48,8 +51,10 @@ const WebinarList = () => {
         await axios.put(`${baseURL}/api/webinars/update-webinars-Trainings`, { ...editingWebinar }, config);
         setEditingWebinar(null);
         fetchWebinars();
+        toast.success('Updated Successfully!!')
       } catch (error) {
         console.error(error);
+        toast.error('Something went wrong!!')
       }
     };
   
@@ -126,6 +131,7 @@ const WebinarList = () => {
             <button type="button" className="btn btn-secondary ml-2" onClick={() => setEditingWebinar(null)}>Cancel</button>
           </form>
         )}
+        <ToastContainer />
       </div>
     );
 };

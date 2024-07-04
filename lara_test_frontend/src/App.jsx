@@ -38,6 +38,7 @@ import AddJob from "./components/companies/AddJob";
 import EditJob from "./components/companies/EditJob";
 import ManageSkills from "./components/companies/ManageSkills";
 import UpdateCompanies from "./components/companies/UpdateCompanies";
+import ViewAgents from "./components/companies/ViewAgents";
 
 const App = () => {
   const location = useLocation();
@@ -85,7 +86,7 @@ const App = () => {
               <CompaniesList setSelectedCompanyId={setSelectedCompanyId} />
             }
           />
-          <Route path="/add-company-agent" element={<AddAgent />} />
+          {/* <Route path="/add-company-agent" element={<AddAgent />} /> */}
 
           {/* Routes added by Abhilash */}
           {/* <Route path="/add-job" element = {<AddJobs selectedCompanyId={selectedCompanyId}/>}/> */}
@@ -102,6 +103,8 @@ const App = () => {
           <Route path="/jobs/:job_id/edit" element={<EditJob/>} />
           <Route path="/jobs/:job_id/skills" element={<ManageSkills/>} />
           <Route path="/update-company/:company_id" element={<UpdateCompanies/>}/>
+          <Route path="/view-agents/:companyId" element={<ViewAgents/>} />
+          <Route path="/add-agent/:companyId" element={<AddAgent />} />
         </Route>
       </Routes>
     </>

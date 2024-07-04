@@ -236,6 +236,32 @@ const getAllCompanyDetails = async (req, res) => {
     }
 }
 
+const getCompanyDetailsById = async (req, res) => {
+    try {
+        const id = req.student_id;
+        const student = await Student.findByPk(id);
+        const role = student.role;
+
+        if (role !== 'PLACEMENT OFFICER' && role !== 'SUPER ADMIN') {
+            return res.status(403).send({ message: 'Access Forbidden' });
+        }
+
+        const { company_id } = req.params;
+        const company = await Company.findByPk(company_id);
+
+        if (!company) {
+            return res.status(404).send({ message: 'Company not found' });
+        }
+
+        res.status(200).json(company);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message });
+    }
+}
+
+
 
 const uploadCompanyLogo = async(req, res) => {
     try{
@@ -427,6 +453,7 @@ module.exports = {
     companyLogo,
     //deleteCompany,
     getAllCompanyDetails,
+    getCompanyDetailsById,
     uploadCompanyLogo,
     getCompanyLogo,
     saveCompanyType,
