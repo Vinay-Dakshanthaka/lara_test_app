@@ -23,4 +23,6 @@ companyRoute.post('/updateCompanyType',verifyToken,companyController.updateCompa
 
 companyRoute.get('/getAllCompanyTypes',verifyToken,companyController.getAllCompanyTypes);
 
+companyRoute.get('/getCompanyByCompanyId',verifyToken,companyController.getCompanyByCompanyId);
+
 module.exports = companyRoute
