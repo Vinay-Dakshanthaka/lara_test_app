@@ -117,6 +117,7 @@ function ViewDrives() {
           <tr>
             <th>Location</th>
             <th>Date</th>
+            <th>Time</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -125,6 +126,7 @@ function ViewDrives() {
             <tr key={drive.drive_id}>
               <td>{drive.drive_location}</td>
               <td>{drive.drive_date}</td>
+              <td>{drive.drive_time}</td>
               <td>
                 <Link to={`/drives/${drive.drive_id}/jobs`} className="btn btn-primary">View Jobs</Link>
                 <Link to={`/drives/${drive.drive_id}/add-job`} className="btn btn-secondary ml-2">Add Job</Link>
