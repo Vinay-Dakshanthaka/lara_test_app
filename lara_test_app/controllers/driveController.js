@@ -17,7 +17,7 @@ const saveDrive = async (req, res) => {
       return res.status(403).send({ message: "Access Forbidden" });
     }
 
-    const { company_id, drive_date, drive_location } = req.body;
+    const { company_id, drive_date,drive_time, drive_location } = req.body;
     console.log('compnay id--------------------------- :'  , company_id)
     // console.log(company_id);
     const company = await Company.findByPk(company_id);
@@ -27,7 +27,8 @@ const saveDrive = async (req, res) => {
     const newDrive = await Drive.create({
       company_id,
       drive_date,
-      drive_location
+      drive_location,
+      drive_time
     });
     res.status(200).send({ message: "Drive Created Successfully", newDrive: newDrive });
 
@@ -45,13 +46,15 @@ const updateDrive = async (req, res) => {
     if (userRole !== "SUPER ADMIN" && userRole !== "PLACEMENT OFFICER") {
       return res.status(403).send({ message: "Access Forbidden" });
     }
-    const { drive_id, drive_date, drive_location } = req.body;
+    const { drive_id, drive_date, drive_time, drive_location } = req.body;
     const existingDrive = await Drive.findByPk(drive_id);
     if (!existingDrive) {
       return res.status(404).send({ message: "Drive doesn't exist" });
     }
     existingDrive.drive_date = drive_date;
     existingDrive.drive_location = drive_location;
+    existingDrive.drive_time = drive_time;
+
 
     await existingDrive.save();
     return res.status(200).send({ message: "Drive Updated Successfully", drive: existingDrive });

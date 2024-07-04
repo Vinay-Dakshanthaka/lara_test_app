@@ -32,14 +32,8 @@ function EditJob() {
           },
         };
 
-        const response = await axios.get(
-          `${baseURL}/api/getJobById`,
-          {
-            params: { job_id },
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+        const response = await axios.post(
+          `${baseURL}/api/job/getJobByJobId`,{job_id}, config
         );
 
         setJob(response.data.job);
@@ -76,7 +70,7 @@ function EditJob() {
       };
 
       await axios.put(
-        `${baseURL}/api/updateJob`,
+        `${baseURL}/api/job/updateJob`,
         { job_id, ...job },
         config
       );
