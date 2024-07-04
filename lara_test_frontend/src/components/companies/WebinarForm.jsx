@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { baseURL } from '../config';
+import { ToastContainer, toast } from 'react-toastify';
 
 const WebinarForm = ({ webinar, onSuccess }) => {
     const [formData, setFormData] = useState({
@@ -34,13 +35,17 @@ const WebinarForm = ({ webinar, onSuccess }) => {
         //     speaker: '',
         //     link: '',
         //   });
+        toast.success('Webinar/Training Added Successfully!!!!')
         } catch (error) {
           console.error(error);
+          toast.error('Something Went wrong!!!')
         }
       };
     
       return (
-        <form onSubmit={handleSubmit}>
+        <>
+          <div className="container mt-5">
+          <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Title</label>
             <input type="text" className="form-control" name="title" value={formData.title} onChange={handleChange} required />
@@ -71,6 +76,9 @@ const WebinarForm = ({ webinar, onSuccess }) => {
           </div>
           <button type="submit" className="btn btn-primary">Add Webinar/Training</button>
         </form>
+        <ToastContainer/>
+          </div>
+        </>
       );    
 };
 

@@ -100,32 +100,36 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
     }
   };
 
-  const handleViewAgents = async (companyId) => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.log("No token found");
-        return;
-      }
+  // const handleViewAgents = async (companyId) => {
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     if (!token) {
+  //       console.log("No token found");
+  //       return;
+  //     }
 
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
+  //     const config = {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     };
 
-      const response = await axios.post(
-        `${baseURL}/api/agent/getAgentByCompanyId`,
-        { companyId },
-        config
-      );
+  //     const response = await axios.post(
+  //       `${baseURL}/api/agent/getAgentByCompanyId`,
+  //       { companyId },
+  //       config
+  //     );
 
-      setAgents(response.data);
-    } catch (error) {
-      console.error("Error fetching agents:", error);
-      toast.error("Error fetching agents");
-    }
-  };
+  //     setAgents(response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching agents:", error);
+  //     toast.error("Error fetching agents");
+  //   }
+  // };
+
+  const handleViewAgents = async (companyId)=>{
+    navigate(`/view-agents/${companyId}`)
+  }
 
   // const handleAddJob = (companyId) => {
   //   setSelectedCompanyId(companyId);
@@ -245,43 +249,6 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
   const handleViewDrives = (companyId) => {
     navigate(`/view-drives/${companyId}`)
   }
-  // const handleSelectCompany = async (companyId) => {
-  //   try {
-  //     const token = localStorage.getItem('token');
-  //     if (!token) {
-  //       console.log('No token found');
-  //       return;
-  //     }
-
-  //     const config = {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     };
-
-  //     // Fetch jobs associated with the selected company using req.body
-  //     console.log("CompanyId", companyId);
-  //     const response = await axios.get(
-  //       `${baseURL}/api/job/getJobsBycompanyId`,
-  //       {
-  //         params: { company_id: companyId }, // Pass companyId as query parameter
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-  //     console.log(response);
-  //     // Set the jobs data for the selected company
-  //     setJobsForCompany([response.data.job]);
-
-  //     // Navigate to the ViewJobs component with jobs data
-  //     navigate(`view-jobs/${companyId}`);
-  //   } catch (error) {
-  //     console.error('Error fetching jobs:', error);
-  //     toast.error('Failed to fetch jobs');
-  //   }
-  // };
-
   return (
     <div className="container mt-5">
       <h2 className="text-center mb-4">List of Companies</h2>
