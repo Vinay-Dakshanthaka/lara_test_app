@@ -122,6 +122,22 @@ const updateCompany = async(req, res) => {
 //     }
 // }
 
+const getCompanyByCompanyId = async (req, res) => {
+    try {
+        const {company_id} = req.body;
+
+        const company = await Company.findByPk(company_id);
+        if(!company_id)
+            return res.status(404).send({ message: 'Company not found.' });
+
+        res.status(200).send({company : company});
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message });
+    }
+}
+
 const getAllCompanyDetails = async (req, res) => {
     try {
         // Fetch all company deatils from the database
@@ -197,6 +213,7 @@ module.exports = {
     updateCompany,
     companyLogo,
     //deleteCompany,
+    getCompanyByCompanyId,
     getAllCompanyDetails,
     uploadCompanyLogo,
     getCompanyLogo

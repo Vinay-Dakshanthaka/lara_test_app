@@ -66,7 +66,7 @@ const updateAgent = async(req, res) => {
         }
     }catch(error){
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -93,11 +93,11 @@ const deleteAgent = async (req, res) => {
 
         await agent.destroy(agent)
 
-        res.status(200).send({message : 'Agent Deleted Successfully!!!'});
+        return res.status(200).send({message : 'Agent Deleted Successfully!!!'});
 
     }catch(error){
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -112,7 +112,7 @@ const getAllAgentDetails = async (req, res) => {
         return res.status(200).send({agents});
     }catch(error){
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -129,7 +129,7 @@ const getAgentByCompanyId = async (req, res) => {
         return res.status(200).send({agent});
     }catch(error){
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 

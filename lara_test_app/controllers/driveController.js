@@ -14,14 +14,14 @@ const saveDrive = async (req, res) => {
     const userRole = user.role;
 
     if (userRole !== "SUPER ADMIN" && userRole !== "PLACEMENT OFFICER") {
-      res.status(403).send({ message: "Access Forbidden" });
+      return res.status(403).send({ message: "Access Forbidden" });
     }
 
     const { company_id, drive_date, drive_location } = req.body;
     
     const company = await Company.findByPk(company_id);
     if(!company)
-      res.status(403).send({message : 'Company not found'});
+      return res.status(403).send({message : 'Company not found'});
     
     const newDrive = await Drive.create({
       company_id,
@@ -42,12 +42,12 @@ const updateDrive = async (req, res) => {
     const user = await Student.findByPk(id);
     const userRole = user.role;
     if (userRole !== "SUPER ADMIN" && userRole !== "PLACEMENT OFFICER") {
-      res.status(403).send({ message: "Access Forbidden" });
+      return res.status(403).send({ message: "Access Forbidden" });
     }
     const { drive_id, drive_date, drive_location } = req.body;
     const existingDrive = await Drive.findByPk(drive_id);
     if (!existingDrive) {
-      res.status(404).send({ message: "Drive doesn't exist" });
+      return res.status(404).send({ message: "Drive doesn't exist" });
     }
     existingDrive.drive_date = drive_date;
     existingDrive.drive_location = drive_location;

@@ -18,13 +18,13 @@ const saveJob = async(req, res) => {
         const role = student.role;
         
         if(role !== 'PLACEMENT OFFICER' & role !== 'SUPER ADMIN')
-            res.status(403).send({message : 'Access Forbidden'});
+            return res.status(403).send({message : 'Access Forbidden'});
 
         const {drive_id, year_of_exp, job_title, description, no_of_openings, job_location, position, total_rounds} = req.body;
 
         const drive = await Drive.findByPk(drive_id);
         if(!drive)
-            res.status(403).send({message : 'Drive not found'});
+            return res.status(403).send({message : 'Drive not found'});
 
         const job = await Job.create({job_title, description, no_of_openings, year_of_exp, job_location, position, total_rounds, drive_id});
         res.status(200).send({message : 'successfully saved' , job});
@@ -43,7 +43,7 @@ const updateJob = async(req, res) => {
         const role = student.role;
         
         if(role !== 'PLACEMENT OFFICER' & role !== 'SUPER ADMIN')
-            res.status(403).send({message : 'Access Forbidden'});
+            return res.status(403).send({message : 'Access Forbidden'});
 
         const {job_id, job_title, description, no_of_openings, job_location, position, total_rounds, year_of_exp} = req.body;
 
@@ -53,7 +53,7 @@ const updateJob = async(req, res) => {
 
         let job = await Job.findByPk(job_id);
         if(!job)
-            res.status(403).send({message : 'Job not found'});
+            return res.status(403).send({message : 'Job not found'});
 
         await Job.update({job_title, description, no_of_openings, job_location, position, total_rounds, year_of_exp}, {where : {job_id}});
         job = await Job.findByPk(job_id);
@@ -73,7 +73,7 @@ const deleteJob = async(req, res) => {
         const role = student.role;
         
         if(role !== 'PLACEMENT OFFICER' & role !== 'SUPER ADMIN')
-            res.status(403).send({message : 'Access Forbidden'});
+            return res.status(403).send({message : 'Access Forbidden'});
 
         const {job_id} = req.body;
 
@@ -83,7 +83,7 @@ const deleteJob = async(req, res) => {
 
         let job = await Job.findByPk(job_id);
         if(!job)
-            res.status(403).send({message : 'Job not found'});
+            return res.status(403).send({message : 'Job not found'});
 
         await Job.destroy({where : {job_id}});
 
@@ -112,7 +112,7 @@ const getJobByJobId = async(req, res) => {
 
         let job = await Job.findByPk(job_id);
         if(!job)
-            res.status(403).send({message : 'Job not found'});
+            return res.status(403).send({message : 'Job not found'});
 
         res.status(200).send({job});
     } catch(error){
@@ -140,7 +140,7 @@ const getJobsByDriveId = async(req, res) => {
         let job = await Job.findAll({where : {drive_id}});
         console.log(job);
         if(job.length === 0)
-            res.status(404).send({message : 'Job not found'});
+            return res.status(404).send({message : 'Job not found'});
 
         res.status(200).send({job});
     } catch(error){
@@ -210,13 +210,13 @@ const getStudentsForJobWithSkills = async(req, res) => {
         const jobSkill = await Job_Skill.findAll({ where : { job_id }, attributes: ['skill_id'] });
 
         if(jobSkill.length === 0)
-            res.status(404).send({message : "Skills not added for this job"});
+            return res.status(404).send({message : "Skills not added for this job"});
 
         const skillIds = jobSkill.map(jobSkill => jobSkill.skill_id);
 
         const studentSkill = await db.Student_Skill.findAll({ where : {skill_id : skillIds }, attributes: ['student_id'] });
         if(!studentSkill)
-            res.status(404).send({ message : "Students not found for the matched skills" })
+            return res.status(404).send({ message : "Students not found for the matched skills" })
 
         const studentIdsSet = new Set(studentSkill.map(studentSkill => studentSkill.student_id));
         const studentIds = Array.from(studentIdsSet);
@@ -239,7 +239,7 @@ const transporter = nodemailer.createTransport({
 
 const sendDriveToStudents = async(req, res) => {
     try{
-        const {student_ids, job_id} = req.body;
+        const {student_ids, job_id, subject, mail_body} = req.body;
         if (!job_id || !student_ids) {
             return res.status(400).json({ error: 'Missing jobId or studentIds in request body' });
         }
@@ -274,51 +274,52 @@ const sendDriveToStudents = async(req, res) => {
             const mailOptions = {
                 from: 'lara.placementcell@gmail.com',
                 to: email,
-                subject: 'Invitation to Participate in the Upcoming Recruitment Drive!',
-                html: `
-                    <div style="font-family: Arial, sans-serif; padding: 20px;">
-                        <img src="https://laragrooming.com/static/media/laralogo.4950e732716a6d9baed2.webp" alt="Lara Technologies Logo" style="max-width: 150px;">
-                        <p>Dear Student,</p>
-                        <br/>
-                        <p>I hope this email finds you well. We are excited to announce an upcoming recruitment drive that offers fantastic job opportunities for our talented students. Below are the details of the event:</p>
-                        <br/>
-                        <pre><b>Date:</b>${drive.drive_date}</pre>
-                        <pre><b>Date:</b>${drive.drive_time}</pre>
-                        <pre><b>Date:</b>${drive.drive_location}</pre>
-                        <br/>
-                        <pre><b>About Company and Job:</b></pre>
-                        <br/>
-                        <pre>Company Name: ${company.name}</pre>
-                        <pre>Job: ${job.job_title}</pre>
-                        <pre>JD: ${job.description}</pre>
-                        <pre>Designation: ${job.position}</pre>
-                        <pre>Location: ${job.job_location}</pre>
-                        <pre>Total rounds: ${job.total_rounds}</pre>
-                        <br/>
-                        <pre><b>Skills needed for this job:</b></pre>
-                        <br/>
-                        <ul>
-                            ${skillsList}
-                        </ul>
-                        <br/>
-                        <pre><b>Documents to Bring:</b></pre>
-                        <br/>
-                        <ul>
-                            <li>Updated Resume</li>
-                            <li>Academic Transcripts</li>
-                        </ul>
-                        <br/>
-                        <pre>We highly encourage all eligible students to participate in this drive and make the most of this opportunity.</pre>
-                        </br>
-                        <pre>For any queries or further information, please feel free to contact ${agent.name} on ${agent.contactNumber} at </pre>
+                subject: subject,
+                text: mail_body
+                // html: `
+                //     <div style="font-family: Arial, sans-serif; padding: 20px;">
+                //         <img src="https://laragrooming.com/static/media/laralogo.4950e732716a6d9baed2.webp" alt="Lara Technologies Logo" style="max-width: 150px;">
+                //         <p>Dear Student,</p>
+                //         <br/>
+                //         <p>I hope this email finds you well. We are excited to announce an upcoming recruitment drive that offers fantastic job opportunities for our talented students. Below are the details of the event:</p>
+                //         <br/>
+                //         <pre><b>Date:</b>${drive.drive_date}</pre>
+                //         <pre><b>Date:</b>${drive.drive_time}</pre>
+                //         <pre><b>Date:</b>${drive.drive_location}</pre>
+                //         <br/>
+                //         <pre><b>About Company and Job:</b></pre>
+                //         <br/>
+                //         <pre>Company Name: ${company.name}</pre>
+                //         <pre>Job: ${job.job_title}</pre>
+                //         <pre>JD: ${job.description}</pre>
+                //         <pre>Designation: ${job.position}</pre>
+                //         <pre>Location: ${job.job_location}</pre>
+                //         <pre>Total rounds: ${job.total_rounds}</pre>
+                //         <br/>
+                //         <pre><b>Skills needed for this job:</b></pre>
+                //         <br/>
+                //         <ul>
+                //             ${skillsList}
+                //         </ul>
+                //         <br/>
+                //         <pre><b>Documents to Bring:</b></pre>
+                //         <br/>
+                //         <ul>
+                //             <li>Updated Resume</li>
+                //             <li>Academic Transcripts</li>
+                //         </ul>
+                //         <br/>
+                //         <pre>We highly encourage all eligible students to participate in this drive and make the most of this opportunity.</pre>
+                //         </br>
+                //         <pre>For any queries or further information, please feel free to contact ${agent.name} on ${agent.contactNumber} at </pre>
                         
-                        <br/>
-                        <pre>We look forward to your active participation.</pre>
-                        <br/>
-                        <pre>Thank You,</pre>
-                        <pre>TOTFD Team</pre>
-                    </div>
-                `
+                //         <br/>
+                //         <pre>We look forward to your active participation.</pre>
+                //         <br/>
+                //         <pre>Thank You,</pre>
+                //         <pre>TOTFD Team</pre>
+                //     </div>
+                // `
             };
 
             try {
