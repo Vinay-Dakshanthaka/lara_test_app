@@ -5,7 +5,7 @@
     --nav-width: 68px;
     --first-color: #4723D9;
     --first-color-light: #AFA5D9;
-    --nav-width-expanded:200px;
+    --nav-width-expanded: 200px;
     --white-color: #F7F6FB;
     --body-font: 'Nunito', sans-serif;
     --normal-font-size: 1rem;
@@ -14,24 +14,24 @@
 
 body {
     position: relative;
-    /* margin: var(--header-height) 0 0 2rem; */
     margin-left: 3rem;
     padding: 1.7rem 0 0 0;
     font-family: var(--body-font);
     font-size: var(--normal-font-size);
     transition: .5s;
-    background-color: var(--white-color); /* Ensure body background color */
+    background-color: var(--white-color);
 }
 
 a {
     text-decoration: none;
 }
 
-.link{
+.link {
     border: none;
     text-decoration: underline;
     color: rgb(76, 175, 80);
 }
+
 .header {
     width: 100%;
     height: var(--header-height);
@@ -51,8 +51,8 @@ a {
     color: var(--first-color);
     font-size: 1.5rem;
     cursor: pointer;
-    position: relative; /* Ensure relative positioning for z-index */
-    z-index: 101; /* Higher z-index than .l-navbar content */
+    position: relative;
+    z-index: 101;
 }
 
 .header_toggle svg {
@@ -78,7 +78,7 @@ a {
 .l-navbar {
     position: fixed;
     top: 0;
-    left: -100%; /* Initial position off-scree93n */
+    left: -100%;
     width: var(--nav-width);
     height: 100vh;
     background-color: var(--first-color);
@@ -86,7 +86,8 @@ a {
     transition: .5s;
     z-index: var(--z-fixed);
     overflow-y: auto; /* Enable vertical scrollbar */
-    scrollbar-width: thin; /* Thin scrollbar (only works in Firefox currently) */
+    scrollbar-width: thin; /* Thin scrollbar */
+    scrollbar-color: rgba(155, 155, 155, 0.5) transparent; /* Scrollbar color */
 }
 
 .l-navbar.show {
@@ -95,11 +96,13 @@ a {
 }
 
 .nav {
-    height: 100%;
+    height: auto;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    overflow: hidden;
+    /* overflow: hidden; */
+    overflow-y: auto;
+    overflow-x: hidden;
     position: relative; /* Ensure relative positioning for .nav_toggle */
 }
 
@@ -110,7 +113,7 @@ a {
     align-items: center;
     column-gap: 1rem;
     padding: .5rem 0 .5rem 0.2rem;
-    white-space: nowrap; /* Prevent text wrapping */
+    white-space: nowrap;
     cursor: pointer;
 }
 
@@ -125,8 +128,7 @@ a {
 
 .nav_logo-name {
     color: var(--white-color);
-    font-weight: 700;  
-    /* margin-left: -20px;   */
+    font-weight: 700;
 }
 
 .nav_link {
@@ -160,17 +162,13 @@ a {
 
 .nav_toggle {
     position: absolute;
-    /* top: 1rem; */
-    /* right: 2rem; */
     right: 0px;
     padding-right: 4px;
-    /* padding-top: 6px; */
     top: -0.45rem;
     font-size: 1.5rem;
     cursor: pointer;
     color: var(--white-color);
-    z-index: 102; /* Higher than other elements in .nav */
-    
+    z-index: 102;
 }
 
 @media screen and (min-width: 768px) {
@@ -208,40 +206,38 @@ a {
 }
 
 .l-navbar::-webkit-scrollbar {
-    width: 8px; /* Width of the scrollbar */
+    width: 6px;
 }
 
 .l-navbar::-webkit-scrollbar-track {
-    background: #f1f1f1; /* Light color for scrollbar track */
+    background: transparent;
 }
 
 .l-navbar::-webkit-scrollbar-thumb {
-    background-color: #888; /* Color of the scrollbar thumb */
-    border-radius: 4px; /* Rounded corners for scrollbar thumb */
+    background-color: rgba(155, 155, 155, 0.5);
+    border-radius: 10px;
+    border: transparent;
 }
 
-.custom-bg{
+.custom-bg {
     background-color: #4723d9 !important;
-
 }
 
-.accordion-item{
+.accordion-item {
     background-color: #4723D9 !important;
 }
 
-.margin-bottom-0{
+.margin-bottom-0 {
     margin-bottom: 0 !important;
 }
 
-
-/* sidebar accordion style start  */
-.accordion-button{
+.accordion-button {
     padding: 6px !important;
     background-color: transparent !important;
     color: #fff !important;
     border: none !important;
 }
 
-.accordion-item{
+.accordion-item {
     border: none !important;
 }

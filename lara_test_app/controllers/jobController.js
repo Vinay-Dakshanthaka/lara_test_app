@@ -122,32 +122,23 @@ const getJobByJobId = async(req, res) => {
     
 }
 
-const getJobsByDriveId = async(req, res) => {
-    try{
-        // const student_id = req.student_id;
-        // const student = await db.Student.findByPk(student_id);
-        // const role = student.role;
-        
-        // if(role !== 'PLACEMENT OFFICER' & role !== 'SUPER ADMIN')
-        //     res.status(403).send({message : 'Access Forbidden'});
+const getJobsByDriveId = async (req, res) => {
+  try {
+    const { drive_id } = req.query;
+    console.log('id :=========',drive_id)
+    let job = await Job.findAll({ where: { drive_id } });
+    console.log(job);
+    if (job.length === 0) {
+      return res.status(404).send({ message: 'Job not found' });
+    }
 
-        const {drive_id} = req.body;
+    res.status(200).send({ job });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: error.message });
+  }
+};
 
-        // const company = await Company.findByPk(company_id);
-        // if(!company)
-        //     res.status(403).send({message : 'Company not found'});
-
-        let job = await Job.findAll({where : {drive_id}});
-        console.log(job);
-        if(job.length === 0)
-            return res.status(404).send({message : 'Job not found'});
-
-        return res.status(200).send({job});
-    } catch(error){
-        console.log(error);
-        return res.status(500).send({message : error.message});
-    }  
-}
 
 const addSkillsToJob = async (req, res) => {
     try {

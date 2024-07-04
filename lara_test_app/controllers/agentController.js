@@ -29,9 +29,8 @@ const saveAgent = async(req, res) => {
             });
             return res.status(200).send({message : "Agent added successfully", newAgent})
         }
-
         else{
-            return res.status(404).json({ error: 'Agent email-id already exists' });
+            return res.status(400).json({ error: 'Duplicate Email id ' });
         }   
     } catch(error) {
         return res.status(500).send({message : error.message});

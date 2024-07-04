@@ -1,21 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./styles/uploadcompanies.css";
 import axios from "axios";
 import { baseURL } from "../config";
 import { ToastContainer, toast } from "react-toastify";
+import AddCompanyType from "./AddCompanyType";
 
 const UploadCompanies = () => {
   const [companyInfo, setCompanyInfo] = useState({
     name: "",
     address: "",
-    type: "",
+    companyType_id: "",
     url: "",
     general_mail_id: "",
     phoneNumber: "",
     description: "",
   });
 
+  const [companyTypes, setCompanyTypes] = useState([]);
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    const fetchCompanyTypes = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("No token found");
+          return;
+        }
+
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        const response = await axios.get(`${baseURL}/api/company/getAllCompanyTypes`, config);
+        // console.log('response type ', response.data);
+        setCompanyTypes(response.data.companyTypes); // Access the array within the nested object
+      } catch (error) {
+        console.error("Failed to fetch company types", error);
+      }
+    };
+
+    fetchCompanyTypes();
+  }, []); // Adding an empty dependency array to run the effect only once on mount
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,11 +56,9 @@ const UploadCompanies = () => {
     let tempErrors = {};
     if (!companyInfo.name) tempErrors.name = "Name is required.";
     if (!companyInfo.address) tempErrors.address = "Address is required.";
-    if (!companyInfo.type) tempErrors.type = "Type is required.";
+    if (!companyInfo.companyType_id) tempErrors.companyType_id = "Type is required.";
     if (!companyInfo.url) {
       tempErrors.url = "URL is required.";
-    } else if (!/^https?:\/\/\S+$/.test(companyInfo.url)) {
-      tempErrors.url = "URL is invalid.";
     }
     if (!companyInfo.general_mail_id) {
       tempErrors.general_mail_id = "Mail ID is required.";
@@ -72,8 +97,12 @@ const UploadCompanies = () => {
         toast.success("Company Added Successfully");
       } catch (error) {
         console.log("Entered Catch block");
+        if(error.response.status === 400){
+          toast.error('Company mail id already exist ')
+        }else{
+          toast.error("Failed to Add Company");
+        }
         console.error(error);
-        toast.error("Failed to Add Comapny");
       }
     }
   };
@@ -81,10 +110,10 @@ const UploadCompanies = () => {
   return (
     <div className="container rounded bg-white mt-5 mb-5 background">
       <div className="row">
-        <div className="col-md-5 border-right">
+        <div className="col-md-6">
           <div className="p-3 py-5">
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <h4 className="text-right">Company Information</h4>
+              <h4 className="text-right">Add Company Information</h4>
             </div>
             <form onSubmit={handleSubmit}>
               <div className="row mt-2">
@@ -119,17 +148,22 @@ const UploadCompanies = () => {
                   )}
                 </div>
                 <div className="col-md-12 my-2">
-                  <label className="labels">Type</label>
-                  <input
-                    type="text"
+                  <label className="labels">Select Company Category</label>
+                  <select
                     className="form-control"
-                    placeholder="Type"
-                    name="type"
-                    value={companyInfo.type}
+                    name="companyType_id"
+                    value={companyInfo.companyType_id}
                     onChange={handleChange}
-                  />
-                  {errors.type && (
-                    <div className="text-danger">{errors.type}</div>
+                  >
+                    <option value="">Select Category</option>
+                    {companyTypes.map((type) => (
+                      <option key={type.companyType_id} value={type.companyType_id}>
+                        {type.type}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.companyType_id && (
+                    <div className="text-danger">{errors.companyType_id}</div>
                   )}
                 </div>
                 <div className="col-md-12 my-2">
@@ -153,11 +187,11 @@ const UploadCompanies = () => {
                     className="form-control"
                     placeholder="Mail ID"
                     name="general_mail_id"
-                    value={companyInfo.mailId}
+                    value={companyInfo.general_mail_id}
                     onChange={handleChange}
                   />
-                  {errors.mailId && (
-                    <div className="text-danger">{errors.mailId}</div>
+                  {errors.general_mail_id && (
+                    <div className="text-danger">{errors.general_mail_id}</div>
                   )}
                 </div>
                 <div className="col-md-12 my-2">
@@ -191,7 +225,7 @@ const UploadCompanies = () => {
               </div>
               <div className="mt-5 text-center">
                 <button
-                  className="btn btn-primary profile-button"
+                  className="btn btn-primary"
                   type="submit"
                 >
                   Save Company Info
@@ -200,10 +234,12 @@ const UploadCompanies = () => {
             </form>
           </div>
         </div>
+        <div className="col-md-6">
+          <AddCompanyType />
+        </div>
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
-    
   );
 };
 
