@@ -22,7 +22,7 @@ const saveDrive = async (req, res) => {
     // console.log(company_id);
     const company = await Company.findByPk(company_id);
     if(!company)
-      return res.status(403).send({message : 'Company not found'});
+      return res.status(404).send({message : 'Company not found'});
     
     const newDrive = await Drive.create({
       company_id,

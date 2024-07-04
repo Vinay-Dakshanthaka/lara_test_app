@@ -278,7 +278,7 @@ const StudentCumulativeTest = () => {
                     },
                 };
 
-                const response = await axios.get(`${baseURL}/api/test/cumulative-test/getAllSubjects`, config);
+                const response = await axios.get(`${baseURL}/api/test/cumulativeTest/getAllSubjects`, config);
                 setSubjects(response.data);
             } catch (error) {
                 console.error('Error fetching subjects:', error);

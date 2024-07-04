@@ -1,14 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { baseURL } from '../config';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
-function AddDrive(selectedCompanyId) {
-    console.log("selectedCompanyId", selectedCompanyId.selectedCompanyId);
+function AddDrive({ selectedCompanyId }) {
+    console.log("selectedCompanyId", selectedCompanyId);
     const [driveData, setDriveData] = useState({
-        company_id: selectedCompanyId.selectedCompanyId,
+        company_id: selectedCompanyId,
         drive_date: '',
-        drive_location:''
+        drive_time: '',
+        drive_location: ''
     });
 
     const handleChange = (e) => {
@@ -35,24 +36,35 @@ function AddDrive(selectedCompanyId) {
                 driveData,
                 config
             );
-            toast.success('Job added successfully');
+            toast.success('Drive added successfully');
         } catch (error) {
-            console.error('Error adding job:', error);
-            toast.error('Failed to add job');
+            console.error('Error adding drive:', error);
+            toast.error('Failed to add drive');
         }
     };
 
     return (
         <div className="container mt-5">
-            <h2 className="text-center mb-4">Add Job</h2>
+            <h2 className="text-center mb-4">Add Drive Details</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label>Drive Date</label>
                     <input
-                        type="text"
+                        type="date"
                         className="form-control"
                         name="drive_date"
                         value={driveData.drive_date}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label>Drive Time</label>
+                    <input
+                        type="time"
+                        className="form-control"
+                        name="drive_time"
+                        value={driveData.drive_time}
                         onChange={handleChange}
                         required
                     />
@@ -69,11 +81,11 @@ function AddDrive(selectedCompanyId) {
                     />
                 </div>
                 <button type="submit" className="btn btn-primary">
-                    Add Job
+                    Add Drive
                 </button>
             </form>
         </div>
     );
 }
 
-export default AddDrive
+export default AddDrive;

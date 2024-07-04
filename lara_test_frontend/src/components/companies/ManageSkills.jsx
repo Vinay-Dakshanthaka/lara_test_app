@@ -75,7 +75,7 @@ const ManageSkills = ({ onSelectSkill }) => {
         data: { skill_id: skillId },
       };
 
-      await axios.delete(`${baseURL}/api/skill/removeSkill`, config);
+      await axios.delete(`${baseURL}/api/skill/deleteSkill`, config);
 
       setSkills(skills.filter((skill) => skill.skill_id !== skillId));
     } catch (error) {
