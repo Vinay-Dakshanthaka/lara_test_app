@@ -64,19 +64,33 @@ const updateDrive = async (req, res) => {
   }
 };
 
-const getAllDrives = async(req, res) => {
-    try{
+
+const getAllDrives = async (req, res) => {
+    try {
         const drives = await Drive.findAll();
-        if(!drives){
-            return res.status(404).send({message: 'No Drives Available'});
+        
+        if (!drives || drives.length === 0) {
+            return res.status(404).send({ message: 'No Drives Available' });
         }
-        return res.status(200).send({drives});
-    }
-    catch(error){
+
+        // Fetch company details for each drive
+        const driveDetails = await Promise.all(drives.map(async (drive) => {
+            const company = await Company.findByPk(drive.company_id);
+            return {
+                drive,
+                company
+            };
+        }));
+
+        return res.status(200).send({ drives: driveDetails });
+    } catch (error) {
         console.log(error);
-        return res.status(500).send({message: "Error Fetching Drives"})
+        return res.status(500).send({ message: "Error Fetching Drives" });
     }
 }
+
+module.exports = { getAllDrives };
+
 
 const getDrivesByCompanyId = async (req, res) => {
     try {

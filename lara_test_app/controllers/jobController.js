@@ -140,6 +140,51 @@ const getJobsByDriveId = async (req, res) => {
 };
 
 
+const getJobDetailsByDriveId = async (req, res) => {
+  try {
+    const { drive_id } = req.query;
+    console.log('id :=========', drive_id);
+
+    // Fetch all jobs for the given drive_id
+    let jobs = await Job.findAll({ where: { drive_id } });
+    if (jobs.length === 0) {
+      return res.status(404).send({ message: 'Job not found' });
+    }
+
+    // Iterate over each job to fetch the associated skills
+    const jobDetails = await Promise.all(
+      jobs.map(async (job) => {
+        // Fetch job skills
+        const jobSkills = await Job_Skill.findAll({ where: { job_id: job.job_id } });
+
+        // Get skill IDs
+        const skillIds = jobSkills.map((jobSkill) => jobSkill.skill_id);
+
+        // Fetch skills using the skill IDs
+        const skills = await Skill.findAll({ where: { skill_id: skillIds } });
+
+        // Map skills to their names
+        const skillNames = skills.map((skill) => skill.name);
+
+        // Return job details along with skill names
+        return {
+          ...job.dataValues,
+          skills: skillNames,
+        };
+      })
+    );
+
+    res.status(200).send({ jobs: jobDetails });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: error.message });
+  }
+};
+
+
+
+
+
 const addSkillsToJob = async (req, res) => {
     try {
         const { job_id, skill_ids } = req.body; 
@@ -361,6 +406,7 @@ module.exports = {
     deleteJob,
     getJobByJobId,
     getJobsByDriveId,
+    getJobDetailsByDriveId,
     addSkillsToJob,
     removeSkillFromJob,
     getStudentsForJobWithSkills,

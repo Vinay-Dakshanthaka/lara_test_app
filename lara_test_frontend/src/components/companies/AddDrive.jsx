@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 
 function AddDrive({ selectedCompanyId }) {
-    console.log("selectedCompanyId", selectedCompanyId);
+    // console.log("selectedCompanyId", selectedCompanyId);
     const [driveData, setDriveData] = useState({
         company_id: selectedCompanyId,
         drive_date: '',
@@ -80,7 +80,7 @@ function AddDrive({ selectedCompanyId }) {
                         required
                     />
                 </div>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-primary" onClick={handleSubmit}>
                     Add Drive
                 </button>
             </form>
