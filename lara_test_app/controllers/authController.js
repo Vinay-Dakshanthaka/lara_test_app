@@ -26,6 +26,9 @@ const signup = async (req, res) => {
     try {
         const { name, email, phone, password } = req.body;
 
+        if(!(emailRegex.test(email))){
+            return res.status(404).send({ message: 'Invalid email..' });
+        }
         // Check if email already exists
         const existingStudent = await Student.findOne({ where: { email } });
 
@@ -425,6 +428,10 @@ const signupSingle = async (req, res) => {
             return res.status(400).send({ message: 'Email is required' });
         }
 
+        if(!(emailRegex.test(email))){
+            return res.status(404).send({ message: 'Invalid email..' });
+        }
+
         // Check if email already exists
         const existingStudent = await Student.findOne({ where: { email } });
         if (existingStudent) {
@@ -536,10 +543,10 @@ const updatePassword = async (req, res) => {
         await Student.update({ password: hashedPassword }, { where: { student_id: studentId } });
         // console.log("Password updated in database");
 
-        res.status(200).send({ message: 'Password updated successfully.' });
+        return res.status(200).send({ message: 'Password updated successfully.' });
     } catch (error) {
         console.error("Error during password update process:", error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 };
 
@@ -676,15 +683,15 @@ const resetPassword = async (req, res) => {
               // Update the password in the database
               await Student.update({ password: hashedPassword }, { where: { student_id: studentId } });
           
-              res.status(200).send({ message: 'Password updated successfully.' });
+              return res.status(200).send({ message: 'Password updated successfully.' });
             } catch (error) {
               console.error('Error finding user:', error);
-              res.status(500).send({ message: 'An error occurred while resetting the password.' });
+              return res.status(500).send({ message: 'An error occurred while resetting the password.' });
             }
           });
     } catch (error) {
         console.error('Error resetting password:', error);
-        res.status(500).send({ message: 'An error occurred while resetting the password.' });
+        return res.status(500).send({ message: 'An error occurred while resetting the password.' });
     }
 };
 
@@ -716,11 +723,11 @@ const uploadProfileImage = async (req, res) => {
         // Update the image path in the database
         await Student.update({ imagePath: imagePath }, { where: { student_id: studentId } });
 
-        res.status(200).send({ message: 'Profile image uploaded successfully.', imagePath });
+        return res.status(200).send({ message: 'Profile image uploaded successfully.', imagePath });
         console.log("Path: " + imagePath);
     } catch (error) {
         console.error('Error uploading profile image:', error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 };
 
@@ -752,10 +759,10 @@ const getProfileImage = async (req, res) => {
 
             // Send the image file as response
             // console.log(data)
-            res.status(200).send(data);
+            return res.status(200).send(data);
         });
     } catch (error) {
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 };
 
@@ -786,7 +793,7 @@ const getProfileImageFor = async (req, res) => {
 
             // Send the image file as response
             // console.log(data)
-            res.status(200).send(data);
+            return res.status(200).send(data);
         });
     } catch (error) {
         res.status(500).send({ message: error.message });
@@ -807,10 +814,10 @@ const updateStudentNameAndPhoneNumber = async (req, res) => {
             { name:name, phoneNumber:phoneNumber },
             { where: { student_id: studentId } }
         );
-        res.status(200).send({ message: 'Student information updated successfully.', name, phoneNumber });
+        return res.status(200).send({ message: 'Student information updated successfully.', name, phoneNumber });
     } catch (error) {
         console.error('Error updating student information:', error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 

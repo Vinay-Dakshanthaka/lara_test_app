@@ -228,11 +228,11 @@ const getAllCompanyDetails = async (req, res) => {
         // Fetch all company deatils from the database
         const companies = await Company.findAll();
 
-        res.status(200).json(companies);
+        return res.status(200).json(companies);
 
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -281,10 +281,10 @@ const uploadCompanyLogo = async(req, res) => {
         company.company_logo = filePath;
 
         await company.save(company);
-        res.status(200).send({message : 'Company Logo uploaded Successfully!!!', filePath});
+        return res.status(200).send({message : 'Company Logo uploaded Successfully!!!', filePath});
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -313,10 +313,10 @@ const getCompanyLogo = async(req, res) => {
 
             // Send the image file as response
             // console.log(data)
-            res.status(200).send(data);
+            return res.status(200).send(data);
         });
     } catch (error) {
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 };
 

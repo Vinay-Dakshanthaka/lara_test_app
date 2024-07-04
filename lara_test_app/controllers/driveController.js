@@ -30,11 +30,11 @@ const saveDrive = async (req, res) => {
       drive_location,
       drive_time
     });
-    res.status(200).send({ message: "Drive Created Successfully", newDrive: newDrive });
+    return res.status(200).send({ message: "Drive Created Successfully", newDrive: newDrive });
 
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: error.message });
+    return res.status(500).send({ message: error.message });
   }
 };
 
@@ -60,7 +60,7 @@ const updateDrive = async (req, res) => {
     return res.status(200).send({ message: "Drive Updated Successfully", drive: existingDrive });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: error.message });
+    return res.status(500).send({ message: error.message });
   }
 };
 
@@ -70,11 +70,11 @@ const getAllDrives = async(req, res) => {
         if(!drives){
             return res.status(404).send({message: 'No Drives Available'});
         }
-        res.status(200).send({drives});
+        return res.status(200).send({drives});
     }
     catch(error){
         console.log(error);
-        res.status(500).send({message: "Error Fetching Drives"})
+        return res.status(500).send({message: "Error Fetching Drives"})
     }
 }
 
@@ -85,10 +85,10 @@ const getDrivesByCompanyId = async (req, res) => {
       if (!drives) {
         return res.status(404).send({ message: "No Drives Found for this Company" });
       }
-      res.status(200).send({ drives });
+      return res.status(200).send({ drives });
     } catch (error) {
       console.log(error);
-      res.status(500).send({ message: "Error Fetching Drives" });
+      return res.status(500).send({ message: "Error Fetching Drives" });
     }
 };
   

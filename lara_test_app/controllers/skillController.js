@@ -54,7 +54,7 @@ const updateSkill = async(req, res) => {
 
     }catch(error){
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -78,11 +78,11 @@ const deleteSkill = async (req, res) => {
             return res.status(404).json({ error: 'No Skill found' });
         }
         await skill.destroy(skill)
-        res.status(200).send({message : 'Skill Deleted Successfully!!!'});
+        return res.status(200).send({message : 'Skill Deleted Successfully!!!'});
 
     }catch(error){
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -97,7 +97,7 @@ const getAllSkills = async (req, res) => {
         return res.status(200).send({skills});
     }catch(error){
         console.log(error);
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
