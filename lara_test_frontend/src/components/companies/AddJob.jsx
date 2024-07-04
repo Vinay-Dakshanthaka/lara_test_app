@@ -10,7 +10,7 @@ import { useParams } from 'react-router-dom';
 //     const [jobData, setJobData] = useState({
 //         company_id: selectedCompanyId,
 //         job_title: '',
-//         position: '',
+//         designation: '',
 //         job_description: '',
 //         job_location: '',
 //         no_of_openings: '',
@@ -65,12 +65,12 @@ import { useParams } from 'react-router-dom';
 //                     />
 //                 </div>
 //                 <div className="form-group">
-//                     <label>Position</label>
+//                     <label>designation</label>
 //                     <input
 //                         type="text"
 //                         className="form-control"
-//                         name="position"
-//                         value={jobData.position}
+//                         name="designation"
+//                         value={jobData.designation}
 //                         onChange={handleChange}
 //                         required
 //                     />
@@ -148,7 +148,7 @@ import { useParams } from 'react-router-dom';
 //     job_location: "",
 //     no_of_openings: "",
 //     year_of_exp: "",
-//     position: "",
+//     designation: "",
 //     total_rounds: ""
 //   });
 //   const [skills, setSkills] = useState([]);
@@ -303,7 +303,7 @@ import { useParams } from 'react-router-dom';
 //             <li>Location: {job.job_location}</li>
 //             <li>No. of Openings: {job.no_of_openings}</li>
 //             <li>Years of Experience: {job.year_of_exp}</li>
-//             <li>Position: {job.position}</li>
+//             <li>designation: {job.designation}</li>
 //             <li>Total Rounds: {job.total_rounds}</li>
 //           </ul>
 //         </div>
@@ -367,7 +367,7 @@ const AddJobs = () => {
     job_location: "",
     no_of_openings: "",
     year_of_exp: "",
-    position: "",
+    designation: "",
     total_rounds: "",
   });
 
@@ -447,7 +447,7 @@ const AddJobs = () => {
         job_location: "",
         no_of_openings: "",
         year_of_exp: "",
-        position: "",
+        designation: "",
         total_rounds: "",
       });
       setSelectedSkills([]);
@@ -535,12 +535,12 @@ const AddJobs = () => {
         </div>
 
         <div className="mb-3">
-          <label htmlFor="position" className="form-label">Position</label>
+          <label htmlFor="designation" className="form-label">designation</label>
           <input
             type="text"
-            id="position"
-            name="position"
-            value={job.position}
+            id="designation"
+            name="designation"
+            value={job.designation}
             onChange={handleChange}
             className="form-control"
           />

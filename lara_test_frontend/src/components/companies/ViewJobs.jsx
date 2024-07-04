@@ -55,7 +55,7 @@ function ViewJobs() {
             <th>Location</th>
             <th>Openings</th>
             <th>Experience</th>
-            <th>Position</th>
+            <th>designation</th>
             <th>Rounds</th>
             <th>Actions</th>
           </tr>
@@ -68,7 +68,7 @@ function ViewJobs() {
               <td>{job.job_location}</td>
               <td>{job.no_of_openings}</td>
               <td>{job.year_of_exp}</td>
-              <td>{job.position}</td>
+              <td>{job.designation}</td>
               <td>{job.total_rounds}</td>
               <td>
                 <Link to={`/jobs/${job.job_id}/edit`} className="btn btn-warning">Edit</Link>

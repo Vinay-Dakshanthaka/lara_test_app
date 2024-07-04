@@ -115,40 +115,40 @@ const saveCompany = async (req, res) => {
 };
 
 
-const updateCompany = async (req, res) => {
-    try {
-        const id = req.student_id;
-        const student = await Student.findByPk(id);
-        const role = student.role;
+// const updateCompany = async (req, res) => {
+//     try {
+//         const id = req.student_id;
+//         const student = await Student.findByPk(id);
+//         const role = student.role;
 
-        if (role !== 'PLACEMENT OFFICER' && role !== 'SUPER ADMIN') {
-            return res.status(403).send({ message: 'Access Forbidden' });
-        }
+//         if (role !== 'PLACEMENT OFFICER' && role !== 'SUPER ADMIN') {
+//             return res.status(403).send({ message: 'Access Forbidden' });
+//         }
 
-        const {company_id, name, address, type, url, general_mail_id, phoneNumber, contactPerson} = req.body;
+//         const {company_id, name, address, type, url, general_mail_id, phoneNumber,} = req.body;
 
-        const newCompany = await Company.findByPk(company_id);
+//         const newCompany = await Company.findByPk(company_id);
 
-        if (!newCompany) {
-            return res.status(404).json({ error: 'No Company found' });
-        }
-                // update the subject 
-        newCompany.name = name;
-        newCompany.address = address;
-        newCompany.company_type = type;
-        newCompany.url = url;
-        newCompany.general_mail_id = general_mail_id;
-        newCompany.phoneNumber = phoneNumber;
-        newCompany.description = description;
+//         if (!newCompany) {
+//             return res.status(404).json({ error: 'No Company found' });
+//         }
+//                 // update the subject 
+//         newCompany.name = name;
+//         newCompany.address = address;
+//         newCompany.company_type = type;
+//         newCompany.url = url;
+//         newCompany.general_mail_id = general_mail_id;
+//         newCompany.phoneNumber = phoneNumber;
+//         newCompany.description = description;
 
-        await newCompany.save(newCompany)
+//         await newCompany.save(newCompany)
 
-        return res.status(200).send({message : "Company updated succeccfully", newCompany});
+//         return res.status(200).send({message : "Company updated succeccfully", newCompany});
 
-    } catch(error) {
-        return res.status(500).send({message : error.message});
-    }
-}
+//     } catch(error) {
+//         return res.status(500).send({message : error.message});
+//     }
+// }
 
 // const deleteCompany = async (req, res)=>{
 //     try{
@@ -179,6 +179,43 @@ const updateCompany = async (req, res) => {
 //     }
 // }
 
+const updateCompany = async (req, res) => {
+    try {
+        const id = req.student_id;
+        const student = await Student.findByPk(id);
+        const role = student.role;
+
+        if (role !== 'PLACEMENT OFFICER' && role !== 'SUPER ADMIN') {
+            return res.status(403).send({ message: 'Access Forbidden' });
+        }
+
+        const {company_id,  name, address, companyType_id, url, general_mail_id, phoneNumber, description ,} = req.body;
+
+        const newCompany = await Company.findByPk(company_id);
+
+        if (!newCompany) {
+            return res.status(404).json({ error: 'No Company found' });
+        }
+                // update the subject 
+        newCompany.name = name;
+        newCompany.address = address;
+        // newCompany.company_type = type;
+        newCompany.companyType_id = companyType_id;
+        newCompany.url = url;
+        newCompany.general_mail_id = general_mail_id;
+        newCompany.phoneNumber = phoneNumber;
+        newCompany.description = description;
+        
+
+        await newCompany.save(newCompany)
+
+        return res.status(200).send({message : "Company updated succeccfully", newCompany});
+
+    } catch(error) {
+        return res.status(500).send({message : error.message});
+    }
+}
+
 const getAllCompanyDetails = async (req, res) => {
     try {
         const id = req.student_id;
@@ -204,6 +241,7 @@ const uploadCompanyLogo = async(req, res) => {
     try{
 
         const {company_id} = req.query;
+        console.log("company_idddddddddddddddddddddddddddddd", company_id);
 
         const company = await Company.findByPk(company_id);
 
@@ -366,6 +404,22 @@ const getAllCompanyTypes = async (req, res) => {
     }
 };
 
+const getCompanyByCompanyId = async (req, res) => {
+    try {
+        const {company_id} = req.query;
+
+        const company = await Company.findByPk(company_id);
+        if(!company_id)
+            return res.status(404).send({ message: 'Company not found.' });
+
+        res.status(200).send({company : company});
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message });
+    }
+}
+
 
 module.exports = {
     saveCompany,
@@ -379,4 +433,5 @@ module.exports = {
     updateCompanyType,
     deleteCompanyType,
     getAllCompanyTypes,
+    getCompanyByCompanyId
 }
