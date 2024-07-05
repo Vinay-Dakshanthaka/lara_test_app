@@ -45,6 +45,7 @@ db.Job_Skill = require('./jobSkill.js')(sequelize, DataTypes);
 db.Student_Skill = require('./studentSkill.js')(sequelize, DataTypes);
 db.WebinarsTrainings = require('./WebinarTrainings.js')(sequelize, DataTypes);
 db.CompanyType = require('./companyTypeModel')(sequelize, DataTypes); 
+db.AgentInteraction = require('./agentInteractionModel.js')(sequelize, DataTypes);
 
 db.Student.hasOne(db.Profile, {
     foreignKey: 'student_id',
@@ -128,5 +129,19 @@ db.Skill.belongsToMany(db.Job, { through: 'Job_Skill', foreignKey: 'skill_id' })
 //ManyToMany between Student & Skill
 db.Student.belongsToMany(db.Skill, { through: 'Student_Skill', foreignKey: 'student_id' });
 db.Skill.belongsToMany(db.Student, { through: 'Student_Skill', foreignKey: 'skill_id' });
+
+//One to many relationship between Agent and Agent Interaction
+
+db.Agent.hasMany(db.AgentInteraction, {
+    foreignKey: 'agent_id',
+    as: 'interactions',
+    onDelete: 'CASCADE'
+});
+
+db.AgentInteraction.belongsTo(db.Agent, {
+    foreignKey: 'agent_id',
+    as: 'agent',
+    onDelete: 'CASCADE'
+});
 
 module.exports = db;

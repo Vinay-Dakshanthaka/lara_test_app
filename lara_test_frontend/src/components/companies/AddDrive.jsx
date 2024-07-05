@@ -36,6 +36,7 @@ function AddDrive({ selectedCompanyId }) {
                 driveData,
                 config
             );
+            console.log("Drive Date", driveData.drive_date);
             toast.success('Drive added successfully');
         } catch (error) {
             console.error('Error adding drive:', error);

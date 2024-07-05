@@ -85,11 +85,17 @@ const Sidebar = () => {
                                             <span className="nav_name ms-2">Dashboard</span>
                                         </Accordion.Header>
                                         <Accordion.Body className="custom-bg">
+                                            <Link to="/manage-drives" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name dropdown-link">Manage Drives</span>
+                                            </Link>
                                             <Link to="/add-companies" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Add Companies</span>
                                             </Link>
                                             <Link to="/companies-list" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Companies List</span>
+                                            </Link>
+                                            <Link to="/interactions" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name dropdown-link">View Interactions</span>
                                             </Link>
                                             <Link to="/all-students-details" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name custom-bg dropdown-link ">Students Info</span>
@@ -142,8 +148,15 @@ const Sidebar = () => {
                                             {/* <Link to="/update-role" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name custom-bg dropdown-link ">Update Role</span>
                                             </Link> */}
+                                            <Link to="/manage-drives" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name dropdown-link">Manage Drives</span>
+                                            </Link>
+                                            
                                             <Link to="/add-companies" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Add Companies</span>
+                                            </Link>
+                                            <Link to="/interactions" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name dropdown-link">View Interactions</span>
                                             </Link>
                                             <Link to="/bulk-signup" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Bulk Signup</span>

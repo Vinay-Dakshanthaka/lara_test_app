@@ -1,4 +1,5 @@
 const db = require("../models");
+const { Op } = require("sequelize");
 
 const Drive = db.Drive;
 const Student = db.Student;
@@ -17,21 +18,21 @@ const saveDrive = async (req, res) => {
       return res.status(403).send({ message: "Access Forbidden" });
     }
 
-    const { company_id, drive_date,drive_time, drive_location } = req.body;
-    console.log('compnay id--------------------------- :'  , company_id)
+    const { company_id, drive_date, drive_time, drive_location } = req.body;
+    console.log("compnay id--------------------------- :", company_id);
     // console.log(company_id);
     const company = await Company.findByPk(company_id);
-    if(!company)
-      return res.status(404).send({message : 'Company not found'});
-    
+    if (!company) return res.status(404).send({ message: "Company not found" });
+
     const newDrive = await Drive.create({
       company_id,
       drive_date,
       drive_location,
-      drive_time
+      drive_time,
     });
-    return res.status(200).send({ message: "Drive Created Successfully", newDrive: newDrive });
-
+    return res
+      .status(200)
+      .send({ message: "Drive Created Successfully", newDrive: newDrive });
   } catch (error) {
     console.log(error);
     return res.status(500).send({ message: error.message });
@@ -55,43 +56,45 @@ const updateDrive = async (req, res) => {
     existingDrive.drive_location = drive_location;
     existingDrive.drive_time = drive_time;
 
-
     await existingDrive.save();
-    return res.status(200).send({ message: "Drive Updated Successfully", drive: existingDrive });
+    return res
+      .status(200)
+      .send({ message: "Drive Updated Successfully", drive: existingDrive });
   } catch (error) {
     console.log(error);
     return res.status(500).send({ message: error.message });
   }
 };
 
-const getAllDrives = async(req, res) => {
-    try{
-        const drives = await Drive.findAll();
-        if(!drives){
-            return res.status(404).send({message: 'No Drives Available'});
-        }
-        return res.status(200).send({drives});
+const getAllDrives = async (req, res) => {
+  try {
+    const drives = await Drive.findAll();
+    if (!drives) {
+      return res.status(404).send({ message: "No Drives Available" });
     }
-    catch(error){
-        console.log(error);
-        return res.status(500).send({message: "Error Fetching Drives"})
-    }
-}
+    return res.status(200).send({ drives });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Error Fetching Drives" });
+  }
+};
 
 const getDrivesByCompanyId = async (req, res) => {
-    try {
-      const { company_id } = req.query;
-      const drives = await Drive.findAll({ where: { company_id } });
-      if (!drives) {
-        return res.status(404).send({ message: "No Drives Found for this Company" });
-      }
-      return res.status(200).send({ drives });
-    } catch (error) {
-      console.log(error);
-      return res.status(500).send({ message: "Error Fetching Drives" });
+  try {
+    const { company_id } = req.query;
+    const drives = await Drive.findAll({ where: { company_id } });
+    if (!drives) {
+      return res
+        .status(404)
+        .send({ message: "No Drives Found for this Company" });
     }
+    return res.status(200).send({ drives });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Error Fetching Drives" });
+  }
 };
-  
+
 // const getDrivesByJobId = async (req, res) => {
 //   try {
 //     const { job_id } = req.query;
@@ -108,7 +111,7 @@ const getDrivesByCompanyId = async (req, res) => {
 
 // const addSkillsToDrive = async (req, res) => {
 //   try {
-//       const { drive_id, skill_ids } = req.body; 
+//       const { drive_id, skill_ids } = req.body;
 
 //       if (!drive_id || !skill_ids) {
 //           return res.status(400).json({ error: 'Missing skillId or driveId in request body' });
@@ -147,7 +150,7 @@ const getDrivesByCompanyId = async (req, res) => {
 
 // const removeSkillFromDrive = async (req, res) => {
 //   try {
-//       const { drive_id, skill_id } = req.body; 
+//       const { drive_id, skill_id } = req.body;
 
 //       if (!drive_id || !skill_id) {
 //           return res.status(400).json({ error: 'Missing driveId or skillId in request body' });
@@ -177,11 +180,254 @@ const getDrivesByCompanyId = async (req, res) => {
 //   }
 // }
 
+//We can use post method also for fetching the date by post method
+const fetchDrivesByDate = async (req, res) => {
+  try {
+    console.log("oneeee");
+    const id = req.student_id;
+    const user = await Student.findByPk(id);
+    const userRole = user.role;
+    if (userRole !== "SUPER ADMIN" && userRole !== "PLACEMENT OFFICER") {
+      return res.status(403).send({ message: "Access Forbidden" });
+    }
+    //If the form is in input type date then no need to change in Date formatting in Frontend or backend
+    const { drive_date } = req.body;
+    console.log("Drive Date ---> ", drive_date);
+    const drives = await Drive.findAll({
+      where: { drive_date: drive_date },
+    });
+    // if (!driveDetails) {
+    //   return res
+    //     .status(404)
+    //     .send({ message: "No Drive Details found for given date" });
+    // }
+    const allDriveInfo = await Promise.all(
+      drives.map(async (drive) => {
+        const company = await Company.findByPk(drive.company_id);
+
+        return {
+          drive_id: drive.drive_id,
+          drive_date: drive.drive_date,
+          drive_location: drive.drive_location,
+          drive_time: drive.drive_time,
+          // interaction_date: interaction.interaction_date,
+          // interaction_time: interaction.interaction_time,
+          // agent_name: agent.name,
+          company_name: company.name // Accessing company details
+        };
+      })
+    );
+    return res
+      .status(200)
+      .send({ message: "Drive fetched Successfully", allDriveInfo });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ message: "Error Fetching Drives" });
+  }
+};
+
+const fetchDrivesByYear = async (req, res) => {
+  try {
+    console.log("TWOOOO");
+    const id = req.student_id;
+    const user = await Student.findByPk(id);
+    const userRole = user.role;
+    if (userRole !== "SUPER ADMIN" && userRole !== "PLACEMENT OFFICER") {
+      return res.status(403).send({ message: "Access Forbidden" });
+    }
+    //If the form is in input type date then no need to change in Date formatting in Frontend or backend
+    const { drive_year } = req.body;
+
+    //for using like operator
+    const searchYear = `${drive_year}%`;
+    console.log("Drive Year ---> ", drive_year);
+    console.log("Drive Year ---> ", searchYear);
+    const drives = await Drive.findAll({
+      where: { drive_date: { [Op.like]: searchYear } },
+    });
+    const allDriveInfo = await Promise.all(
+      drives.map(async (drive) => {
+        const company = await Company.findByPk(drive.company_id);
+
+        return {
+          drive_id: drive.drive_id,
+          drive_date: drive.drive_date,
+          drive_location: drive.drive_location,
+          drive_time: drive.drive_time,
+          // interaction_date: interaction.interaction_date,
+          // interaction_time: interaction.interaction_time,
+          // agent_name: agent.name,
+          company_name: company.name // Accessing company details
+        };
+      })
+    );
+    // if (!driveDetails) {
+    //   return res
+    //     .status(404)
+    //     .send({ message: "No Drive Details found for given year" });
+    // }
+    return res
+      .status(200)
+      .send({ message: "Drive fetched Successfully", allDriveInfo });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Error Fetching Drives" });
+  }
+};
+const fetchDrivesByMonth = async (req, res) => {
+  try {
+    const id = req.student_id;
+    const user = await Student.findByPk(id);
+    const userRole = user.role;
+    if (userRole !== "SUPER ADMIN" && userRole !== "PLACEMENT OFFICER") {
+      return res.status(403).send({ message: "Access Forbidden" });
+    }
+    //If the form is in input type date then no need to change in Date formatting in Frontend or backend
+    const { drive_month } = req.body;
+
+    //for using like operator
+    const searchMonth = `${drive_month}%`;
+    // console.log("Drive Year ---> ",drive_year);
+    // console.log("Drive Year ---> ",searchYear);
+    const drives = await Drive.findAll({
+      where: { drive_date: { [Op.like]: searchMonth } },
+    });
+
+    const allDriveInfo = await Promise.all(
+      drives.map(async (drive) => {
+        const company = await Company.findByPk(drive.company_id);
+
+        return {
+          drive_id: drive.drive_id,
+          drive_date: drive.drive_date,
+          drive_location: drive.drive_location,
+          drive_time: drive.drive_time,
+          // interaction_date: interaction.interaction_date,
+          // interaction_time: interaction.interaction_time,
+          // agent_name: agent.name,
+          company_name: company.name // Accessing company details
+        };
+      })
+    );
+
+    // if (!driveDetails) {
+    //   return res
+    //     .status(404)
+    //     .send({ message: "No Drive Details found for specified month" });
+    // }
+    return res
+      .status(200)
+      .send({ message: "Drive fetched Successfully", allDriveInfo });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Error Fetching Drives" });
+  }
+};
+
+const fetchDrivesBetweenDates = async (req, res) => {
+  try {
+    const id = req.student_id;
+    const user = await Student.findByPk(id);
+    const userRole = user.role;
+    if (userRole !== "SUPER ADMIN" && userRole !== "PLACEMENT OFFICER") {
+      return res.status(403).send({ message: "Access Forbidden" });
+    }
+
+    const { startDate, endDate } = req.body;
+
+    if (!startDate || !endDate) {
+      return res
+        .status(400)
+        .json({ error: "Start date and end date are required" });
+    }
+
+    const drives = await Drive.findAll({
+      where: {
+        drive_date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+    });
+    const allDriveInfo = await Promise.all(
+      drives.map(async (drive) => {
+        const company = await Company.findByPk(drive.company_id);
+
+        return {
+          drive_id: drive.drive_id,
+          drive_date: drive.drive_date,
+          drive_location: drive.drive_location,
+          drive_time: drive.drive_time,
+          // interaction_date: interaction.interaction_date,
+          // interaction_time: interaction.interaction_time,
+          // agent_name: agent.name,
+          company_name: company.name                    // Accessing company details
+        };
+      })
+    );
+
+    // if(!drives){
+    //   return res.status(404).send({message: "Drives are not present betweeen given dates"})
+    // }
+    return res.status(200).send({ allDriveInfo });
+  } catch (error) {
+    console.error("Error fetching drives:", error);
+    res.status(500).json({ error: "An error occurred while fetching drives" });
+  }
+};
+
+const fetchAll = async (req, res) => {
+  try {
+    console.log("ONE");
+    const id = req.student_id;
+    const user = await Student.findByPk(id);
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    const userRole = user.role;
+    if (userRole !== "SUPER ADMIN" && userRole !== "PLACEMENT OFFICER") {
+      return res.status(403).send({ message: "Access Forbidden" });
+    }
+
+    const drives = await Drive.findAll();
+
+    const allDriveInfo = await Promise.all(
+      drives.map(async (drive) => {
+        const company = await Company.findByPk(drive.company_id);
+
+        return {
+          drive_id: drive.drive_id,
+          drive_date: drive.drive_date,
+          drive_location: drive.drive_location,
+          drive_time: drive.drive_time,
+          // interaction_date: interaction.interaction_date,
+          // interaction_time: interaction.interaction_time,
+          // agent_name: agent.name,
+          company_name: company.name                    // Accessing company details
+        };
+      })
+    );
+
+    // if(!drives){
+    //   return res.status(404).send({message: "Drives are not present betweeen given dates"})
+    // }
+    return res.status(200).send({ allDriveInfo });
+  } catch (error) {
+    console.error("Error fetching drives:", error);
+    res.status(500).json({ error: "An error occurred while fetching drives" });
+  }
+};
+
 module.exports = {
   saveDrive,
   updateDrive,
   getAllDrives,
   getDrivesByCompanyId,
+  fetchDrivesByDate,
+  fetchDrivesByYear,
+  fetchDrivesByMonth,
+  fetchDrivesBetweenDates,
+  fetchAll,
   //getDrivesByJobId,
   // addSkillsToDrive,
   // removeSkillFromDrive,

@@ -12,4 +12,10 @@ driveRoute.get('/getDrivesByCompanyId', verifyToken, driveController.getDrivesBy
 // driveRoute.delete('/removeSkillFromDrive', verifyToken, driveController.removeSkillFromDrive);
 // driveRoute.get('/getStudentsByDriveId', verifyToken, driveController.getStudentsByDriveId);
 
+driveRoute.post('/fetchDrivesByDate', verifyToken, driveController.fetchDrivesByDate);
+driveRoute.post('/fetchDrivesByYear', verifyToken, driveController.fetchDrivesByYear);
+driveRoute.post('/fetchDrivesByMonth', verifyToken, driveController.fetchDrivesByMonth);
+driveRoute.post('/fetchDrivesBetweenDates', verifyToken, driveController.fetchDrivesBetweenDates);
+driveRoute.get('/fetchAll', verifyToken, driveController.fetchAll);
+
 module.exports = driveRoute;

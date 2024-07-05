@@ -39,6 +39,8 @@ import EditJob from "./components/companies/EditJob";
 import ManageSkills from "./components/companies/ManageSkills";
 import UpdateCompanies from "./components/companies/UpdateCompanies";
 import ViewAgents from "./components/companies/ViewAgents";
+import ViewInteractions from "./components/companies/ViewInteractions";
+import ManageDrives from "./components/companies/ManageDrives";
 
 const App = () => {
   const location = useLocation();
@@ -105,6 +107,8 @@ const App = () => {
           <Route path="/update-company/:company_id" element={<UpdateCompanies/>}/>
           <Route path="/view-agents/:companyId" element={<ViewAgents/>} />
           <Route path="/add-agent/:companyId" element={<AddAgent />} />
+          <Route path="/interactions" element={<ViewInteractions />} />
+          <Route path="/manage-drives" element={<ManageDrives/>}/>
         </Route>
       </Routes>
     </>

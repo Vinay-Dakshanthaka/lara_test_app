@@ -15,7 +15,7 @@ const driveRoute = require('./routes/driveRoutes');
 const jobRoute = require('./routes/jobRoutes')
 const skillRoute = require('./routes/skillRoutes');
 const WebinarTraingsRoute = require('./routes/WebinarTrainingsRoutes')
-
+const AgentInteractionRoute = require('./routes/agentInteractionRoutes')
 const bodyParser = require('body-parser');
 
 app.use(bodyParser.json());
@@ -36,6 +36,7 @@ app.use('/api/job', jobRoute);
 app.use('/api/drive', driveRoute);
 app.use('/api/skill', skillRoute);
 app.use('/api/webinars', WebinarTraingsRoute)
+app.use('/api/interaction', AgentInteractionRoute);
 
 // Port
 const PORT = process.env.PORT || 8080;

@@ -18,17 +18,17 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         designation: DataTypes.STRING,
-        mail_id:{
+        mail_id: {
             type: DataTypes.STRING,
             unique: true,
             allowNull: false
         },
-        isActive:{
+        isActive: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
-            defaultValue : true
+            defaultValue: true
         }
-    },{
+    }, {
         timestamps: false
     });
 
@@ -37,8 +37,14 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'company_id',
             as: 'companies',
             onDelete: 'CASCADE'
-        }); 
-    }
+        });
+
+        Agent.hasMany(models.AgentInteraction, {
+            foreignKey: 'agent_id',
+            as: 'interactions',
+            onDelete: 'CASCADE'
+        });
+    };
 
     return Agent;
 };
