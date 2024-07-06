@@ -14,7 +14,7 @@ const saveAgentInteraction = async (req, res) => {
     if ((role !== "PLACEMENT OFFICER") & (role !== "SUPER ADMIN")) {
       return res.status(403).send({ message: "Access Forbidden" });
     }
-    const { agent_id, interaction_date, interaction_time, interaction_info } =
+    const { agent_id, interaction_date, interaction_time, interaction_info, next_interaction_date } =
       req.body;
     const agent = await Agent.findOne({ where: { agent_id } });
 
@@ -29,6 +29,7 @@ const saveAgentInteraction = async (req, res) => {
         interaction_date,
         interaction_time,
         interaction_info,
+        next_interaction_date
       });
       return res
         .status(200)
@@ -207,6 +208,7 @@ const getInteractionsWithAgents = async (req, res) => {
                   interaction_info: interaction.interaction_info,
                   interaction_date: interaction.interaction_date,
                   interaction_time: interaction.interaction_time,
+                  next_interaction_date: interaction.next_interaction_date,
                   agent_name: agent.name,
                   company_name: company.name // Accessing company details
               };

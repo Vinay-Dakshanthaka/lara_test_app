@@ -87,6 +87,7 @@ const Sidebar = () => {
                                         <Accordion.Body className="custom-bg">
                                             <Link to="/manage-drives" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Manage Drives</span>
+                                            </Link>
                                             <Link to="/drives" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Drives</span>
                                             </Link>
