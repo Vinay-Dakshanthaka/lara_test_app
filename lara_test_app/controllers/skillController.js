@@ -3,6 +3,8 @@ const db = require('../models');
 const Skill = db.Skill;
 const Company = db.Company;
 const Student = db.Student;
+const Student_Skill = db.Student_Skill;
+
 
 const saveSkill = async(req, res) => {
     try{
@@ -86,20 +88,54 @@ const deleteSkill = async (req, res) => {
     }
 }
 
-const getAllSkills = async (req, res) => {
-    try{
-        const skills = await Skill.findAll();
+    const getAllSkills = async (req, res) => {
+        try{
+            const skills = await Skill.findAll();
 
-        if (!skills) {
-            return res.status(404).json({ error: 'No Skill found' });
+            if (!skills) {
+                return res.status(404).json({ error: 'No Skill found' });
+            }
+
+            return res.status(200).send({skills});
+        }catch(error){
+            console.log(error);
+            return res.status(500).send({ message: error.message });
         }
-
-        return res.status(200).send({skills});
-    }catch(error){
-        console.log(error);
-        return res.status(500).send({ message: error.message });
     }
-}
+
+    const getAllSkillsForStudent = async (req, res) => {
+        const studentId = req.student_id;
+        console.log('student id ', studentId)
+        try {
+            // Find all skill IDs for the student
+            const studentSkills = await Student_Skill.findAll({
+                where: { student_id: studentId },
+                attributes: ['skill_id']
+            });
+    
+            if (!studentSkills.length) {
+                return res.status(404).json({ error: 'No skills found for the student' });
+            }
+    
+            // Extract skill IDs from the result
+            const skillIds = studentSkills.map(studentSkill => studentSkill.skill_id);
+    
+            // Find all skills using the extracted skill IDs
+            const skills = await Skill.findAll({
+                where: { skill_id: skillIds }
+            });
+    
+            if (!skills.length) {
+                return res.status(404).json({ error: 'No skills found' });
+            }
+    
+            return res.status(200).send({ skills });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send({ message: error.message });
+        }
+    }
+    
 
 // const getAgentByCompanyId = async (req, res) => {
 //     try{
@@ -123,6 +159,7 @@ module.exports = {
     updateSkill,
     deleteSkill,
     getAllSkills,
+    getAllSkillsForStudent
     //getAgentByCompanyId,
 
 }

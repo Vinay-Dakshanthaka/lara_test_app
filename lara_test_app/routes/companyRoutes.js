@@ -17,6 +17,8 @@ companyRoute.post('/uploadCompanyLogo', companyLogo.single('image'), verifyToken
 
 companyRoute.get('/getCompanyLogo',verifyToken,companyController.getCompanyLogo);
 
+companyRoute.post('/getAnyImageLogo',companyController.getAnyImageLogo);
+
 companyRoute.post('/saveCompanyType',verifyToken,companyController.saveCompanyType);
 
 companyRoute.post('/updateCompanyType',verifyToken,companyController.updateCompanyType);

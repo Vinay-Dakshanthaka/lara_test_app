@@ -1,16 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { baseURL } from '../config';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';
+import AnyCompanyLogo from '../admin/AnyCompanyLogo';
+import CompanyDetails from './CompanyDetails';
 
 function AddDrive({ selectedCompanyId }) {
-    // console.log("selectedCompanyId", selectedCompanyId);
     const [driveData, setDriveData] = useState({
-        company_id: selectedCompanyId,
+        company_id: selectedCompanyId, // Initialize with selectedCompanyId
         drive_date: '',
         drive_time: '',
         drive_location: ''
     });
+
+    // Update company_id in state if selectedCompanyId changes
+    useEffect(() => {
+        setDriveData((prevDriveData) => ({
+            ...prevDriveData,
+            company_id: selectedCompanyId
+        }));
+    }, [selectedCompanyId]);
 
     const handleChange = (e) => {
         setDriveData({ ...driveData, [e.target.name]: e.target.value });
@@ -45,9 +54,10 @@ function AddDrive({ selectedCompanyId }) {
 
     return (
         <div className="container mt-5">
-            <h2 className="text-center mb-4">Add Drive Details</h2>
+            <CompanyDetails companyId={driveData.company_id} />
+           
             <form onSubmit={handleSubmit}>
-                <div className="form-group">
+                <div className="form-group col-lg-3 col-sm-12 col-md-6">
                     <label>Drive Date</label>
                     <input
                         type="date"
@@ -58,7 +68,7 @@ function AddDrive({ selectedCompanyId }) {
                         required
                     />
                 </div>
-                <div className="form-group">
+                <div className="form-group col-lg-3 col-sm-12 col-md-6">
                     <label>Drive Time</label>
                     <input
                         type="time"
@@ -69,7 +79,7 @@ function AddDrive({ selectedCompanyId }) {
                         required
                     />
                 </div>
-                <div className="form-group">
+                <div className="form-group col-lg-3 col-sm-12 col-md-6">
                     <label>Drive Location</label>
                     <input
                         type="text"
@@ -80,10 +90,11 @@ function AddDrive({ selectedCompanyId }) {
                         required
                     />
                 </div>
-                <button type="submit" className="btn btn-primary" onClick={handleSubmit}>
+                <button type="submit" className="btn btn-primary my-3" onClick={handleSubmit}>
                     Add Drive
                 </button>
             </form>
+            <ToastContainer />
         </div>
     );
 }

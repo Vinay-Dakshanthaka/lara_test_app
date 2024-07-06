@@ -9,6 +9,7 @@ const Drive = db.Drive;
 const Skill = db.Skill;
 const Job_Skill = db.Job_Skill;
 const Student_Skill = db.Student_Skill;
+const Profile = db.Profile;
 
 
 const saveJob = async(req, res) => {
@@ -240,30 +241,45 @@ const  removeSkillFromJob = async (req, res) => {
     }
 };
 
-const getStudentsForJobWithSkills = async(req, res) => {
-    try{
-        const { job_id } = req.body;
-        const jobSkill = await Job_Skill.findAll({ where : { job_id }, attributes: ['skill_id'] });
-
-        if(jobSkill.length === 0)
-            return res.status(404).send({message : "Skills not added for this job"});
-
-        const skillIds = jobSkill.map(jobSkill => jobSkill.skill_id);
-
-        const studentSkill = await db.Student_Skill.findAll({ where : {skill_id : skillIds }, attributes: ['student_id'] });
-        if(!studentSkill)
-            return res.status(404).send({ message : "Students not found for the matched skills" })
-
-        const studentIdsSet = new Set(studentSkill.map(studentSkill => studentSkill.student_id));
-        const studentIds = Array.from(studentIdsSet);
-
-        const student = await Student.findAll({ where : { student_id : studentIds, isActive : true}, attributes : { exclude : ['password'] }});
-        return res.status(200).send({ student });
+const getStudentsForJobWithSkills = async (req, res) => {
+    try {
+      const { job_id } = req.body;
+  
+      const jobSkill = await Job_Skill.findAll({ where: { job_id }, attributes: ['skill_id'] });
+  
+      if (jobSkill.length === 0) {
+        return res.status(404).send({ message: "Skills not added for this job" });
+      }
+  
+      const skillIds = jobSkill.map(jobSkill => jobSkill.skill_id);
+  
+      const studentSkill = await db.Student_Skill.findAll({ where: { skill_id: skillIds }, attributes: ['student_id'] });
+      if (studentSkill.length === 0) {
+        return res.status(404).send({ message: "Students not found for the matched skills" });
+      }
+  
+      const studentIdsSet = new Set(studentSkill.map(studentSkill => studentSkill.student_id));
+      const studentIds = Array.from(studentIdsSet);
+  
+      const students = await Student.findAll({
+        where: { student_id: studentIds, isActive: true },
+        attributes: { exclude: ['password'] }
+      });
+  
+      const profiles = await Profile.findAll({
+        where: { student_id: studentIds }
+      });
+  
+      return res.status(200).send({
+        students: students,
+        profiles: profiles
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal server error' });
     }
-    catch(error){
-        return res.status(500).json({ error: 'Internal server error' });
-    }
-}
+  };
+  
 
 const transporter = nodemailer.createTransport({
     service: 'Gmail',
