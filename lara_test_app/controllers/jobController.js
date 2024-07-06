@@ -541,7 +541,8 @@ const getAllJobDetailsByStudent = async(req, res) => {
             where: { student_id },
             attributes: ['job_id']
         });
-
+        console.log("studentJobs", studentJobs);
+        
         const jobIds = studentJobs.map(studentJob => studentJob.job_id);
 
         if(jobIds.length === 0) 
@@ -574,7 +575,8 @@ const getAllJobDetailsByStudent = async(req, res) => {
     catch(error){
         return res.status(500).send({ message: error.message });
     }
-}
+};
+
 
 module.exports = {
     saveJob,
