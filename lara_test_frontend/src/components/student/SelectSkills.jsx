@@ -80,8 +80,10 @@ const SelectSkills = () => {
   );
 
   return (
-    <div className="container">
-      <h2>Student Skills</h2>
+    <div className="container mt-5">
+      <h2>Select and add Skills</h2>
+      <p>Based on your skills you will get drive info </p>
+      <Button variant="primary" className='my-3' onClick={() => setShowModal(true)}>Add Skills</Button>
       {studentSkills.length === 0 ? (
         <p>You can select and add skills</p>
       ) : (
@@ -101,7 +103,6 @@ const SelectSkills = () => {
         </table>
       )}
 
-      <Button variant="primary" onClick={() => setShowModal(true)}>Add Skills</Button>
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
@@ -114,7 +115,7 @@ const SelectSkills = () => {
             <form>
               <div className="row">
                 {availableSkills.map(skill => (
-                  <div key={skill.skill_id} className="col-6 form-check">
+                  <div key={skill.skill_id} className="col-lg-6 form-check">
                     <label className="form-check-label">
                       <input
                         type="checkbox"

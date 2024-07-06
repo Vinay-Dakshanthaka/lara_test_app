@@ -43,6 +43,7 @@ import ViewInteractions from "./components/companies/ViewInteractions";
 import ManageDrives from "./components/companies/ManageDrives";
 import AllDrives from "./components/admin/AllDrives";
 import ViewJobsByDriveId from "./components/companies/ViewJobsByDriveId";
+import StudentsDriveInfo from "./components/admin/StudentsDriveInfo";
 
 const App = () => {
   const location = useLocation();
@@ -113,6 +114,7 @@ const App = () => {
           <Route path="/interactions" element={<ViewInteractions />} />
           <Route path="/manage-drives" element={<ManageDrives/>}/>
           <Route path="/drives" element={<AllDrives />} />
+          <Route path="/all-students-drive-info" element={<StudentsDriveInfo />} />
         </Route>
       </Routes>
     </>

@@ -90,7 +90,7 @@ const ViewJobsByDriveId = () => {
         { job_id },
         config
       );
-
+      // console.log('response : ', response)
       if (response.status === 200) {
         setStudents(response.data.students);
         setProfiles(response.data.profiles);
@@ -153,6 +153,16 @@ const ViewJobsByDriveId = () => {
         setEmailSubject("");
         setEmailBody("");
         setSelectedStudents([]);
+
+        // Save the student_ids and job_id to the jobsAttendedByStudents API
+        await axios.post(
+          `${baseURL}/api/job/jobsAttendedByStudents`,
+          {
+            student_ids: selectedStudents,
+            job_id: selectedJobId,
+          },
+          config
+        );
       }
     } catch (error) {
       console.error("Error sending email:", error);
@@ -301,41 +311,41 @@ const ViewJobsByDriveId = () => {
                 />
                 <Form.Check
                   type="checkbox"
-                  label="Highest Education"
+                  label="Education"
                   checked={searchFilters.highestEducation}
                   onChange={() => toggleSearchFilter("highestEducation")}
                   className="col-4"
                 />
                 <Form.Check
                   type="checkbox"
-                  label="Year of Passout"
+                  label="Passout Year"
                   checked={searchFilters.yearOfPassout}
                   onChange={() => toggleSearchFilter("yearOfPassout")}
                   className="col-4"
                 />
               </div>
+              <button
+                className="btn btn-secondary mb-3"
+                onClick={handleSelectAllStudents}
+              >
+                {selectedStudents.length === students.length
+                  ? "Deselect All"
+                  : "Select All"}
+              </button>
               <table className="table table-striped table-hover">
                 <thead className="thead-dark">
                   <tr>
-                    <th>
-                      <input
-                        type="checkbox"
-                        checked={
-                          selectedStudents.length === renderStudents.length
-                        }
-                        onChange={handleSelectAllStudents}
-                      />
-                    </th>
-                    <th>Image</th>
+                    <th>Select</th>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>Specialization</th>
                     <th>Phone Number</th>
-                    <th>Role</th>
-                    <th>Profile Details</th>
+                    {/* <th>Year of Passout</th> */}
+                    <th>Profile</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {renderStudents.map((student) => {
+                {renderStudents.map((student) => {
                     const profile = getProfileForStudent(
                       student.student_id
                     );
@@ -361,7 +371,7 @@ const ViewJobsByDriveId = () => {
                         <td>{student.name}</td>
                         <td>{student.email}</td>
                         <td>{student.phoneNumber}</td>
-                        <td>{student.role}</td>
+                        {/* <td>{student.role}</td> */}
                         <td>
                           {profile && (
                             <div>
@@ -385,62 +395,57 @@ const ViewJobsByDriveId = () => {
                   })}
                 </tbody>
               </table>
-              <button
-                className="btn btn-success"
-                onClick={() => setShowModal(true)}
-                disabled={selectedStudents.length === 0}
-              >
-                Send Email
-              </button>
             </>
           )}
-          <Modal show={showModal} onHide={() => setShowModal(false)}>
-            <Modal.Header closeButton>
-              <Modal.Title>Send Email</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Form>
-                <Form.Group controlId="emailSubject">
-                  <Form.Label>Subject</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter subject"
-                    value={emailSubject}
-                    onChange={(e) => setEmailSubject(e.target.value)}
-                  />
-                </Form.Group>
-                <Form.Group controlId="emailBody">
-                  <Form.Label>Body</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    placeholder="Enter email body"
-                    value={emailBody}
-                    onChange={(e) => setEmailBody(e.target.value)}
-                  />
-                </Form.Group>
-              </Form>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={() => setShowModal(false)}>
-                Close
-              </Button>
-              <Button
-                variant="primary"
-                onClick={handleSendEmail}
-                disabled={isSendingEmail}
-              >
-                {isSendingEmail ? (
-                  <Spinner animation="border" size="sm" />
-                ) : (
-                  "Send Email"
-                )}
-              </Button>
-            </Modal.Footer>
-          </Modal>
         </>
       )}
-      <ToastContainer />
+      <Button
+        variant="primary"
+        className="mt-4"
+        onClick={() => setShowModal(true)}
+        disabled={selectedStudents.length === 0}
+      >
+        Send Email
+      </Button>
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Send Email</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group controlId="emailSubject">
+            <Form.Label>Subject</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter subject"
+              value={emailSubject}
+              onChange={(e) => setEmailSubject(e.target.value)}
+            />
+          </Form.Group>
+          <Form.Group controlId="emailBody" className="mt-3">
+            <Form.Label>Email Body</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={5}
+              placeholder="Enter email body"
+              value={emailBody}
+              onChange={(e) => setEmailBody(e.target.value)}
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleSendEmail}
+            disabled={isSendingEmail}
+          >
+            {isSendingEmail ? "Sending..." : "Send"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <ToastContainer position="top-right" />
     </div>
   );
 };
