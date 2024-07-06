@@ -346,10 +346,10 @@ const ViewAgents = () => {
       {/* Company Details Section */}
       {company && (
         <div className="mb-4">
-          <h2 className="text-center mb-4">{company.name}</h2>
+          {/* <h2 className="text-center mb-4">{company.name}</h2> */}
           <h2 className="text-center mb-4">
-          <AnyCompanyLogo companyId={company.company_id} style={{ width: '50px', height: '50px', borderRadius:'50%', margin:'10px'}} />
             {company.name} 
+          <AnyCompanyLogo companyId={company.company_id} style={{ width: '50px', height: '50px', borderRadius:'50%', margin:'10px'}} />
           </h2>
           <p><strong>Address:</strong> {company.address}</p>
           <p><strong>Email:</strong> {company.general_mail_id}</p>
