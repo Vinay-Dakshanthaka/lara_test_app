@@ -21,7 +21,16 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cors()); 
+const corsOptions = {
+    // origin: 'https://www.laragrooming.com',
+    origin: ['https://paintpulse.in', 'https://www.paintpulse.in'],
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  };
+  
+// Enable CORS 
+app.use(cors(corsOptions)); 
+
+// app.use(cors()); 
 app.use(express.json()); 
 
 // Routes
