@@ -533,56 +533,48 @@ const roundsClearedByStudent = async(req, res) => {
     }
 }  
 
-// const getAllJobDetailsByStudent = async(req, res) => {
-//     try{
-//         const {student_id} = req.body;
+const getAllJobDetailsByStudent = async(req, res) => {
+    try{
+        const {student_id} = req.body;
 
-//         const studentJobs = await Student_Job.findAll({
-//             where: { student_id },
-//             attributes: ['job_id']
-//         });
+        const studentJobs = await Student_Job.findAll({
+            where: { student_id },
+            attributes: ['job_id']
+        });
 
-//         const jobIds = studentJobs.map(studentJob => studentJob.job_id);
+        const jobIds = studentJobs.map(studentJob => studentJob.job_id);
 
-//         console.log("----------------");
+        if(jobIds.length === 0) 
+            return res.status(404).send({message : "drive details not found for the student"});
 
-//         if(jobIds.length === 0) 
-//             return res.status(404).send({message : "drive details not found for the student"});
+        const jobs = await Job.findAll({ where : {job_id : jobIds}, attributes: ['job_id', 'job_title', 'description', 'total_rounds']});
 
-//         console.log("----------------");
+        if(jobs.length === 0)
+            return res.status(404).send({message : "Job details not available"})
 
-//         const jobs = await Job.findAll({ where : {job_id : jobIds}, attributes: ['job_id', 'job_title', 'description', 'total_rounds']});
+        const roundsCleared = await Student_Job.findAll({
+            where: { student_id, job_id: jobIds },
+            attributes: ['job_id', 'rounds_cleared']
+        });
+
+        const response = jobs.map(job => {
+            const rounds = roundsCleared.find(rc => rc.job_id === job.job_id);
+            return {
+                job_details: {
+                    Job: job.job_title,
+                    JD: job.description,
+                    Total_Rounds: job.total_rounds
+                },
+                rounds: rounds ? rounds.rounds_cleared : null
+            };
+        });
         
-//         console.log("----------------");
-
-//         const response = [];
-//         if(jobs.length === 0)
-//             return res.status(404).send({message : "Job details not available"})
-
-//         const rounds_cleared = await Student_Job.findAll({
-//                 where : {student_id, job_id : jobIds},
-//                 attributes : []
-//         })
-
-//         for(const job of jobList){
-//             const job_details = await Job.findOne({ where: {job_id: job.job_id }, attributes: ['job_title', 'description', 'total_rounds'] });
-//             const rounds_cleared = await Student_Job.findOne({where : {student_id, job_id : job.job_id}, attributes: ['rounds_cleared'] });
-//             response.push({
-//                 job_details : {
-//                     Job : job_details.job_title,
-//                     JD : job_details.description,
-//                     Total_Rounds : job_details.total_rounds,
-//                 },
-//                 rounds : rounds_cleared
-//             })
-//         }
-        
-//         return res.status(200).send({ job_details : response });
-//     }
-//     catch(error){
-//         return res.status(500).send({ message: error });
-//     }
-// }
+        return res.status(200).send({ job_details : response });
+    }
+    catch(error){
+        return res.status(500).send({ message: error.message });
+    }
+}
 
 module.exports = {
     saveJob,
