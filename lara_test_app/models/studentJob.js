@@ -21,11 +21,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         rounds_cleared : {
             type : DataTypes.INTEGER,
-            defaultValue : false
+            defaultValue : 0
         },
         result : {
-            type: DataTypes.ENUM('ACCEPTED', 'REJECTED'),
-            allowNull: false
+            type: DataTypes.ENUM('SELECTED', 'REJECTED'),
+            defaultValue : null
         }
     }, {
         tableName: 'Student_Job',

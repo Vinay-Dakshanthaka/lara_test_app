@@ -398,7 +398,8 @@ const bulkSignup = async (req, res) => {
         } else {
             return res.status(200).send({
                 message: 'Bulk signup success and email sent successfully',
-                students: createdStudents
+                students: createdStudents,
+                invalidEmails : invalidEmails
             });
         }
     } catch (error) {

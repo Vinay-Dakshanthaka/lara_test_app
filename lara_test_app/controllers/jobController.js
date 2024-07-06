@@ -9,6 +9,7 @@ const Drive = db.Drive;
 const Skill = db.Skill;
 const Job_Skill = db.Job_Skill;
 const Student_Skill = db.Student_Skill;
+const Student_Job = db.Student_Job;
 
 
 const saveJob = async(req, res) => {
@@ -125,14 +126,12 @@ const getJobByJobId = async(req, res) => {
 const getJobsByDriveId = async (req, res) => {
   try {
     const { drive_id } = req.query;
-    console.log('id :=========',drive_id)
     let job = await Job.findAll({ where: { drive_id } });
-    console.log(job);
     if (job.length === 0) {
       return res.status(404).send({ message: 'Job not found' });
     }
 
-    res.status(200).send({ job });
+    return res.status(200).send({ job });
   } catch (error) {
     console.log(error);
     return res.status(500).send({ message: error.message });
@@ -325,6 +324,15 @@ const sendDriveToStudents = async(req, res) => {
                 students: emailErrors,
             });
         } else {
+            await Promise.all(student_ids.map(async student_id => {
+                const studentDetail = await Student_Job.findAll({ where : { student_id, job_id }});
+                if(!studentDetail){
+                    await Student_Job.create({
+                        student_id: student_id,
+                        job_id: job_id
+                    });
+                }
+            }));
             return res.status(200).send({
                 message: 'Drive details to the students sent successfully',
                 students: studentEmails
@@ -355,6 +363,166 @@ const getSkillsByJobId = async(req, res) => {
     }
 }
 
+const submitStudentResult = async(req, res) => {
+    try{
+        const studentId = req.student_id;
+        const studentData = await Student.findByPk(studentId);
+        const role = studentData.role;
+        
+        if(role !== 'PLACEMENT OFFICER' & role !== 'SUPER ADMIN')
+            return res.status(403).send({message : 'Access Forbidden'});
+
+        const { student_id, job_id, result, subject, mail_body } = req.body;
+        if(!student_id || !result || !subject || !mail_body)
+            return res.status(400).json({ error: 'Input is missing in request body' });
+
+        const student_job = await Student_Job.findOne({ where : {student_id, job_id} });
+        if(!student_job)
+            return res.status(404).json({ error: 'Student not found for the job' });
+
+        const student = await Student.findOne({ where : { student_id }, attributes: ['skill_id'] });
+    
+        const round_cleared = student_job.rounds_cleared;
+        if(result === "SELECTED"){
+            const rounds_cleared = round_cleared + 1;
+            await Student_Job.update({rounds_cleared, result}, { where : {student_id}, attributes : { exclude : ['password'] }});
+
+            
+            const mailOptions = {
+                from: 'deebaishya555@gmail.com',
+                to: student.email,
+                subject: subject,
+                text : mail_body
+                // html: `
+                //     <div style="font-family: Arial, sans-serif; padding: 20px;">
+                //         <img src="https://laragrooming.com/static/media/laralogo.4950e732716a6d9baed2.webp" alt="Lara Technologies Logo" style="max-width: 150px;">
+                //         <h2>Welcome to Lara Technologies!</h2>
+                //         <p>Dear Student,</p>
+                //         <p>Your account has been successfully created. Here are your login details:</p>
+                //         <p><strong>Email:</strong> ${newStudent.email}</p>
+                //         <p><strong>Password:</strong> password@123</p>
+                //         <p> Click the below link to Signin to your Account</p>
+                //         <a href="http://localhost:5173/signin" target="_blank">http://localhost:5173/signin</a>
+                //         <p>We recommend that you change your password after logging in for the first time.</p>
+                //         <p>Until Your password is updated you won't be able to complete the further step.</p>
+                //         <p>Thank You,</p>
+                //         <p>Lara Technologies Team</p>
+                //     </div>
+                // `
+            };
+
+            try {
+                await transporter.sendMail(mailOptions);
+                return res.status(200).send({ message: 'Email Sent after selection', student: student });
+            } catch (emailError) {
+                console.error('Error sending email:', emailError);
+                return res.status(200).send({
+                    message: 'Student got selected, but there was an error sending the selection email',
+                    student: student,
+                    emailError: emailError.message
+                });
+            }
+        }
+        else if(result === "REJECTED"){
+            await Student_Job.update({result}, {where : {student_id, job_id}});
+            
+            const mailOptions = {
+                from: 'deebaishya555@gmail.com',
+                to: student.email,
+                subject: subject,
+                text : mail_body
+            };
+
+            try {
+                await transporter.sendMail(mailOptions);
+                return res.status(200).send({ message: 'Email Sent after rejection', student: student });
+            } catch (emailError) {
+                console.error('Error sending email:', emailError);
+                return res.status(200).send({
+                    message: 'Student got rejected, but there was an error sending the rejection email',
+                    student: student,
+                    emailError: emailError.message
+                });
+            }
+        }
+    }
+    catch(error){
+        return res.status(500).send({ message: error });
+    }
+}
+
+const roundsClearedByStudent = async(req, res) => {
+    try{
+        const {student_id, job_id} = req.body;
+
+        if(!student_id || !job_id)
+            return res.status(400).send({message : "studentId or jobId is missing in request body"});
+
+        const student_job = await Student_Job.findOne({ where : { student_id, job_id }});
+        if(!student_job) 
+            return res.status(404).send({message : "drive details not found for the student"});
+
+        const student = await Student.findByPk(student_id);
+        const job = await Job.findByPk(job_id);
+        
+        return res.status(200).send({ student : student.name, job, rounds_cleared : student_job.rounds_cleared});
+    }
+    catch(error){
+        return res.status(500).send({ message: error });
+    }
+}  
+
+// const getAllJobDetailsByStudent = async(req, res) => {
+//     try{
+//         const {student_id} = req.body;
+
+//         const studentJobs = await Student_Job.findAll({
+//             where: { student_id },
+//             attributes: ['job_id']
+//         });
+
+//         const jobIds = studentJobs.map(studentJob => studentJob.job_id);
+
+//         console.log("----------------");
+
+//         if(jobIds.length === 0) 
+//             return res.status(404).send({message : "drive details not found for the student"});
+
+//         console.log("----------------");
+
+//         const jobs = await Job.findAll({ where : {job_id : jobIds}, attributes: ['job_id', 'job_title', 'description', 'total_rounds']});
+        
+//         console.log("----------------");
+
+//         const response = [];
+//         if(jobs.length === 0)
+//             return res.status(404).send({message : "Job details not available"})
+
+//         const rounds_cleared = await Student_Job.findAll({
+//                 where : {student_id, job_id : jobIds},
+//                 attributes : []
+//         })
+
+//         for(const job of jobList){
+//             const job_details = await Job.findOne({ where: {job_id: job.job_id }, attributes: ['job_title', 'description', 'total_rounds'] });
+//             const rounds_cleared = await Student_Job.findOne({where : {student_id, job_id : job.job_id}, attributes: ['rounds_cleared'] });
+//             response.push({
+//                 job_details : {
+//                     Job : job_details.job_title,
+//                     JD : job_details.description,
+//                     Total_Rounds : job_details.total_rounds,
+//                 },
+//                 rounds : rounds_cleared
+//             })
+//         }
+        
+//         return res.status(200).send({ job_details : response });
+//     }
+//     catch(error){
+//         return res.status(500).send({ message: error });
+//     }
+// }
+
 module.exports = {
     saveJob,
     updateJob,
@@ -365,5 +533,11 @@ module.exports = {
     removeSkillFromJob,
     getStudentsForJobWithSkills,
     sendDriveToStudents,
-    getSkillsByJobId
+    getSkillsByJobId,
+    submitStudentResult,
+    roundsClearedByStudent,
+    getAllJobDetailsByStudent
 }
+
+
+

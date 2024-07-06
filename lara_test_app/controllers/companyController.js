@@ -83,7 +83,7 @@ const saveCompany = async (req, res) => {
         }
 
         // Generate company_id
-        const companyName = name.substring(0, 2).toUpperCase(); 
+        const companyName = "COMP";
         const lastCompany = await Company.findOne({
             order: [['company_id', 'DESC']]
         });
@@ -91,7 +91,7 @@ const saveCompany = async (req, res) => {
         let lastIdNumber = 0;
         if (lastCompany && lastCompany.company_id) {
             const lastId = lastCompany.company_id;
-            lastIdNumber = parseInt(lastId.replace(lastId.substring(0, 3), ''), 10);
+            lastIdNumber = parseInt(lastId.replace(lastId.substring(0, 4), ''), 10);
         }
 
         const newIdNumber = lastIdNumber + 1;
