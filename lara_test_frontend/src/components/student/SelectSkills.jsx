@@ -83,7 +83,7 @@ const SelectSkills = () => {
     <div className="container mt-5">
       <h2>Select and add Skills</h2>
       <p>Based on your skills you will get drive info </p>
-      <Button variant="primary" className='my-3' onClick={() => setShowModal(true)}>Add Skills</Button>
+      <Button variant="primary" className='my-3' onClick={() => setShowModal(true)}>Select Skills</Button>
       {studentSkills.length === 0 ? (
         <p>You can select and add skills</p>
       ) : (

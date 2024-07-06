@@ -7,7 +7,7 @@ import ProfileImage from './ProfileImage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { Toast, Modal, Button } from 'react-bootstrap';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 const UpdateProfile = () => {
     const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -183,9 +183,11 @@ const UpdateProfile = () => {
             setShowConfirmModal(false);
             setShowSuccessToast(true);
             setImage(data.imagePath);
+            toast.success("Image Uploaded Succesfully");
             window.location.reload();
         } catch (error) {
             console.error("Error uploading profile image:", error);
+            toast.error("Error uploading profile image");
         }
     };
 
@@ -375,6 +377,7 @@ const UpdateProfile = () => {
                     <Button variant="primary" onClick={confirmImageUpload}>Upload</Button>
                 </Modal.Footer>
             </Modal>
+            <ToastContainer/>
         </div>
     );
 };

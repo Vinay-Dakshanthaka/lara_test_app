@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { baseURL } from "../config";
+import { toast } from "react-toastify";
 
 const ManageSkills = ({ onSelectSkill }) => {
   const [skills, setSkills] = useState([]);
@@ -54,6 +55,10 @@ const ManageSkills = ({ onSelectSkill }) => {
       const newSkill = response.data.skill;
       setSkills([...skills, newSkill]);
       setNewSkillName("");
+      toast.success("Skills Added Succesfully");
+      setTimeout(() => {
+        window.location.reload();
+      })
       // onSelectSkill(newSkill.skill_id); // Optional: Select the newly added skill
     } catch (error) {
       console.error("Failed to add skill", error);
