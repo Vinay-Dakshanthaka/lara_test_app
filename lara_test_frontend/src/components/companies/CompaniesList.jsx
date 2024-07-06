@@ -11,6 +11,7 @@ import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import defaultLogo from "./DefaultComapnyImage.jpg";
 //import DriveList from "./DriveList";
 import ViewJobs from "./ViewJobs";
+import AnyCompanyLogo from "../admin/AnyCompanyLogo";
 
 
 // const CompaniesList = ({ setSelectedCompanyId }) => {
@@ -412,7 +413,7 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [companyToDelete, setCompanyToDelete] = useState(null);
   const navigate = useNavigate();
-  
+
   // Ref object to hold file input refs for each company
   const fileInputRefs = useRef({});
 
@@ -521,7 +522,7 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
   //   }
   // };
 
-  const handleViewAgents = async (companyId)=>{
+  const handleViewAgents = async (companyId) => {
     navigate(`/view-agents/${companyId}`)
   }
 
@@ -544,40 +545,40 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
     setCompanyToDelete(null);
   };
 
-  const handleDeleteCompany = async () => {
-    if (!companyToDelete) return;
+  // const handleDeleteCompany = async () => {
+  //   if (!companyToDelete) return;
 
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.log("No token found");
-        return;
-      }
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     if (!token) {
+  //       console.log("No token found");
+  //       return;
+  //     }
 
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        data: {
-          company_id: companyToDelete,
-        },
-      };
+  //     const config = {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //       data: {
+  //         company_id: companyToDelete,
+  //       },
+  //     };
 
-      await axios.delete(`${baseURL}/api/company/deleteCompany`, config);
-      toast.success("Company deleted successfully");
+  //     await axios.delete(`${baseURL}/api/company/deleteCompany`, config);
+  //     toast.success("Company deleted successfully");
 
-      setCompanies((prevCompanies) =>
-        prevCompanies.filter(
-          (company) => company.company_id !== companyToDelete
-        )
-      );
+  //     setCompanies((prevCompanies) =>
+  //       prevCompanies.filter(
+  //         (company) => company.company_id !== companyToDelete
+  //       )
+  //     );
 
-      handleCloseDeleteModal();
-    } catch (error) {
-      console.error("Error deleting company:", error);
-      toast.error("Error deleting company");
-    }
-  };
+  //     handleCloseDeleteModal();
+  //   } catch (error) {
+  //     console.error("Error deleting company:", error);
+  //     toast.error("Error deleting company");
+  //   }
+  // };
 
   const handleEditClick = (companyId) => {
     if (fileInputRefs.current[companyId]) {
@@ -659,7 +660,7 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
             <th>Logo</th>
             <th>Name</th>
             <th>Description</th>
-            <th>Type</th>
+            {/* <th>Type</th> */}
             <th>Address</th>
             <th>Phone</th>
             <th>Email</th>
@@ -671,36 +672,45 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
           {companies.map((company) => (
             <tr key={company.company_id}>
               <td>
-              <div className="edit-icon display-inline">
+                <div className="d-flex align-items-center">
+                  <img
+                    src={company.company_logo || defaultLogo}
+                    alt="Company Logo"
+                    className="img-thumbnail"
+                    style={{
+                      width: '50px',
+                      height: '50px',
+                      borderRadius: '5%',
+                      cursor: 'pointer',
+                      marginRight: '10px'
+                    }}
+                    onClick={() => fileInputRefs.current[company.company_id].click()}
+                  />
                   <FontAwesomeIcon
                     icon={faEdit}
                     size="sm"
                     onClick={() => handleEditClick(company.company_id)}
+                    className="text-primary"
                     style={{
-                      cursor: "pointer",
-                      width: "20px",
-                      height: "20px",
-                      marginTop: "10px",
+                      cursor: 'pointer',
+                      width: '15px',
+                      height: '15px',
+                      marginTop: '20%'
                     }}
                   />
                   <input
                     id={`fileInput-${company.company_id}`}
                     type="file"
                     accept="image/jpeg, image/png"
-                    style={{ display: "none" }}
+                    style={{ display: 'none' }}
                     ref={(el) => (fileInputRefs.current[company.company_id] = el)}
                     onChange={(e) => handleImageUpload(e, company.company_id)}
                   />
                 </div>
-                <img
-                  src={company.company_logo || defaultLogo}
-                  alt="Company Logo"
-                  className="company-logo"
-                />
               </td>
               <td>{company.name}</td>
               <td>{company.description}</td>
-              <td>{company.type}</td>
+              {/* <td>{company.type}</td> */}
               <td>{company.address}</td>
               <td>{company.phoneNumber}</td>
               <td>{company.general_mail_id}</td>
@@ -737,11 +747,11 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
                     >
                       Update Company
                     </Dropdown.Item>
-                    <Dropdown.Item
+                    {/* <Dropdown.Item
                       onClick={() => handleShowDeleteModal(company.company_id)}
                     >
                       Delete Company
-                    </Dropdown.Item>
+                    </Dropdown.Item> */}
                     <Dropdown.Item
                       onClick={() => handleViewDrives(company.company_id)}
                     >
@@ -755,7 +765,7 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
         </tbody>
       </table>
 
-      <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
+      {/* <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
         <Modal.Header closeButton>
           <Modal.Title>Confirm Delete</Modal.Title>
         </Modal.Header>
@@ -768,7 +778,7 @@ const CompaniesList = ({ setSelectedCompanyId }) => {
             Delete
           </Button>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
     </div>
   );
 };

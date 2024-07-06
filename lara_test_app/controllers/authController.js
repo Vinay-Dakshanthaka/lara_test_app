@@ -732,7 +732,7 @@ const uploadProfileImage = async (req, res) => {
 };
 
 const getProfileImage = async (req, res) => {
-    console.log("111111111111111");
+    
     try {
         const id = req.student_id;
         const profile = await Student.findOne({ where: { student_id: id } });
@@ -800,6 +800,45 @@ const getProfileImageFor = async (req, res) => {
     }
 };
 
+const getAnyProfileImageById = async (req, res) => {
+    try {
+        const { student_id } = req.body;
+
+        if (!student_id) {
+            return res.status(400).send({ message: 'Student ID is required.' });
+        }
+
+        const profile = await Student.findOne({ where: { student_id } });
+
+        if (!profile) {
+            return res.status(404).send({ message: 'Student not found.' });
+        }
+
+        const imagePath = profile.imagePath;
+
+        // Check if imagePath exists
+        if (!imagePath) {
+            return res.status(404).send({ message: 'Image not found.' });
+        }
+
+        // Read the image file
+        fs.readFile(imagePath, (err, data) => {
+            if (err) {
+                return res.status(500).send({ message: 'Error reading image file.' });
+            }
+
+            // Set the appropriate content type
+            res.setHeader('Content-Type', 'image/jpeg'); // Adjust content type based on your image format
+
+            // Send the image file as response
+            return res.status(200).send(data);
+        });
+    } catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+};
+
+
 const updateStudentNameAndPhoneNumber = async (req, res) => {
     const studentId = req.student_id;
     const { name, phoneNumber } = req.body;
@@ -858,8 +897,12 @@ const deleteAccount = async (req, res) => {
 
 const addSkillsToStudent = async (req, res) => {
     try {
-        const { student_id, skill_ids } = req.body; 
-  
+
+        const student_id = req.student_id;
+        console.log('stud id ', student_id)
+        const { skill_ids } = req.body; 
+        console.log('skill ids : ', skill_ids)
+        console.log('skill ids', skill_ids)
         if (!student_id || !skill_ids) {
             return res.status(400).json({ error: 'Missing skillId or studentId in request body' });
         }
@@ -919,6 +962,7 @@ module.exports = {
     uploadProfileImage,
     getProfileImage,
     getProfileImageFor,
+    getAnyProfileImageById,
     updateStudentNameAndPhoneNumber,
     sendPasswordResetEmail,
     updatePassword,

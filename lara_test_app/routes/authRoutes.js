@@ -32,6 +32,8 @@ authRoute.get('/getProfileImage',verifyToken, authController.getProfileImage);
 
 authRoute.get('/getProfileImageFor', authController.getProfileImageFor);
 
+authRoute.post('/getAnyProfileImageById', authController.getAnyProfileImageById);
+
 authRoute.post('/password-reset-email', authController.sendPasswordResetEmail);
 
 authRoute.post('/reset-password', authController.resetPassword);

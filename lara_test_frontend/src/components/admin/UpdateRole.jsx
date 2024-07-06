@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { baseURL } from '../config';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AnyProfileImage from './AnyProfileImage';
 
 const UpdateRole = () => {
   const [students, setStudents] = useState([]);
@@ -102,6 +103,7 @@ const UpdateRole = () => {
       <table className="table table-striped">
         <thead>
           <tr>
+            <th>Image</th>
             <th>Name</th>
             <th>Email</th>
             <th>Phone</th>
@@ -112,6 +114,9 @@ const UpdateRole = () => {
         <tbody>
           {currentStudents.map((student) => (
             <tr key={student.student_id}>
+              <td>
+              <AnyProfileImage studentId={student.student_id} style={{ width: '50px', height: '50px' }} />
+              </td>
               <td>{student.name}</td>
               <td>{student.email}</td>
               <td>{student.phoneNumber}</td>

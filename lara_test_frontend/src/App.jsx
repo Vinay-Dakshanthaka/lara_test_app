@@ -41,6 +41,8 @@ import UpdateCompanies from "./components/companies/UpdateCompanies";
 import ViewAgents from "./components/companies/ViewAgents";
 import ViewInteractions from "./components/companies/ViewInteractions";
 import ManageDrives from "./components/companies/ManageDrives";
+import AllDrives from "./components/admin/AllDrives";
+import ViewJobsByDriveId from "./components/companies/ViewJobsByDriveId";
 
 const App = () => {
   const location = useLocation();
@@ -101,6 +103,7 @@ const App = () => {
           <Route path="/add-webinar" element={<WebinarForm />} />
           <Route path="/webinar-list" element={<WebinarList />} />
           <Route path="/drives/:drive_id/jobs" element={<ViewJobs/>} />
+          <Route path="/drives/all-jobs/:drive_id/jobs" element={<ViewJobsByDriveId/>} />
           <Route path="/drives/:drive_id/add-job" element={<AddJob/>} />
           <Route path="/jobs/:job_id/edit" element={<EditJob/>} />
           <Route path="/jobs/:job_id/skills" element={<ManageSkills/>} />
@@ -109,6 +112,7 @@ const App = () => {
           <Route path="/add-agent/:companyId" element={<AddAgent />} />
           <Route path="/interactions" element={<ViewInteractions />} />
           <Route path="/manage-drives" element={<ManageDrives/>}/>
+          <Route path="/drives" element={<AllDrives />} />
         </Route>
       </Routes>
     </>
