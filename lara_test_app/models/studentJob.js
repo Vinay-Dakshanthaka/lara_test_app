@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         result : {
             type: DataTypes.ENUM('SELECTED', 'REJECTED'),
-            defaultValue : null
+            allowNull: false 
         }
     }, {
         tableName: 'Student_Job',

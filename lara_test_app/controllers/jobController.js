@@ -590,7 +590,7 @@ module.exports = {
     getSkillsByJobId,
     submitStudentResult,
     roundsClearedByStudent,
-    getAllJobDetailsByStudent
+    // getAllJobDetailsByStudent
 }
 
 

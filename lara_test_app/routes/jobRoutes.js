@@ -16,6 +16,6 @@ jobRoute.post('/sendDriveToStudents', verifyToken, jobController.sendDriveToStud
 jobRoute.post('/getSkillsByJobId', verifyToken, jobController.getSkillsByJobId);
 jobRoute.post('/submitStudentResult', verifyToken, jobController.submitStudentResult);
 jobRoute.post('/roundsClearedByStudent', verifyToken, jobController.roundsClearedByStudent);
-jobRoute.post('/getAllJobDetailsByStudent', verifyToken, jobController.getAllJobDetailsByStudent);
+// jobRoute.post('/getAllJobDetailsByStudent', verifyToken, jobController.getAllJobDetailsByStudent);
 
 module.exports = jobRoute
