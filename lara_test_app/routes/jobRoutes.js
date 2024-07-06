@@ -14,5 +14,8 @@ jobRoute.delete('/removeSkillFromJob', verifyToken, jobController.removeSkillFro
 jobRoute.post('/getStudentsForJobWithSkills', verifyToken, jobController.getStudentsForJobWithSkills);
 jobRoute.post('/sendDriveToStudents', verifyToken, jobController.sendDriveToStudents);
 jobRoute.post('/getSkillsByJobId', verifyToken, jobController.getSkillsByJobId);
+jobRoute.post('/submitStudentResult', verifyToken, jobController.submitStudentResult);
+jobRoute.post('/roundsClearedByStudent', verifyToken, jobController.roundsClearedByStudent);
+jobRoute.post('/getAllJobDetailsByStudent', verifyToken, jobController.getAllJobDetailsByStudent);
 
 module.exports = jobRoute

@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         rounds_cleared : {
             type : DataTypes.INTEGER,
-            defaultValue : false
+            defaultValue : 0
         },
         result : {
             type: DataTypes.ENUM('SELECTED', 'REJECTED'),
