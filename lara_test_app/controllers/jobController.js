@@ -10,6 +10,7 @@ const Skill = db.Skill;
 const Job_Skill = db.Job_Skill;
 const Student_Skill = db.Student_Skill;
 const Profile = db.Profile;
+const Student_Job = db.Student_Job;
 
 
 const saveJob = async(req, res) => {
@@ -597,7 +598,7 @@ module.exports = {
     getSkillsByJobId,
     submitStudentResult,
     roundsClearedByStudent,
-    getAllJobDetailsByStudent
+    // getAllJobDetailsByStudent
 }
 
 
