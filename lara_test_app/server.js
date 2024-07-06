@@ -39,7 +39,7 @@ app.use('/api/webinars', WebinarTraingsRoute)
 app.use('/api/interaction', AgentInteractionRoute);
 
 // Port
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 5000;
 
 db.sequelize.sync({ force: false })
     .then(() => {
