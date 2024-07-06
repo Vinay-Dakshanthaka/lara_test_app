@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import SelectSkills from './SelectSkills';
+import DrivesInfo from './DrivesInfo';
 
 function StudentDashboard() {
   const [student, setStudent] = useState(null);
@@ -153,13 +154,13 @@ function StudentDashboard() {
           <div className="col-lg-4">
             <div className="card mb-4">
               <div className="card-body text-center">
-                <ProfileImage style={{ width: '150px',height: '150px' }} className="rounded-circle img-fluid profile-image" />
+                <ProfileImage style={{ width: '150px', height: '150px' }} className="rounded-circle img-fluid profile-image" />
                 <h5 className="my-3">{student.name}</h5>
                 <p className="text-muted mb-1">{profile?.highest_education || 'N/A'}</p>
                 <p className="text-muted mb-4">{profile?.address || 'N/A'}</p>
-                
+
                 <div className="d-flex justify-content-center mb-2">
-                  <button type="button" className="btn btn-primary" onClick={()=>{navigate('/update-profile')}}>Update Info</button>
+                  <button type="button" className="btn btn-primary" onClick={() => { navigate('/update-profile') }}>Update Info</button>
                 </div>
               </div>
             </div>
@@ -212,9 +213,9 @@ function StudentDashboard() {
             </div>
           </div>
         </div>
+        <DrivesInfo />
         <SelectSkills />
       </div>
-      
       <Modal show={showModal} onHide={handleModalClose}>
         <Modal.Header closeButton>
           <Modal.Title>Update Details</Modal.Title>
