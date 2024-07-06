@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import SelectSkills from './SelectSkills';
 
 function StudentDashboard() {
   const [student, setStudent] = useState(null);
@@ -211,6 +212,7 @@ function StudentDashboard() {
             </div>
           </div>
         </div>
+        <SelectSkills />
       </div>
       
       <Modal show={showModal} onHide={handleModalClose}>

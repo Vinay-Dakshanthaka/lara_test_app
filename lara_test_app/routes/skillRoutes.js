@@ -7,6 +7,7 @@ skillRoute.post('/saveSkill', verifyToken, skillController.saveSkill);
 skillRoute.put('/updateSkill', verifyToken, skillController.updateSkill);
 skillRoute.delete('/deleteSkill', verifyToken, skillController.deleteSkill);
 skillRoute.get('/getAllSkills', verifyToken, skillController.getAllSkills);
+skillRoute.get('/getAllSkillsForStudent', verifyToken, skillController.getAllSkillsForStudent);
 //skillRoute.get('/getAgentByCompanyId', verifyToken, skillController.getAgentByCompanyId);
 
 module.exports = skillRoute

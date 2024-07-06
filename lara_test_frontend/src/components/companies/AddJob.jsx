@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { ToastContainer } from 'react-bootstrap';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import { baseURL } from '../config';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-
 import ManageSkills from "./ManageSkills";
 
 const AddJobs = () => {
@@ -58,6 +56,37 @@ const AddJobs = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Form validation
+    const {
+      job_title,
+      description,
+      job_location,
+      no_of_openings,
+      year_of_exp,
+      position,
+      total_rounds,
+    } = job;
+
+    if (
+      !job_title ||
+      !description ||
+      !job_location ||
+      !no_of_openings ||
+      !year_of_exp ||
+      !position ||
+      !total_rounds ||
+      selectedSkills.length === 0
+    ) {
+      toast.error('Please fill all fields and select at least one skill.');
+      return;
+    }
+
+    if (!Number.isInteger(Number(no_of_openings))) {
+      toast.error('Number of openings must be an integer.');
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -80,14 +109,12 @@ const AddJobs = () => {
       const { data } = response;
       console.log("Job added successfully:", data);
       // Associate selected skills with the job using Job_Skill table
-      console.log("skill_ids", selectedSkills);
-      console.log("job_id", data.job.job_id);
       await axios.post(
         `${baseURL}/api/job/addSkillsToJob`,
         { job_id: data.job.job_id, skill_ids: selectedSkills },
         config
       );
-      toast.success('Job added successfuly!')
+      toast.success('Job added successfully!');
 
       // Clear form state or navigate to job list page
       setJob({
@@ -102,7 +129,7 @@ const AddJobs = () => {
       setSelectedSkills([]);
     } catch (error) {
       console.error("Failed to add job or skills", error);
-      toast.error('Something went wrong!!')
+      toast.error('Something went wrong!!');
     }
   };
 
@@ -121,122 +148,128 @@ const AddJobs = () => {
 
   return (
     <div className="container mt-5">
-  <div className="row">
-    <div className="col-md-8 offset-md-2">
-      <h2>Add Job</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="job_title" className="form-label">Job Title</label>
-          <input
-            type="text"
-            id="job_title"
-            name="job_title"
-            value={job.job_title}
-            onChange={handleChange}
-            className="form-control"
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="description" className="form-label">Description</label>
-          <textarea
-            id="description"
-            name="description"
-            value={job.description}
-            onChange={handleChange}
-            className="form-control"
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="job_location" className="form-label">Job Location</label>
-          <input
-            type="text"
-            id="job_location"
-            name="job_location"
-            value={job.job_location}
-            onChange={handleChange}
-            className="form-control"
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="no_of_openings" className="form-label">Number of Openings</label>
-          <input
-            type="number"
-            id="no_of_openings"
-            name="no_of_openings"
-            value={job.no_of_openings}
-            onChange={handleChange}
-            className="form-control"
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="year_of_exp" className="form-label">Years of Experience Required</label>
-          <input
-            type="text"
-            id="year_of_exp"
-            name="year_of_exp"
-            value={job.year_of_exp}
-            onChange={handleChange}
-            className="form-control"
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="position" className="form-label">position</label>
-          <input
-            type="text"
-            id="position"
-            name="position"
-            value={job.position}
-            onChange={handleChange}
-            className="form-control"
-          />
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="total_rounds" className="form-label">Total Rounds</label>
-          <input
-            type="number"
-            id="total_rounds"
-            name="total_rounds"
-            value={job.total_rounds}
-            onChange={handleChange}
-            className="form-control"
-          />
-        </div>
-
-        <div className="mb-3">
-          <h3>Skills</h3>
-          {skills.map((skill) => (
-            <div className="form-check" key={skill.skill_id}>
+      <div className="row">
+        <div className="col-md-8 offset-md-2">
+          <h2>Add Job</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label htmlFor="job_title" className="form-label">Job Title</label>
               <input
-                type="checkbox"
-                id={`skill_${skill.skill_id}`}
-                name={`skills`}
-                value={skill.skill_id}
-                checked={selectedSkills.includes(skill.skill_id)}
-                onChange={handleSkillChange}
-                className="form-check-input"
+                type="text"
+                id="job_title"
+                name="job_title"
+                value={job.job_title}
+                onChange={handleChange}
+                className="form-control"
+                required
               />
-              <label htmlFor={`skill_${skill.skill_id}`} className="form-check-label">{skill.name}</label>
             </div>
-          ))}
-        </div>
 
-        <div className="mb-3">
-          <ManageSkills onSelectSkill={handleGlobalSkillSelect} />
-        </div>
+            <div className="mb-3">
+              <label htmlFor="description" className="form-label">Description</label>
+              <textarea
+                id="description"
+                name="description"
+                value={job.description}
+                onChange={handleChange}
+                className="form-control"
+                required
+              />
+            </div>
 
-        <button type="submit" className="btn btn-primary">Save Job</button>
-      </form>
+            <div className="mb-3">
+              <label htmlFor="job_location" className="form-label">Job Location</label>
+              <input
+                type="text"
+                id="job_location"
+                name="job_location"
+                value={job.job_location}
+                onChange={handleChange}
+                className="form-control"
+                required
+              />
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="no_of_openings" className="form-label">Number of Openings</label>
+              <input
+                type="number"
+                id="no_of_openings"
+                name="no_of_openings"
+                value={job.no_of_openings}
+                onChange={handleChange}
+                className="form-control"
+                required
+              />
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="year_of_exp" className="form-label">Years of Experience Required</label>
+              <input
+                type="text"
+                id="year_of_exp"
+                name="year_of_exp"
+                value={job.year_of_exp}
+                onChange={handleChange}
+                className="form-control"
+                required
+              />
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="position" className="form-label">position</label>
+              <input
+                type="text"
+                id="position"
+                name="position"
+                value={job.position}
+                onChange={handleChange}
+                className="form-control"
+                required
+              />
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="total_rounds" className="form-label">Total Rounds</label>
+              <input
+                type="number"
+                id="total_rounds"
+                name="total_rounds"
+                value={job.total_rounds}
+                onChange={handleChange}
+                className="form-control"
+                required
+              />
+            </div>
+
+            <div className="mb-3">
+              <h3>Skills</h3>
+              {skills.map((skill) => (
+                <div className="form-check" key={skill.skill_id}>
+                  <input
+                    type="checkbox"
+                    id={`skill_${skill.skill_id}`}
+                    name="skills"
+                    value={skill.skill_id}
+                    checked={selectedSkills.includes(skill.skill_id)}
+                    onChange={handleSkillChange}
+                    className="form-check-input"
+                  />
+                  <label htmlFor={`skill_${skill.skill_id}`} className="form-check-label">{skill.name}</label>
+                </div>
+              ))}
+            </div>
+
+            <div className="mb-3">
+              <ManageSkills onSelectSkill={handleGlobalSkillSelect} />
+            </div>
+
+            <button type="submit" className="btn btn-primary">Save Job</button>
+          </form>
+        </div>
+      </div>
+      <ToastContainer />
     </div>
-  </div>
-  <ToastContainer />
-</div>
-
   );
 };
 

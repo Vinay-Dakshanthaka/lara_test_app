@@ -4,6 +4,7 @@ import axios from "axios";
 import { baseURL } from "../config";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button } from "react-bootstrap";
+import AnyCompanyLogo from "../admin/AnyCompanyLogo";
 
 const ViewAgents = () => {
   const { companyId } = useParams();
@@ -119,6 +120,7 @@ const ViewAgents = () => {
       {company && (
         <div className="mb-4">
           <h2 className="text-center mb-4">
+          <AnyCompanyLogo companyId={company.company_id} style={{ width: '50px', height: '50px', borderRadius:'50%', margin:'10px'}} />
             {company.name} 
           </h2>
           <p><strong>Address:</strong> {company.address}</p>

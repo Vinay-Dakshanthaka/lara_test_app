@@ -320,6 +320,36 @@ const getCompanyLogo = async(req, res) => {
     }
 };
 
+const getAnyImageLogo = async (req, res) => {
+    try {
+        const { company_id } = req.body; 
+
+        const company = await Company.findByPk(company_id);
+        if (!company) {
+            return res.status(404).send({ message: 'Company not found.' });
+        }
+
+        const file = company.company_logo;
+        if (!file) {
+            return res.status(404).send({ message: 'Image not found.' });
+        }
+
+        fs.readFile(file, (err, data) => {
+            if (err) {
+                return res.status(500).send({ message: 'Error reading image file.' });
+            }
+
+            // Set the appropriate content type
+            res.setHeader('Content-Type', 'image/jpeg'); // Adjust content type based on your image format
+
+            // Send the image file as response
+            return res.status(200).send(data);
+        });
+    } catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+};
+
 const saveCompanyType = async (req, res) => {
     try {
         const id = req.student_id;
@@ -457,6 +487,7 @@ module.exports = {
     getCompanyDetailsById,
     uploadCompanyLogo,
     getCompanyLogo,
+    getAnyImageLogo,
     saveCompanyType,
     updateCompanyType,
     deleteCompanyType,

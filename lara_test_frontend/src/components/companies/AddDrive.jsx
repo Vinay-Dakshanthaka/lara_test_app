@@ -1,15 +1,25 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { baseURL } from '../config';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';
+import AnyCompanyLogo from '../admin/AnyCompanyLogo';
+import CompanyDetails from './CompanyDetails';
 
-function AddDrive(selectedCompanyId) {
-    console.log("selectedCompanyId", selectedCompanyId.selectedCompanyId);
+function AddDrive({ selectedCompanyId }) {
     const [driveData, setDriveData] = useState({
-        company_id: selectedCompanyId.selectedCompanyId,
+        company_id: selectedCompanyId, // Initialize with selectedCompanyId
         drive_date: '',
-        drive_location:''
+        drive_time: '',
+        drive_location: ''
     });
+
+    // Update company_id in state if selectedCompanyId changes
+    useEffect(() => {
+        setDriveData((prevDriveData) => ({
+            ...prevDriveData,
+            company_id: selectedCompanyId
+        }));
+    }, [selectedCompanyId]);
 
     const handleChange = (e) => {
         setDriveData({ ...driveData, [e.target.name]: e.target.value });
@@ -35,21 +45,22 @@ function AddDrive(selectedCompanyId) {
                 driveData,
                 config
             );
-            toast.success('Job added successfully');
+            toast.success('Drive added successfully');
         } catch (error) {
-            console.error('Error adding job:', error);
-            toast.error('Failed to add job');
+            console.error('Error adding drive:', error);
+            toast.error('Failed to add drive');
         }
     };
 
     return (
         <div className="container mt-5">
-            <h2 className="text-center mb-4">Add Job</h2>
+            <CompanyDetails companyId={driveData.company_id} />
+           
             <form onSubmit={handleSubmit}>
-                <div className="form-group">
+                <div className="form-group col-lg-3 col-sm-12 col-md-6">
                     <label>Drive Date</label>
                     <input
-                        type="text"
+                        type="date"
                         className="form-control"
                         name="drive_date"
                         value={driveData.drive_date}
@@ -57,7 +68,18 @@ function AddDrive(selectedCompanyId) {
                         required
                     />
                 </div>
-                <div className="form-group">
+                <div className="form-group col-lg-3 col-sm-12 col-md-6">
+                    <label>Drive Time</label>
+                    <input
+                        type="time"
+                        className="form-control"
+                        name="drive_time"
+                        value={driveData.drive_time}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="form-group col-lg-3 col-sm-12 col-md-6">
                     <label>Drive Location</label>
                     <input
                         type="text"
@@ -68,12 +90,13 @@ function AddDrive(selectedCompanyId) {
                         required
                     />
                 </div>
-                <button type="submit" className="btn btn-primary">
-                    Add Job
+                <button type="submit" className="btn btn-primary my-3" onClick={handleSubmit}>
+                    Add Drive
                 </button>
             </form>
+            <ToastContainer />
         </div>
     );
 }
 
-export default AddDrive
+export default AddDrive;
