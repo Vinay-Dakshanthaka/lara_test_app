@@ -37,7 +37,7 @@ const DrivesInfo = () => {
         }
       } catch (error) {
         console.error("Error fetching job details:", error);
-        toast.error("Failed to fetch job details");
+        // toast.error("Failed to fetch job details");
       } finally {
         setLoading(false);
       }

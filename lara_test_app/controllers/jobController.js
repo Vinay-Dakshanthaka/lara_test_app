@@ -546,6 +546,8 @@ const getAllJobDetailsByStudent = async (req, res) => {
         const studentJobs = await Student_Job.findAll({
             where: { student_id }
         });
+        console.log("studentJobs", studentJobs);
+        
 
         // Extract job_ids from studentJobs
         const jobIds = studentJobs.map(studentJob => studentJob.job_id);
@@ -601,7 +603,8 @@ const getAllJobDetailsByStudent = async (req, res) => {
     } catch (error) {
         return res.status(500).send({ message: error.message });
     }
-}
+};
+
 
 const getAllDrivesAssignedToStudents = async (req, res) => {
     try {

@@ -105,7 +105,7 @@ function ViewDrives() {
         setDrives(response.data.drives);
       } catch (error) {
         console.error('Error fetching drives:', error);
-        toast.error('Failed to fetch drives');
+        // toast.error('Failed to fetch drives');
       }
     };
 

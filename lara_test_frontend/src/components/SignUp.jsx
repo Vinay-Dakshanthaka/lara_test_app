@@ -107,9 +107,13 @@ const Signup = () => {
             });
 
             if (response.status === 200) {
-                toast.success('Signup successful!');
+                toast.success('Signup successful! Redirecting to Signin Page');
                 setFormData({ name: '', email: '', phone: '', password: '', confirmPassword: '' });
                 setErrors({});
+                setTimeout(() => {
+                    navigate('/signin')
+                }, 2000)
+                
             } else {
                 toast.error('Signup failed. Please try again.');
             }

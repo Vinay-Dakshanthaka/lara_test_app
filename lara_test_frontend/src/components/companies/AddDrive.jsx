@@ -4,8 +4,10 @@ import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';
 import AnyCompanyLogo from '../admin/AnyCompanyLogo';
 import CompanyDetails from './CompanyDetails';
+import { useNavigate } from 'react-router-dom';
 
 function AddDrive({ selectedCompanyId }) {
+    const navigate = useNavigate();
     const [driveData, setDriveData] = useState({
         company_id: selectedCompanyId, // Initialize with selectedCompanyId
         drive_date: '',
@@ -47,6 +49,14 @@ function AddDrive({ selectedCompanyId }) {
             );
             console.log("Drive Date", driveData.drive_date);
             toast.success('Drive added successfully');
+            // setTimeout(() => {
+            //     navigate('/view-drives')
+            // }, 3000)
+            setDriveData({
+                drive_date: '',
+                drive_time: '',
+                drive_location: '' 
+            })
         } catch (error) {
             console.error('Error adding drive:', error);
             toast.error('Failed to add drive');
