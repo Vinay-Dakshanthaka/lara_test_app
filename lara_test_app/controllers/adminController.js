@@ -1,6 +1,6 @@
 const db = require('../models')
 const nodemailer = require('nodemailer'); 
-
+const { Op } = require('sequelize');
 
 const Student = db.Student;
 
@@ -40,8 +40,16 @@ const getAllStudentDetails = async (req, res)=>{
             return res.status(403).send({ message: 'Access Forbidden' });
         }
 
-        const allStudents = await Student.findAll({ attributes: { exclude: ['password'] } });
-
+        // const allStudents = await Student.findAll({ attributes: { exclude: ['password'] } });
+        const allStudents = await Student.findAll({
+            attributes: { exclude: ['password'] },
+            where: {
+              role: {
+                [Op.ne]: 'SUPER ADMIN'
+              }
+            }
+          });
+          
         return res.json({ allStudents })
     } catch (error) {
         return res.status(500).send({ message: error.message })
