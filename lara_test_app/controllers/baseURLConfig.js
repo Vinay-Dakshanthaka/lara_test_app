@@ -1,3 +1,3 @@
 // baseURLConfig.js
-const baseURL = "https://api.paintpulse.in";
+const baseURL = "https://paintpulse.in";
 module.exports = { baseURL };
