@@ -164,6 +164,12 @@ const Sidebar = () => {
                                             <Link to="/drives" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Drives</span>
                                             </Link>
+                                            <Link to="/all-students-details" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name custom-bg dropdown-link ">Students Info</span>
+                                            </Link>
+                                            <Link to="/companies-list" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name dropdown-link">Companies List</span>
+                                            </Link>
                                             <Link to="/add-companies" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Add Companies</span>
                                             </Link>
