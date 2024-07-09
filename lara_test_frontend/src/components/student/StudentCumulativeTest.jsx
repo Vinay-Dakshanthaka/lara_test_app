@@ -5,7 +5,7 @@ import axios from 'axios';
 import { baseURL } from '../config';
 
 //Previous 
-// const StudentCumulativeTest = () => {
+// const Studentcumulative-test = () => {
 //     const [subjects, setSubjects] = useState([]);
 //     const [topics, setTopics] = useState([]);
 //     const [selectedSubject, setSelectedSubject] = useState('');
@@ -253,7 +253,7 @@ import { baseURL } from '../config';
 // };
 
 
-const StudentCumulativeTest = () => {
+const Studentcumulative-test = () => {
     const [subjects, setSubjects] = useState([]);
     const [topics, setTopics] = useState([]);
     const [selectedSubject, setSelectedSubject] = useState('');
@@ -278,7 +278,7 @@ const StudentCumulativeTest = () => {
                     },
                 };
 
-                const response = await axios.get(`${baseURL}/api/test/cumulativeTest/getAllSubjects`, config);
+                const response = await axios.get(`${baseURL}/api/test/cumulative-test/getAllSubjects`, config);
                 setSubjects(response.data);
             } catch (error) {
                 console.error('Error fetching subjects:', error);
@@ -516,7 +516,7 @@ const StudentCumulativeTest = () => {
     );
 };
 
-export default StudentCumulativeTest;
+export default Studentcumulative-test;
 
 
 

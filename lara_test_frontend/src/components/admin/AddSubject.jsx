@@ -39,7 +39,7 @@ const AddSubject = () => {
                     Authorization: `Bearer ${token}`,
                 },
             };
-            const response = await axios.get(`${baseURL}/api/test/cumulativeTest/getSubjectById`, {
+            const response = await axios.get(`${baseURL}/api/test/cumulative-test/getSubjectById`, {
                 params: { subject_id: subjectId },
                 ...config,
             });
@@ -65,7 +65,7 @@ const AddSubject = () => {
                     Authorization: `Bearer ${token}`,
                 },
             };
-            const response = await axios.get(`${baseURL}/api/test/cumulativeTest/getTopicById`, {
+            const response = await axios.get(`${baseURL}/api/test/cumulative-test/getTopicById`, {
                 params: { topic_id: topicId },
                 ...config,
             });
@@ -105,7 +105,7 @@ const AddSubject = () => {
                 }
             };
 
-            await axios.delete(`${baseURL}/api/test/cumulativeTest/deleteSubject`, config);
+            await axios.delete(`${baseURL}/api/test/cumulative-test/deleteSubject`, config);
             toast.success("Subject Deleted Successfully!!");
             fetchSubjects();
             setShowSubjectDeleteConfirmationModal(false);
@@ -131,7 +131,7 @@ const AddSubject = () => {
                 }
             };
 
-            await axios.delete(`${baseURL}/api/test/cumulativeTest/deleteTopic`, config);
+            await axios.delete(`${baseURL}/api/test/cumulative-test/deleteTopic`, config);
             toast.success("Topic Deleted Successfully!!");
             fetchSubjects();
             setShowTopicDeleteConfirmationModal(false);
@@ -176,13 +176,13 @@ const AddSubject = () => {
             };
 
             if (isEditMode) {
-                await axios.put(`${baseURL}/api/test/cumulativeTest/updateSubject`, {
+                await axios.put(`${baseURL}/api/test/cumulative-test/updateSubject`, {
                     subject_id: currentSubjectId,
                     subject_name: subjectName
                 }, config);
                 toast.success("Subject Updated");
             } else {
-                await axios.post(`${baseURL}/api/test/cumulativeTest/saveSubject`, {
+                await axios.post(`${baseURL}/api/test/cumulative-test/saveSubject`, {
                     subject_name: subjectName
                 }, config);
                 toast.success("Subject Added");
@@ -215,13 +215,13 @@ const AddSubject = () => {
             };
 
             if (isEditMode) {
-                await axios.put(`${baseURL}/api/test/cumulativeTest/updateTopic`, {
+                await axios.put(`${baseURL}/api/test/cumulative-test/updateTopic`, {
                     topic_id: currentTopicId,
                     topic_name: topicName
                 }, config);
                 toast.success("Topic Updated");
             } else {
-                await axios.post(`${baseURL}/api/test/cumulativeTest/saveTopic`, {
+                await axios.post(`${baseURL}/api/test/cumulative-test/saveTopic`, {
                     subject_id: currentSubjectId,
                     topic_name: topicName
                 }, config);
@@ -248,7 +248,7 @@ const AddSubject = () => {
                     Authorization: `Bearer ${token}`,
                 },
             };
-            const response = await axios.get(`${baseURL}/api/test/cumulativeTest/getAllSubjectsAndTopics`, config);
+            const response = await axios.get(`${baseURL}/api/test/cumulative-test/getAllSubjectsAndTopics`, config);
             setSubjects(response.data);
         } catch (error) {
             console.error('Error fetching subjects:', error);
