@@ -9,6 +9,7 @@ const fs = require('fs');
 const path = require('path');
 const { Where } = require('sequelize/lib/utils');
 const { where } = require('sequelize');
+const {baseURL} = require('./baseURLConfig')
 
 const Student = db.Student;
 const Skill = db.Skill;
@@ -373,7 +374,7 @@ const bulkSignup = async (req, res) => {
                         <p><strong>Email:</strong> ${student.email}</p>
                         <p><strong>Password:</strong> password@123</p>
                         <p> Click the below link to Signin to your Account</p>
-                        <a href="http://localhost:5173/signin" target="_blank">http://localhost:5173/signin</a>
+                        <a href="${baseURL}/signin" target="_blank">${baseURL}/signin</a>
                         <p>We recommend that you change your password after logging in for the first time.</p>
                         <p>Until Your password is updated you won't be able to complete the further step.</p>
                         <p>Thank You,</p>
@@ -483,7 +484,7 @@ const signupSingle = async (req, res) => {
                     <p><strong>Email:</strong> ${newStudent.email}</p>
                     <p><strong>Password:</strong> password@123</p>
                     <p> Click the below link to Signin to your Account</p>
-                    <a href="http://localhost:5173/signin" target="_blank">http://localhost:5173/signin</a>
+                    <a href="${baseURL}/signin" target="_blank">${baseURL}/signin</a>
                     <p>We recommend that you change your password after logging in for the first time.</p>
                     <p>Until Your password is updated you won't be able to complete the further step.</p>
                     <p>Thank You,</p>
@@ -576,7 +577,7 @@ const sendPasswordResetEmail = async (req, res) => {
                     <h2>Password Reset Request</h2>
                     <p>We received a request to reset the password associated with your account.</p>
                     <p>To proceed with the password reset, please click on the button below:</p>
-                    <a href="https://www.laragrooming.com/resetPassword?token=${token}" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;">Reset Password</a>
+                    <a href="${baseURL}/resetPassword?token=${token}" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;">Reset Password</a>
                     <p>If you did not request a password reset, you can ignore this email.</p>
                     <p>Please note that the link will expire after 30 minutes, so make sure to reset your password promptly.</p>
                     <p>Thank You,</p>
@@ -584,7 +585,7 @@ const sendPasswordResetEmail = async (req, res) => {
                 </div>
             `
         };
-        console.log(`http://localhost:5173/reset-password?token=${token}`)
+        console.log(`${baseURL}/reset-password?token=${token}`)
         // Send mail with defined transport object
         await transporter.sendMail(mailOptions);
 
@@ -630,7 +631,7 @@ const sendPasswordResetEmail = async (req, res) => {
 //             `
 //         };
 
-//         console.log(`http://localhost:5173/reset-password?token=${token}`);
+//         console.log(`${baseURL}/reset-password?token=${token}`);
 
 //         // Send mail with defined transport object
 //         await transporter.sendMail(mailOptions);
