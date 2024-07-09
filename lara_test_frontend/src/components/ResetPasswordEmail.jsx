@@ -5,6 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import './style.css'; // Import your custom CSS styles if needed
+import { baseURL } from './config';
 
 const ResetPasswordEmail = () => {
     const [email, setEmail] = useState('');
@@ -35,7 +36,7 @@ const ResetPasswordEmail = () => {
         setIsLoading(true);
 
         try {
-            const response = await axios.post('http://localhost:8080/api/auth/student/password-reset-email', { email });
+            const response = await axios.post(`${baseURL}/api/auth/student/password-reset-email`, { email });
 
             if (response.status === 200) {
                 setSuccessMessage('Reset password link sent successfully. Check your email.');
