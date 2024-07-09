@@ -47,6 +47,7 @@ const WebinarForm = ({ webinar, onSuccess }) => {
           <div className="container mt-5">
           <form onSubmit={handleSubmit}>
           <div className="form-group">
+            <h2 className='text-center'>Add Webinar</h2>
             <label>Title</label>
             <input type="text" className="form-control" name="title" value={formData.title} onChange={handleChange} required />
           </div>

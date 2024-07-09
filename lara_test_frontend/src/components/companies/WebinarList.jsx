@@ -63,7 +63,7 @@ const WebinarList = () => {
     };
   
     return (
-      <div className="container">
+      <div className="container mt-5">
         <h1 className="my-4">Webinars and Trainings</h1>
         <table className="table table-striped mt-4">
           <thead>
