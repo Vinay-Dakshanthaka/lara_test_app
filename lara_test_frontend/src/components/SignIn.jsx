@@ -111,7 +111,7 @@ const Signin = () => {
                         navigate('/password-update-warning');
                     }, 2000);
                 } else if (error.response.status === 404) {
-                    toast.error('User Not Exist!!');
+                    toast.error('User does not Exist!!');
                 } else if (error.response.status === 401) {
                     toast.error('Invalid Password!!');
                 } else {

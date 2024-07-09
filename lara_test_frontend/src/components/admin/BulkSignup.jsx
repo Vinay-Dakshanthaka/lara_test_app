@@ -52,8 +52,8 @@ const BulkSignup = () => {
 
     try {
       const response = await axios.post(`${baseURL}/api/auth/student/bulk-signup`, formData, config);
-      if (response.data.emailErrors) {
-        setEmailErrors(response.data.emailErrors);
+      if (response.data.invalidEmails) {
+        setEmailErrors(response.data.invalidEmails);
         setToast({ show: true, message: 'Bulk signup success with some unsent emails', variant: 'warning' });
       } else {
         setEmailErrors([]);
@@ -83,19 +83,19 @@ const BulkSignup = () => {
         <Button variant="info" onClick={handleShowModal}>Example Excel Sheet</Button>
 
         {emailErrors.length > 0 && (
-          <div className="mt-3 col-lg-8 col-sm-12 rounded">
-            <Table bordered hover className="bg-warning rounded card" style={{ border: '3px solid red' }}>
+          <div className="mt-3 col-lg-6 col-sm-12 rounded">
+            <Table bordered hover className="bg-warning rounded card " style={{ border: '3px solid red', width:'auto'}}>
               <thead>
                 <tr>
-                  <th>Email</th>
-                  <th>Error</th>
+                  <th>Invalid Emails</th>
+                  {/* <th>Error</th> */}
                 </tr>
               </thead>
               <tbody>
                 {emailErrors.map((error, index) => (
                   <tr key={index}>
-                    <td><b>{error.email}</b></td>
-                    <td>{error.error}</td>
+                    <td><b>{error}</b></td>
+                    {/* <td>{error.error}</td> */}
                   </tr>
                 ))}
               </tbody>
