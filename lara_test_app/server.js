@@ -38,7 +38,7 @@ app.use('/api/test', router);
 app.use('/api/auth/student', authRoute);
 app.use('/api/student/profile', profileRoute); 
 app.use('/api/admin/activites',adminRoute);
-app.use('/api/test/cumulativeTest',cumulativeTestRouter);
+app.use('/api/test/cumulative-test',cumulativeTestRouter);
 app.use('/api/company',companyRoute); 
 app.use('/api/agent', agentRoute);
 app.use('/api/job', jobRoute);
