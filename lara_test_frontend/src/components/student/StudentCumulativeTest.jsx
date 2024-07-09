@@ -253,7 +253,7 @@ import { baseURL } from '../config';
 // };
 
 
-const Studentcumulative-test = () => {
+const StudentCumulativeTest = () => {
     const [subjects, setSubjects] = useState([]);
     const [topics, setTopics] = useState([]);
     const [selectedSubject, setSelectedSubject] = useState('');
@@ -516,7 +516,7 @@ const Studentcumulative-test = () => {
     );
 };
 
-export default Studentcumulative-test;
+export default StudentCumulativeTest;
 
 
 
