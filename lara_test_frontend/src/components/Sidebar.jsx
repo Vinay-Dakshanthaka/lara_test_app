@@ -89,7 +89,7 @@ const Sidebar = () => {
                                                 <span className="nav_name dropdown-link">Student Drives Info</span>
                                             </Link>
                                             <Link to="/manage-drives" className="nav_link custom-bg margin-bottom-0">
-                                                <span className="nav_name dropdown-link">Manage Drives</span>
+                                                <span className="nav_name dropdown-link">Drives History</span>
                                             </Link>
                                             <Link to="/drives" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Drives</span>
@@ -158,7 +158,7 @@ const Sidebar = () => {
                                                 <span className="nav_name dropdown-link">Student Drives Info</span>
                                             </Link>
                                             <Link to="/manage-drives" className="nav_link custom-bg margin-bottom-0">
-                                                <span className="nav_name dropdown-link">Manage Drives</span>
+                                                <span className="nav_name dropdown-link">Drives History</span>
                                             </Link>
                                             
                                             <Link to="/drives" className="nav_link custom-bg margin-bottom-0">

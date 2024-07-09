@@ -105,7 +105,7 @@ function ManageDrives() {
 
   return (
     <div className="container mt-5">
-      <h2 className="mb-4">Drive Management</h2>
+      <h2 className="mb-4">Drive History</h2>
       <div className="form-group">
         <label htmlFor="criteria">Select Criteria:</label>
         <p>{message}</p>
