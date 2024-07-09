@@ -446,7 +446,7 @@ const submitStudentResult = async(req, res) => {
         const round_cleared = student_job.rounds_cleared;
         if(result === "SELECTED"){
             const rounds_cleared = round_cleared + 1;
-            await Student_Job.update({rounds_cleared, result}, { where : {student_id}, attributes : { exclude : ['password'] }});
+            await Student_Job.update({rounds_cleared, result}, { where : {student_id, job_id}});
 
             
             const mailOptions = {
@@ -590,7 +590,7 @@ module.exports = {
     getSkillsByJobId,
     submitStudentResult,
     roundsClearedByStudent,
-    // getAllJobDetailsByStudent
+    getAllJobDetailsByStudent
 }
 
 
