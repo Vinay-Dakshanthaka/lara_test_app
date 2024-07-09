@@ -390,10 +390,11 @@ const bulkSignup = async (req, res) => {
         }
 
         if (emailErrors.length > 0) {
+            // console.log("emailErrors", emailErrors);
             return res.status(200).send({
                 message: 'Bulk signup success with some unsent emails ',
                 invalidEmails: invalidEmails,
-                emailErrors
+                emailErrors:emailErrors
             });
         } else {
             return res.status(200).send({
