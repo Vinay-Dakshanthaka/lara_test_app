@@ -14,6 +14,7 @@ const {baseURL} = require('./baseURLConfig')
 const Student = db.Student;
 const Skill = db.Skill;
 const Student_Skill = db.Student_Skill;
+const Profile = db.Profile;
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 

@@ -130,7 +130,7 @@ const Signin = () => {
     return (
         <div className="container d-flex justify-content-center align-items-center vh-100" style={{ backgroundColor: '#f0f2f5' }}>
             <div className="card p-4 shadow-lg" style={{ width: '400px', maxWidth: '100%', borderRadius: '20px', background: '#ecf0f3', boxShadow: '7px 7px 15px #cbced1, -7px -7px 15px #ffffff' }}>
-                <h3 className="card-title text-center" style={{ marginBottom: '20px', color: '#333' }}>Signin</h3>
+                <h3 className="card-title text-center" style={{ marginBottom: '20px', color: '#333' }}>SignIn</h3>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label className="form-label" style={{ color: '#555' }}>Email</label>

@@ -487,6 +487,52 @@ const processExcel = async (filePath, topic_id) => {
         });
     }
 };
+
+// ------------------------  To compare the value of correct option ------------------------//
+
+// const processExcel = async (filePath, topic_id) => {
+//     const workbook = xlsx.readFile(filePath);
+//     const sheet = workbook.Sheets[workbook.SheetNames[0]];
+//     const rows = xlsx.utils.sheet_to_json(sheet);
+
+//     const cleanString = (str) => str.trim().replace(/\s+/g, ' ');
+
+//     for (const row of rows) {
+//         const [
+//             questionText,
+//             difficulty,
+//             marks,
+//             option1,
+//             option2,
+//             option3,
+//             option4,
+//             correctOptionValue
+//         ] = [
+//             row["Question Text"],
+//             row.Difficulty,
+//             row.Marks,
+//             cleanString(row["Option 1"]),
+//             cleanString(row["Option 2"]),
+//             cleanString(row["Option 3"]),
+//             cleanString(row["Option 4"]),
+//             cleanString(row["Correct Option"])
+//         ];
+
+//         // Create the cumulative question
+//         await CumulativeQuestion.create({
+//             question_description: questionText,
+//             topic_id: topic_id,
+//             difficulty_level: difficulty,
+//             no_of_marks_allocated: marks,
+//             option_1: option1,
+//             option_2: option2,
+//             option_3: option3,
+//             option_4: option4,
+//             correct_option: correctOptionValue
+//         });
+//     }
+// };
+
 const processExcelOFTopicId = async (filePath) => {
     const workbook = xlsx.readFile(filePath);
     const sheet = workbook.Sheets[workbook.SheetNames[0]];

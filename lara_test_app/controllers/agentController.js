@@ -63,7 +63,7 @@ const updateAgent = async(req, res) => {
             return res.status(200).send({message : "Agent updated succeccfully", agent : existingAgent});
 
         }
-    }catch(error){
+    }catch(error){  
         console.log(error);
         return res.status(500).send({ message: error.message });
     }

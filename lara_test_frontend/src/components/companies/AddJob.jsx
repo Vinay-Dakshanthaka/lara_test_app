@@ -217,7 +217,7 @@ const AddJobs = () => {
             </div>
 
             <div className="mb-3">
-              <label htmlFor="position" className="form-label">position</label>
+              <label htmlFor="position" className="form-label">Position</label>
               <input
                 type="text"
                 id="position"
