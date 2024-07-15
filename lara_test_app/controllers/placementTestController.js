@@ -95,5 +95,5 @@ const savePlacementTestStudent = async (req, res) => {
 
 module.exports = {
     createPlacementTestLink,
-    savePlacementTestStudent
+    savePlacementTestStudent 
 }
