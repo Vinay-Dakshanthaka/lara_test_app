@@ -44,6 +44,7 @@ import ManageDrives from "./components/companies/ManageDrives";
 import AllDrives from "./components/admin/AllDrives";
 import ViewJobsByDriveId from "./components/companies/ViewJobsByDriveId";
 import StudentsDriveInfo from "./components/admin/StudentsDriveInfo";
+import CreateTestLink from "./components/placementTest/CreateTestLink";
 
 const App = () => {
   const location = useLocation();
@@ -115,6 +116,7 @@ const App = () => {
           <Route path="/manage-drives" element={<ManageDrives/>}/>
           <Route path="/drives" element={<AllDrives />} />
           <Route path="/all-students-drive-info" element={<StudentsDriveInfo />} />
+          <Route path="/create-test-link" element={<CreateTestLink />} />
         </Route>
       </Routes>
     </>

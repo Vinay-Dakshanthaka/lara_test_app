@@ -88,6 +88,9 @@ const Sidebar = () => {
                                             <Link to="/all-students-drive-info" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Student Drives Info</span>
                                             </Link>
+                                            <Link to="/create-test-link" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name dropdown-link">Create Test Link </span>
+                                            </Link>
                                             <Link to="/manage-drives" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Drives History</span>
                                             </Link>
@@ -156,6 +159,9 @@ const Sidebar = () => {
                                             </Link> */}
                                              <Link to="/all-students-drive-info" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Student Drives Info</span>
+                                            </Link>
+                                             <Link to="/create-test-link" className="nav_link custom-bg margin-bottom-0">
+                                                <span className="nav_name dropdown-link">Create Test Link </span>
                                             </Link>
                                             <Link to="/manage-drives" className="nav_link custom-bg margin-bottom-0">
                                                 <span className="nav_name dropdown-link">Drives History</span>

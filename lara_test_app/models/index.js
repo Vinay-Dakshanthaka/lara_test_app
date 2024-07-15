@@ -44,8 +44,12 @@ db.Skill = require('./skillModel.js')(sequelize, DataTypes);
 db.Job_Skill = require('./jobSkill.js')(sequelize, DataTypes);
 db.Student_Skill = require('./studentSkill.js')(sequelize, DataTypes);
 db.WebinarsTrainings = require('./WebinarTrainings.js')(sequelize, DataTypes);
-db.CompanyType = require('./companyTypeModel')(sequelize, DataTypes); 
+db.CompanyType = require('./companyTypeModel')(sequelize, DataTypes);
 db.AgentInteraction = require('./agentInteractionModel.js')(sequelize, DataTypes);
+db.PlacementTest = require('./placementTestModel.js')(sequelize, DataTypes);
+db.PlacementTestTopic = require('./placementTestTopicModel.js')(sequelize, DataTypes);
+db.PlacementTestStudent = require('./placementTestStudentsModel.js')(sequelize, DataTypes);
+db.PlacementTestResult = require('./placementTestResultModel.js')(sequelize, DataTypes);
 
 db.Student.hasOne(db.Profile, {
     foreignKey: 'student_id',
@@ -115,6 +119,47 @@ db.Drive.hasMany(db.Job, {
 
 db.Job.belongsTo(db.Drive, {
     foreignKey: 'drive_id',
+    onDelete: 'CASCADE'
+});
+
+// Associations
+db.PlacementTest.hasMany(db.PlacementTestTopic, {
+    foreignKey: 'placement_test_id',
+    as: 'topics'
+});
+
+db.PlacementTestTopic.belongsTo(db.PlacementTest, {
+    foreignKey: 'placement_test_id',
+    onDelete: 'CASCADE'
+});
+
+db.Topic.hasMany(db.PlacementTestTopic, {
+    foreignKey: 'topic_id',
+});
+
+db.PlacementTestTopic.belongsTo(db.Topic, {
+    foreignKey: 'topic_id',
+    onDelete: 'CASCADE'
+});
+
+db.PlacementTest.hasMany(db.PlacementTestResult, {
+    foreignKey: 'placement_test_id',
+    as: 'results'
+});
+
+db.PlacementTestResult.belongsTo(db.PlacementTest, {
+    foreignKey: 'placement_test_id',
+    onDelete: 'CASCADE'
+});
+
+// Define associations for PlacementTestStudent
+db.PlacementTestStudent.hasMany(db.PlacementTestResult, {
+    foreignKey: 'placement_test_student_id',
+    as: 'results'
+});
+
+db.PlacementTestResult.belongsTo(db.PlacementTestStudent, {
+    foreignKey: 'placement_test_student_id',
     onDelete: 'CASCADE'
 });
 

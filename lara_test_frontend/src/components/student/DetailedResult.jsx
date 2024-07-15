@@ -94,9 +94,9 @@ const DetailedResult = () => {
                                 <li className={`text-black`}>c : {question.option_3}</li>
                                 <li className={`text-black`}>d : {question.option_4}</li>
                             </ul>
-                            <p className={`text-${isCorrect ? 'success' : 'danger'}`}>Your Answer: {selectedOption ? question[selectedOption] : "Not Attempted"}</p>
+                            <p className={`text-${isCorrect ? 'success' : 'danger'}`}>Your Answer: {selectedOption ? selectedOption : "Not Attempted"}</p>
                             {!isCorrect && (
-                                <p className="text-success">Correct Answer: {question[question.correct_option]}</p>
+                                <p className="text-success">Correct Answer: {question.correct_option}</p>
                             )}
                         </div>                        
                         );
