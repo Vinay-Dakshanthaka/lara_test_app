@@ -275,7 +275,7 @@ const getTopicById = async (req, res) => {
     try {
         // Get subject_id from query parameters
         const { topic_id } = req.query;
-        console.log("topic id ", topic_id)
+        console.log("topic id ============", topic_id)
 
         // Fetch the subject from the database by its id
         const topic = await Topic.findByPk(topic_id);
@@ -311,11 +311,10 @@ const getAllSubjectsAndTopics = async (req, res) => {
     }
 }
 
+
 const getQuestionsByTopicIds = async (req, res) => {
     try {
-        // Get topic_ids and number of questions from the request body
         const { topic_ids, numberOfQuestions } = req.body;
-        console.log("topic ids ", topic_ids, "number of questions", numberOfQuestions);
 
         if (!topic_ids || topic_ids.length === 0 || !numberOfQuestions) {
             return res.status(400).send({ message: "Invalid input data" });
@@ -327,6 +326,16 @@ const getQuestionsByTopicIds = async (req, res) => {
 
         let allQuestions = [];
 
+        // Helper function to fetch random questions from a topic
+        const fetchQuestions = async (topicId, limit) => {
+            return await CumulativeQuestion.findAll({
+                where: { topic_id: topicId },
+                limit: limit,
+                order: Sequelize.literal('RAND()') // Fetch random questions
+            });
+        };
+
+        // Fetch questions for each topic
         for (let i = 0; i < topic_ids.length; i++) {
             const topicId = topic_ids[i];
             let questionsToFetch = questionsPerTopic;
@@ -336,13 +345,23 @@ const getQuestionsByTopicIds = async (req, res) => {
                 questionsToFetch += 1;
             }
 
-            const questions = await CumulativeQuestion.findAll({
-                where: { topic_id: topicId },
-                limit: questionsToFetch,
-                order: Sequelize.literal('RAND()') // Fetch random questions
-            });
-
+            let questions = await fetchQuestions(topicId, questionsToFetch);
             allQuestions = allQuestions.concat(questions);
+        }
+
+        // If not enough questions, fetch from other topics
+        let currentIndex = 0;
+        while (allQuestions.length < numberOfQuestions && currentIndex < topic_ids.length) {
+            const remainingQuestions = numberOfQuestions - allQuestions.length;
+            let additionalQuestions = await fetchQuestions(topic_ids[currentIndex], remainingQuestions);
+
+            // Ensure no duplicate questions
+            additionalQuestions = additionalQuestions.filter(
+                q => !allQuestions.some(existingQ => existingQ.cumulative_question_id === q.cumulative_question_id)
+            );
+
+            allQuestions = allQuestions.concat(additionalQuestions);
+            currentIndex++;
         }
 
         if (allQuestions.length > 0) {
@@ -351,7 +370,7 @@ const getQuestionsByTopicIds = async (req, res) => {
             return res.status(404).send({ message: "Questions not found" });
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return res.status(500).send({ message: error.message });
     }
 };

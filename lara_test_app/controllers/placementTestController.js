@@ -5,7 +5,8 @@ const PlacementTest = db.PlacementTest;
 const PlacementTestTopic = db.PlacementTestTopic;
 const PlacementTestStudent = db.PlacementTestStudent;
 const Topic = db.Topic;
-const {baseURL} = require('./baseURLConfig')
+const PlacementTestResult = db.PlacementTestResult;
+const { baseURL } = require('./baseURLConfig')
 
 
 const createPlacementTestLink = async (req, res) => {
@@ -31,8 +32,8 @@ const createPlacementTestLink = async (req, res) => {
             test_link: '', // Initially empty, will be updated later
             number_of_questions,
             description,
-            start_time,
-            end_time,
+            start_time, // Store as string
+            end_time, // Store as string
             show_result: show_result !== undefined ? show_result : true // Default to true if not provided
         });
 
@@ -44,7 +45,7 @@ const createPlacementTestLink = async (req, res) => {
         await newTest.save();
 
         // Save the topic IDs in the PlacementTestTopic table
-        const topicPromises = topic_ids.map(topic_id => 
+        const topicPromises = topic_ids.map(topic_id =>
             PlacementTestTopic.create({
                 placement_test_id: newTest.placement_test_id,
                 topic_id
@@ -59,12 +60,148 @@ const createPlacementTestLink = async (req, res) => {
     }
 };
 
+const fetchTestTopicIdsAndQnNums = async (req, res) => {
+    try {
+        const { test_id } = req.body;
+        console.log('test id ====', test_id);
+
+        if (!test_id) {
+            return res.status(400).send({ message: 'Test ID is required' });
+        }
+
+        // Fetch all topic IDs associated with the given test_id from PlacementTestTopic
+        const placementTestTopics = await PlacementTestTopic.findAll({
+            where: {
+                placement_test_id: test_id
+            },
+            attributes: ['topic_id'] // Only fetch topic_id
+        });
+
+        // Fetch number_of_questions from PlacementTest table
+        const placementTest = await PlacementTest.findByPk(test_id, {
+            attributes: ['number_of_questions','show_result'] // Only fetch number_of_questions
+        });
+
+        if (!placementTest) {
+            return res.status(404).send({ message: 'Placement test not found' });
+        }
+
+        const topic_ids = placementTestTopics.map(topic => topic.topic_id);
+
+        return res.status(200).send({
+            message: 'Placement test details retrieved successfully',
+            topic_ids,
+            number_of_questions: placementTest.number_of_questions,
+            show_result:placementTest.show_result
+        });
+    } catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+};
+
+
+const savePlacementTestResults = async (req, res) => {
+    try {
+        const { placement_test_id, placement_test_student_id, marks_obtained } = req.body;
+
+        // Check if there is already a result for this combination
+        const existingResult = await PlacementTestResult.findOne({
+            where: {
+                placement_test_id,
+                placement_test_student_id,
+            },
+        });
+
+        if (existingResult) {
+            return res.status(400).send({ message: "You have already attended this test." });
+        }
+
+        const placementStudent = await PlacementTestStudent.findByPk(placement_test_student_id);
+        if (!placementStudent) {
+            return res.status(404).send({ message: "Student Not Available" });
+        }
+
+        const testResults = await PlacementTestResult.create({
+            placement_test_id,
+            placement_test_student_id,
+            marks_obtained,
+        });
+
+        return res.status(200).send(testResults);
+    } catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+};
+
+  
+  const getAllResults = async(req, res) => {
+      try {
+          const student_id = req.student_id;
+          const student = await Student.findByPk(student_id);
+          const role = student.role;
+  
+          if (role !== 'PLACEMENT OFFICER' & role !== 'SUPER ADMIN')
+              return res.status(403).send({ message: 'Access Forbidden' });
+  
+          const placementResults = await PlacementTestResult.findAll();
+          if(!placementResults){
+              return res.status(404).send({message: "No Test Results Available"})
+          }
+  
+          return res.status(200).send(placementResults)
+  
+      } catch (error) {
+          return res.status(500).send({ message: error.message });
+      }
+  }
+
+const getAllPlacementTests = async (req, res) => {
+    try {
+        const placementTests = await PlacementTest.findAll({
+            include: [
+                {
+                    model: PlacementTestTopic,
+                    as: 'topics',
+                    include: [
+                        {
+                            model: Topic,
+                            attributes: ['topic_id', 'createdAt', 'updatedAt'] // Include all desired attributes
+                        }
+                    ]
+                }
+            ]
+        });
+
+        const formattedTests = placementTests.map(test => ({
+            placement_test_id: test.placement_test_id,
+            test_link: test.test_link,
+            number_of_questions: test.number_of_questions,
+            description: test.description,
+            start_time: test.start_time,
+            end_time: test.end_time,
+            show_result: test.show_result,
+            created_at: test.createdAt,
+            updated_at: test.updatedAt,
+            topics: test.topics.map(topic => ({
+                topic_id: topic.topic_id,
+            }))
+        }));
+        
+
+        return res.status(200).send({ message: 'Placement tests retrieved successfully', placementTests: formattedTests });
+    } catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+};
+
+
+
 const savePlacementTestStudent = async (req, res) => {
     try {
         const { name, email, phone_number } = req.body;
 
         // Check if all required fields are provided
-        if (!name || !email || !phone_number ) {
+        if (!name || !email || !phone_number) {
             return res.status(400).send({ message: 'Required fields are missing or invalid' });
         }
 
@@ -76,12 +213,12 @@ const savePlacementTestStudent = async (req, res) => {
         });
 
         if (existingStudent) {
-            return res.status(200).send({ message: 'Student details already exist' });
+            return res.status(200).send({ message: 'Student details already exist', existingStudent });
         }
 
         // Create the new student record
         const newStudent = await PlacementTestStudent.create({
-            student_name:name,
+            student_name: name,
             email,
             phone_number
         });
@@ -95,5 +232,8 @@ const savePlacementTestStudent = async (req, res) => {
 
 module.exports = {
     createPlacementTestLink,
-    savePlacementTestStudent 
+    savePlacementTestStudent,
+    getAllPlacementTests,
+    fetchTestTopicIdsAndQnNums,
+    savePlacementTestResults,
 }

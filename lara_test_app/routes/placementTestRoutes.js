@@ -4,6 +4,14 @@ const verifyToken = require('../middleware/authMiddleware')
 const placementTestContoller = require('../controllers/placementTestController')
 
 placementTestRoute.post('/create-test-link', placementTestContoller.createPlacementTestLink); 
-placementTestRoute.post('/save-placement-test-student', placementTestContoller.savePlacementTestStudent); 
+
+placementTestRoute.post('/save-placement-test-student', placementTestContoller.savePlacementTestStudent);
+
+placementTestRoute.get('/get-all-placement-tests', placementTestContoller.getAllPlacementTests);
+
+placementTestRoute.post('/fetchTestTopicIdsAndQnNums', placementTestContoller.fetchTestTopicIdsAndQnNums);
+
+placementTestRoute.post('/savePlacementTestResults', placementTestContoller.savePlacementTestResults);
+
 
 module.exports = placementTestRoute;

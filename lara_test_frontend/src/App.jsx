@@ -45,6 +45,7 @@ import AllDrives from "./components/admin/AllDrives";
 import ViewJobsByDriveId from "./components/companies/ViewJobsByDriveId";
 import StudentsDriveInfo from "./components/admin/StudentsDriveInfo";
 import CreateTestLink from "./components/placementTest/CreateTestLink";
+import PlacementTest from "./components/student/PlacementTest";
 
 const App = () => {
   const location = useLocation();
@@ -58,6 +59,7 @@ const App = () => {
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/update-password" element={<UpdatePassword />} />
+        <Route path="/:test_id" element={<PlacementTest />} />
         <Route
           path="/password-update-warning"
           element={<PasswordUpdateWarning />}

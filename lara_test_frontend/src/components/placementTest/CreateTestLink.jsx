@@ -3,6 +3,8 @@ import { Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { baseURL } from '../config';
+import AllPlacementTests from './AllPlacementTests';
+import { toast, ToastContainer } from 'react-toastify';
 
 const CreateTestLink = () => {
     const [subjects, setSubjects] = useState([]);
@@ -13,9 +15,9 @@ const CreateTestLink = () => {
     const [availableQuestions, setAvailableQuestions] = useState(0);
     const [errorMessage, setErrorMessage] = useState('');
     const [selectAllTopics, setSelectAllTopics] = useState(false);
-    const [description, setDescription] = useState('');
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
+    const [description, setDescription] = useState('');
     const [showResult, setShowResult] = useState(true);
     const navigate = useNavigate();
 
@@ -152,144 +154,136 @@ const CreateTestLink = () => {
     };
 
     const handleCreateLink = async () => {
-        if (numQuestions <= availableQuestions) {
-            try {
-                const token = localStorage.getItem("token");
-                if (!token) {
-                    throw new Error("No token provided.");
-                }
-
-                const config = {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                };
-
-                const response = await axios.post(`${baseURL}/api/placement-test/create-test-link`, {
-                    number_of_questions: numQuestions,
-                    description,
-                    start_time: startTime,
-                    end_time: endTime,
-                    show_result: showResult,
-                    topic_ids: selectedTopics
-                }, config);
-
-                console.log(response.data);
-                // Handle the response as needed, e.g., display a success message or redirect
-            } catch (error) {
-                console.error('Error creating test link:', error);
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                throw new Error("No token provided.");
             }
+
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            };
+
+            const response = await axios.post(`${baseURL}/api/placement-test/create-test-link`, {
+                number_of_questions: numQuestions,
+                description,
+                start_time: startTime,
+                end_time: endTime,
+                show_result: showResult,
+                topic_ids: selectedTopics
+            }, config);
+
+            // console.log('Link created successfully:', response.data);
+            toast.success('Link Created ')
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        } catch (error) {
+            console.error('Error creating test link:', error);
+            toast.error('Something went wrong!!')
         }
     };
 
     return (
-        <>
-            <div className="container mt-5">
-                <Form.Group controlId="formSubject" className="mt-4" style={{ maxWidth: '300px' }}>
-                    <Form.Label>Select Subject</Form.Label>
-                    <Form.Control as="select" value={selectedSubject} onChange={handleSubjectChange} required>
-                        <option value="">-- Select Subject --</option>
-                        {subjects.map((subject) => (
-                            <option key={subject.subject_id} value={subject.subject_id}>
-                                {subject.name}
-                            </option>
+        <div className="container mt-5">
+            <Form.Group controlId="formSubject" className="mt-4" style={{ maxWidth: '300px' }}>
+                <Form.Label>Select Subject</Form.Label>
+                <Form.Control as="select" value={selectedSubject} onChange={handleSubjectChange} required>
+                    <option value="">-- Select Subject --</option>
+                    {subjects.map((subject) => (
+                        <option key={subject.subject_id} value={subject.subject_id}>
+                            {subject.name}
+                        </option>
+                    ))}
+                </Form.Control>
+            </Form.Group>
+
+            <div className="mt-4">
+                <h5>Select Topics</h5>
+                <Form.Group>
+                    <Form.Check
+                        type="checkbox"
+                        label="Select All"
+                        checked={selectAllTopics}
+                        onChange={handleSelectAllTopics}
+                    />
+                    <div className="row mt-2">
+                        {topics.map((topic) => (
+                            <div className="col-3" key={topic.topic_id}>
+                                <Form.Check
+                                    type="checkbox"
+                                    label={`${topic.name} (${topic.question_count} questions)`}
+                                    checked={selectedTopics.includes(topic.topic_id)}
+                                    onChange={() => handleTopicChange(topic.topic_id)}
+                                />
+                            </div>
                         ))}
-                    </Form.Control>
-                </Form.Group>
-
-                <div className="mt-4">
-                    <h5>Select Topics</h5>
-                    <Form.Group>
-                        <Form.Check
-                            type="checkbox"
-                            label="Select All"
-                            checked={selectAllTopics}
-                            onChange={handleSelectAllTopics}
-                        />
-                        <div className="row mt-2">
-                            {topics.map((topic) => (
-                                <div className="col-3" key={topic.topic_id}>
-                                    <Form.Check
-                                        type="checkbox"
-                                        label={`${topic.name} (${topic.question_count} questions)`}
-                                        checked={selectedTopics.includes(topic.topic_id)}
-                                        onChange={() => handleTopicChange(topic.topic_id)}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    </Form.Group>
-                </div>
-
-                <Form.Group controlId="formNumQuestions" className="mt-4" style={{ maxWidth: '300px' }}>
-                    <Form.Label>Number of Questions</Form.Label>
-                    <Form.Control
-                        type="number"
-                        value={numQuestions}
-                        onChange={handleNumQuestionsChange}
-                        required
-                        isInvalid={!!errorMessage}
-                    />
-                    <Form.Control.Feedback type="invalid">{errorMessage}</Form.Control.Feedback>
-                </Form.Group>
-
-                <Form.Group controlId="formStartTime" className="mt-4" style={{ maxWidth: '300px' }}>
-                    <Form.Label>Start Time</Form.Label>
-                    <Form.Control
-                        type="datetime-local"
-                        value={startTime}
-                        onChange={(e) => setStartTime(e.target.value)}
-                        required
-                    />
-                </Form.Group>
-
-                <Form.Group controlId="formEndTime" className="mt-4" style={{ maxWidth: '300px' }}>
-                    <Form.Label>End Time</Form.Label>
-                    <Form.Control
-                        type="datetime-local"
-                        value={endTime}
-                        onChange={(e) => setEndTime(e.target.value)}
-                        required
-                    />
-                </Form.Group>
-
-                <Form.Group controlId="formDescription" className="mt-4" style={{ maxWidth: '300px' }}>
-                    <Form.Label>Description</Form.Label>
-                    <Form.Control
-                        as="textarea"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        required
-                    />
-                </Form.Group>
-
-                <Form.Group controlId="formShowResult" className="mt-4" style={{ maxWidth: '300px' }}>
-                    <Form.Label>Show Result</Form.Label>
-                    <div>
-                        <Form.Check
-                            type="radio"
-                            label="True"
-                            name="showResult"
-                            checked={showResult === true}
-                            onChange={() => setShowResult(true)}
-                        />
-                        <Form.Check
-                            type="radio"
-                            label="False"
-                            name="showResult"
-                            checked={showResult === false}
-                            onChange={() => setShowResult(false)}
-                        />
                     </div>
                 </Form.Group>
-
-                <div className="d-flex justify-content-center mt-4">
-                    <Button variant="primary" onClick={handleCreateLink} disabled={numQuestions > availableQuestions}>
-                        Create Link
-                    </Button>
-                </div>
             </div>
-        </>
+
+            <Form.Group controlId="formNumQuestions" className="mt-4" style={{ maxWidth: '300px' }}>
+                <Form.Label>Number of Questions</Form.Label>
+                <Form.Control
+                    type="number"
+                    value={numQuestions}
+                    onChange={handleNumQuestionsChange}
+                    required
+                />
+                {errorMessage && (
+                    <Form.Text className="text-danger">
+                        {errorMessage}
+                    </Form.Text>
+                )}
+            </Form.Group>
+
+            <Form.Group controlId="formDescription" className="mt-4" style={{ maxWidth: '300px' }}>
+                <Form.Label>Description</Form.Label>
+                <Form.Control
+                    type="text"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    required
+                />
+            </Form.Group>
+
+            <Form.Group controlId="formStartTime" className="mt-4" style={{ maxWidth: '300px' }}>
+                <Form.Label>Start Time</Form.Label>
+                <Form.Control
+                    type="datetime-local"
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                    required
+                />
+            </Form.Group>
+
+            <Form.Group controlId="formEndTime" className="mt-4" style={{ maxWidth: '300px' }}>
+                <Form.Label>End Time</Form.Label>
+                <Form.Control
+                    type="datetime-local"
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                    required
+                />
+            </Form.Group>
+
+            <Form.Group controlId="formShowResult" className="mt-4">
+                <Form.Check
+                    type="checkbox"
+                    label="Show Result"
+                    checked={showResult}
+                    onChange={() => setShowResult(!showResult)}
+                />
+            </Form.Group>
+
+            <Button variant="primary" className="mt-4" onClick={handleCreateLink}>
+                Create Test Link
+            </Button>
+            <ToastContainer />
+            <AllPlacementTests />
+        </div>
     );
 };
 
