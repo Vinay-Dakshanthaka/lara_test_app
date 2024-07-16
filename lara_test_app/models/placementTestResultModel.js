@@ -43,11 +43,11 @@ module.exports = (sequelize, DataTypes) => {
     PlacementTestResult.associate = (models) => {
         PlacementTestResult.belongsTo(models.PlacementTest, {
             foreignKey: 'placement_test_id',
-            as: 'Placementtest'
+            as: 'Placementtests'
         });
         PlacementTestResult.belongsTo(models.PlacementTestStudent, {
             foreignKey: 'placement_test_student_id',
-            as: 'Placementteststudent'
+            as: 'Placementteststudents'
         });
     };
 

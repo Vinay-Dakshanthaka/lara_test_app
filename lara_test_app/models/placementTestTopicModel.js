@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     PlacementTestTopic.associate = (models) => {
         PlacementTestTopic.belongsTo(models.PlacementTest, {
             foreignKey: 'placement_test_id',
-            as: 'Placementtest'
+            as: 'Placementtests'
         });
         PlacementTestTopic.belongsTo(models.Topic, {
             foreignKey: 'topic_id',
