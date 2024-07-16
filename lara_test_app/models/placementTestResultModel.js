@@ -30,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
         marks_obtained: {
             type: DataTypes.INTEGER,
             allowNull: false
+        },
+        total_marks: {
+            type: DataTypes.INTEGER,
+            allowNull: false
         }
     }, {
         timestamps: true, // Enabling timestamps for tracking purposes

@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { Button, Form, Modal, Row, Col } from 'react-bootstrap';
+import { Button, Form, Modal, Row, Col, Card } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { baseURL } from '../config';
 
 const PlacementTest = () => {
     const [loading, setLoading] = useState(true);
@@ -24,10 +26,14 @@ const PlacementTest = () => {
     const [saveError, setSaveError] = useState(null);
     const [showResult, setShowResult] = useState(false); // Added state to manage show_result
 
+    const [remainingTime, setRemainingTime] = useState(0); // Timer state
+    const [autoSubmit, setAutoSubmit] = useState(false); // Auto-submit state
+    const timerRef = useRef(null); // Timer reference
+
     useEffect(() => {
         const fetchTestDetails = async () => {
             try {
-                const response1 = await axios.post('http://localhost:5000/api/placement-test/fetchTestTopicIdsAndQnNums', {
+                const response1 = await axios.post(`${baseURL}/api/placement-test/fetchTestTopicIdsAndQnNums`, {
                     test_id
                 });
 
@@ -40,7 +46,7 @@ const PlacementTest = () => {
                     setShowSummary(false); // Do not show detailed summary
                 }
 
-                const response2 = await axios.post('http://localhost:5000/api/test/cumulative-test/getQuestionsByTopicIds', {
+                const response2 = await axios.post(`${baseURL}/api/test/cumulative-test/getQuestionsByTopicIds`, {
                     topic_ids,
                     numberOfQuestions: number_of_questions
                 });
@@ -60,6 +66,10 @@ const PlacementTest = () => {
                 const totalMarks = questionsWithOptions.reduce((sum, question) => sum + question.no_of_marks_allocated, 0);
                 setTotalMarks(totalMarks);
 
+                // Set the timer based on the number of questions
+                const initialTime = number_of_questions * 60; // 1 minute per question
+                setRemainingTime(initialTime);
+
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching test details:', error);
@@ -68,7 +78,33 @@ const PlacementTest = () => {
         };
 
         fetchTestDetails();
+
+        return () => {
+            // Clean up the timer when the component unmounts
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+            }
+        };
     }, [test_id]);
+
+    useEffect(() => {
+        if (autoSubmit) {
+            handleSubmitTest();
+        }
+    }, [autoSubmit]);
+
+    const startTimer = (initialTime) => {
+        timerRef.current = setInterval(() => {
+            setRemainingTime(prevTime => {
+                if (prevTime <= 1) {
+                    clearInterval(timerRef.current);
+                    setAutoSubmit(true);
+                    return 0;
+                }
+                return prevTime - 1;
+            });
+        }, 1000);
+    };
 
     const handleAnswerChange = (questionId, selectedOption) => {
         setAnswers(prevAnswers => ({
@@ -99,10 +135,11 @@ const PlacementTest = () => {
                 questionAnsData[question.cumulative_question_id] = selectedOption;
             });
 
-            const response = await axios.post('http://localhost:5000/api/placement-test/savePlacementTestResults', {
+            const response = await axios.post(`${baseURL}/api/placement-test/savePlacementTestResults`, {
                 placement_test_student_id: placementTestStudentId,
                 placement_test_id: test_id,
                 marks_obtained: obtainedMarks,
+                total_marks: totalMarks
             });
 
             toast.success('Submitted successfully!')
@@ -112,6 +149,16 @@ const PlacementTest = () => {
             });
 
             setShowSummary(true);
+            if (!showResult) {
+                // Display a message for pending results
+                alert('Your result will be updated soon.');
+            }
+
+            // Stop the timer after test submission
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+            }
+
         } catch (error) {
             if (error.response) {
                 if (error.response.status === 400) {
@@ -128,6 +175,8 @@ const PlacementTest = () => {
 
     const handleCloseModal = () => {
         setModalOpen(false);
+        // Start the timer when the modal is closed
+        startTimer(remainingTime);
     };
 
     const handleSaveStudent = async (e) => {
@@ -136,11 +185,11 @@ const PlacementTest = () => {
         setSaveError(null);
 
         try {
-            const response = await axios.post('http://localhost:5000/api/placement-test/save-placement-test-student', formData);
+            const response = await axios.post(`${baseURL}/api/placement-test/save-placement-test-student`, formData);
 
             if (response.status === 200) {
                 if (response.data.existingStudent) {
-                    toast.success('Student details already exist');
+                    toast.success('Details saved Successfully: Continue to attend the test');
                     setPlacementTestStudentId(response.data.existingStudent.placement_test_student_id);
                 } else {
                     toast.success('Details saved Successfully: Continue to attend the test');
@@ -153,6 +202,7 @@ const PlacementTest = () => {
                     phone_number: ''
                 });
                 setModalOpen(false); // Close modal after saving student data
+                startTimer(remainingTime); // Start the timer after the modal is closed
             } else {
                 setSaveError('Failed to save student data. Please try again.');
             }
@@ -193,95 +243,64 @@ const PlacementTest = () => {
 
     return (
         <div className="container mt-5">
-            <h2>Placement Test</h2>
-            {!showSummary && (
+            <h2>Test</h2>
+            <div className="d-flex justify-content-between">
+                <div>Total Marks: {totalMarks}</div>
+                <div>Time Remaining: {Math.floor(remainingTime / 60)}:{String(remainingTime % 60).padStart(2, '0')}</div>
+            </div>
+            {!showSummary  &&! testResults &&(
                 <>
-                    
-                        <>
-                            {questions.map((question, index) => (
-                                <Form key={question.cumulative_question_id} className="mb-3">
-                                    <Form.Group as={Row}>
-                                        <Form.Label column sm="12" className="position-relative">
-                                            <span>{index + 1}. {question.question_description}</span>
-                                            <span className="position-absolute top-0 end-0">Marks: {question.no_of_marks_allocated}</span>
-                                        </Form.Label>
-                                        <Col sm="12">
-                                            {question.options.map((option, idx) => (
-                                                <Form.Check
-                                                    key={idx}
-                                                    type="radio"
-                                                    label={option}
-                                                    name={`question-${index}`}
-                                                    value={option}
-                                                    checked={answers[question.cumulative_question_id] === option}
-                                                    onChange={(e) => handleAnswerChange(question.cumulative_question_id, e.target.value)}
-                                                />
-                                            ))}
-                                        </Col>
-                                    </Form.Group>
-                                </Form>
-                            ))}
-                            <Button variant="primary" onClick={handleSubmitTest}>Submit</Button>
-                        </>
-                   
+                    {questions.map((question, index) => (
+                        <Form key={question.cumulative_question_id} className="mb-3">
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12" className="position-relative">
+                                    <span>{index + 1}. {question.question_description}</span>
+                                    <span className="position-absolute top-0 end-0">Marks: {question.no_of_marks_allocated}</span>
+                                </Form.Label>
+                                <Col sm="12">
+                                    {question.options.map((option, idx) => (
+                                        <Form.Check
+                                            key={idx}
+                                            type="radio"
+                                            label={option}
+                                            name={`question-${index}`}
+                                            value={option}
+                                            checked={answers[question.cumulative_question_id] === option}
+                                            onChange={(e) => handleAnswerChange(question.cumulative_question_id, e.target.value)}
+                                        />
+                                    ))}
+                                </Col>
+                            </Form.Group>
+                        </Form>
+                    ))}
                 </>
             )}
-            {showSummary && showResult && (
-                <div className="row">
-                    <div className="col-lg" style={{ maxHeight: '75vh', overflowY: 'auto' }}>
-                        {questions.map((question, index) => {
-                            const selectedOption = testResults?.question_ans_data[question.cumulative_question_id];
-                            const isCorrect = selectedOption === question.correct_option;
-                            return (
-                                <div key={question.cumulative_question_id} className={`p-2 mb-2 border position-relative ${isCorrect ? 'border-success' : 'border-danger'}`}>
-                                    <span className="position-absolute top-0 end-0">Marks: {question.no_of_marks_allocated}</span>
-                                    <p>{index + 1}. {question.question_description}</p>
-                                    <p className={`text-${isCorrect ? 'success' : 'danger'}`}>Your Answer: {selectedOption ? selectedOption : "Not Attempted"}</p>
-                                    {!isCorrect && (
-                                        <p className="text-success">Correct Answer: {question.correct_option}</p>
-                                    )}
-                                </div>
-                            );
-                        })}
-                    </div>
-                    <div className="col-lg-3 ml-lg-2" style={{ position: 'sticky', top: '10px' }}>
-                        <h6>Results Summary</h6>
-                        <table className="table">
-                            <tbody>
-                                <tr>
-                                    <td className='bg-warning'>Total Marks:</td>
-                                    <td className='bg-warning fw-bolder'>{totalMarks}</td>
-                                </tr>
-                                <tr>
-                                    <td className='bg-warning'>Obtained Marks:</td>
-                                    <td className='text-success bg-warning fw-bolder'>{obtainedMarks}</td>
-                                </tr>
-                                <tr>
-                                    <td className='bg-warning'>Answered Questions:</td>
-                                    <td className='text-dark bg-warning fw-bolder'>{getAnsweredQuestionsCount()}</td>
-                                </tr>
-                                <tr>
-                                    <td className='bg-warning'>Unanswered Questions:</td>
-                                    <td className='text-secondary bg-warning fw-bolder'>{getUnansweredQuestionsCount()}</td>
-                                </tr>
-                                <tr>
-                                    <td className='bg-warning'>Wrong Answers:</td>
-                                    <td className='text-danger bg-warning fw-bolder'>{getWrongAnswersCount()}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            )}
 
+            {showSummary && showResult && (
+                <Card className="mt-5">
+                    <Card.Header>
+                        <h3>Summary</h3>
+                    </Card.Header>
+                    <Card.Body>
+                        <p>Total Questions: {questions.length}</p>
+                        <p>Answered Questions: {getAnsweredQuestionsCount()}</p>
+                        <p>Unanswered Questions: {getUnansweredQuestionsCount()}</p>
+                        <p>Wrong Answers: {getWrongAnswersCount()}</p>
+                        <p>Marks Obtained: {obtainedMarks}</p>
+                        <p>Total Marks: {totalMarks}</p>
+                    </Card.Body>
+                </Card>
+            )}
+            {showSummary && !showResult && (
+                <h3 className='text-info text-center'>Your result will be updated soon.</h3>
+            )}
             <Modal show={modalOpen} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Save Student Data</Modal.Title>
+                    <Modal.Title>Student Details</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {saveError && <div className="alert alert-danger">{saveError}</div>}
                     <Form onSubmit={handleSaveStudent}>
-                        <Form.Group className="mb-3">
+                        <Form.Group controlId="name">
                             <Form.Label>Name</Form.Label>
                             <Form.Control
                                 type="text"
@@ -291,7 +310,7 @@ const PlacementTest = () => {
                                 required
                             />
                         </Form.Group>
-                        <Form.Group className="mb-3">
+                        <Form.Group controlId="email">
                             <Form.Label>Email</Form.Label>
                             <Form.Control
                                 type="email"
@@ -301,7 +320,7 @@ const PlacementTest = () => {
                                 required
                             />
                         </Form.Group>
-                        <Form.Group className="mb-3">
+                        <Form.Group controlId="phone_number">
                             <Form.Label>Phone Number</Form.Label>
                             <Form.Control
                                 type="text"
@@ -311,13 +330,21 @@ const PlacementTest = () => {
                                 required
                             />
                         </Form.Group>
+                        {saveError && <p className="text-danger">{saveError}</p>}
                         <Button variant="primary" type="submit" disabled={savingStudent}>
                             {savingStudent ? 'Saving...' : 'Save'}
                         </Button>
                     </Form>
                 </Modal.Body>
             </Modal>
-            <ToastContainer />
+
+            {!showSummary && (
+                <Button variant="success" onClick={handleSubmitTest}>
+                    Submit Test
+                </Button>
+            )}
+
+            <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} closeOnClick pauseOnHover />
         </div>
     );
 };

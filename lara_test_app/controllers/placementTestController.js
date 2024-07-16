@@ -38,7 +38,7 @@ const createPlacementTestLink = async (req, res) => {
         });
 
         // Generate the test link using the created test ID
-        const test_link = `${baseURL}/test/${newTest.placement_test_id}`;
+        const test_link = `${baseURL}/${newTest.placement_test_id}`;
 
         // Update the test link in the database
         newTest.test_link = test_link;
@@ -102,7 +102,7 @@ const fetchTestTopicIdsAndQnNums = async (req, res) => {
 
 const savePlacementTestResults = async (req, res) => {
     try {
-        const { placement_test_id, placement_test_student_id, marks_obtained } = req.body;
+        const { placement_test_id, placement_test_student_id, marks_obtained,total_marks} = req.body;
 
         // Check if there is already a result for this combination
         const existingResult = await PlacementTestResult.findOne({
@@ -125,6 +125,7 @@ const savePlacementTestResults = async (req, res) => {
             placement_test_id,
             placement_test_student_id,
             marks_obtained,
+            total_marks
         });
 
         return res.status(200).send(testResults);
@@ -136,12 +137,12 @@ const savePlacementTestResults = async (req, res) => {
   
   const getAllResults = async(req, res) => {
       try {
-          const student_id = req.student_id;
-          const student = await Student.findByPk(student_id);
-          const role = student.role;
+        //   const student_id = req.student_id;
+        //   const student = await Student.findByPk(student_id);
+        //   const role = student.role;
   
-          if (role !== 'PLACEMENT OFFICER' & role !== 'SUPER ADMIN')
-              return res.status(403).send({ message: 'Access Forbidden' });
+        //   if (role !== 'PLACEMENT OFFICER' & role !== 'SUPER ADMIN')
+        //       return res.status(403).send({ message: 'Access Forbidden' });
   
           const placementResults = await PlacementTestResult.findAll();
           if(!placementResults){
@@ -154,6 +155,7 @@ const savePlacementTestResults = async (req, res) => {
           return res.status(500).send({ message: error.message });
       }
   }
+
 
 const getAllPlacementTests = async (req, res) => {
     try {
@@ -229,6 +231,60 @@ const savePlacementTestStudent = async (req, res) => {
     }
 };
 
+const getAllResultsByTestId = async (req, res) => {
+    try {
+        const { placement_test_id } = req.body;
+
+        if (!placement_test_id) {
+            return res.status(400).send({ message: 'placement_test_id is required' });
+        }
+
+
+        // Step 1: Fetch all results from PlacementTestResult table by placement_test_id
+        const results = await PlacementTestResult.findAll({
+            where: { placement_test_id },
+            attributes: ['placement_test_student_id', 'marks_obtained','total_marks']
+        });
+
+        // Step 2: Extract all unique placement_test_student_id values
+        const studentIds = results.map(result => result.placement_test_student_id);
+
+        if (studentIds.length === 0) {
+            return res.status(404).send({ message: 'No results found for the provided placement_test_id' });
+        }
+
+        // Step 3: Fetch student details from PlacementTestStudent table
+        const students = await PlacementTestStudent.findAll({
+            where: {
+                placement_test_student_id: studentIds
+            },
+            attributes: ['placement_test_student_id', 'student_name', 'email', 'phone_number']
+        });
+
+        // Step 4: Combine results with student details
+        const combinedResults = results.map(result => {
+            const student = students.find(student => student.placement_test_student_id === result.placement_test_student_id);
+            return {
+                placement_test_student_id: result.placement_test_student_id,
+                marks_obtained: result.marks_obtained,
+                total_marks: result.total_marks,
+                student_details: student ? {
+                    student_name: student.student_name,
+                    email: student.email,
+                    phone_number: student.phone_number
+                } : null
+            };
+        });
+
+        return res.status(200).send(combinedResults);
+
+    } catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+};
+
+
+
 
 module.exports = {
     createPlacementTestLink,
@@ -236,4 +292,6 @@ module.exports = {
     getAllPlacementTests,
     fetchTestTopicIdsAndQnNums,
     savePlacementTestResults,
+    getAllResults,
+    getAllResultsByTestId,
 }

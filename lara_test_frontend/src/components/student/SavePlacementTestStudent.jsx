@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, Form, Modal } from 'react-bootstrap';
+import { baseURL } from '../config';
 
 const SavePlacementTestStudent = ({ show, onSuccess, handleClose }) => {
     const [formData, setFormData] = useState({
@@ -25,7 +26,7 @@ const SavePlacementTestStudent = ({ show, onSuccess, handleClose }) => {
         setError(null);
 
         try {
-            const response = await axios.post('http://localhost:5000/api/placement-test/save-placement-test-student', formData);
+            const response = await axios.post(`${baseURL}/api/placement-test/save-placement-test-student`, formData);
 
             // Handle success, close modal, clear form data
             console.log('Student data saved:', response.data);

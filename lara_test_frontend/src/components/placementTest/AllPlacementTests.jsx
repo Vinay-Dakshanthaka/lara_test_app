@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { baseURL } from '../config';
+import { Link } from 'react-router-dom';
 
 const AllPlacementTests = () => {
     const [placementTests, setPlacementTests] = useState([]);
@@ -31,9 +32,7 @@ const AllPlacementTests = () => {
                         <th>Start Time</th>
                         <th>End Time</th>
                         <th>Show Result</th>
-                        {/* <th>Topics</th>
-                        <th>Created At</th>
-                        <th>Updated At</th> */}
+                        <th>Results</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,13 +45,7 @@ const AllPlacementTests = () => {
                             <td>{test.start_time}</td>
                             <td>{test.end_time}</td>
                             <td>{test.show_result ? 'Yes' : 'No'}</td>
-                            {/* <td>
-                                {test.topics.map(topic => (
-                                    <div key={topic.topic_id}>{topic.name}</div>
-                                ))}
-                            </td>
-                            <td>{new Date(test.created_at).toLocaleString()}</td>
-                            <td>{new Date(test.updated_at).toLocaleString()}</td> */}
+                            <td><Link to={`/get-result/${test.placement_test_id}`}>Results</Link></td>
                         </tr>
                     ))}
                 </tbody>

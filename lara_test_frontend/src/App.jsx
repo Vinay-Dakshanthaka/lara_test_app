@@ -46,6 +46,7 @@ import ViewJobsByDriveId from "./components/companies/ViewJobsByDriveId";
 import StudentsDriveInfo from "./components/admin/StudentsDriveInfo";
 import CreateTestLink from "./components/placementTest/CreateTestLink";
 import PlacementTest from "./components/student/PlacementTest";
+import FetchResultsByTestId from "./components/placementTest/FetchResultsByTestId";
 
 const App = () => {
   const location = useLocation();
@@ -119,6 +120,7 @@ const App = () => {
           <Route path="/drives" element={<AllDrives />} />
           <Route path="/all-students-drive-info" element={<StudentsDriveInfo />} />
           <Route path="/create-test-link" element={<CreateTestLink />} />
+          <Route path="/get-result/:test_id" element={<FetchResultsByTestId />} />
         </Route>
       </Routes>
     </>

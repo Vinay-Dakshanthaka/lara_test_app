@@ -13,5 +13,9 @@ placementTestRoute.post('/fetchTestTopicIdsAndQnNums', placementTestContoller.fe
 
 placementTestRoute.post('/savePlacementTestResults', placementTestContoller.savePlacementTestResults);
 
+placementTestRoute.get('/getAllResults', placementTestContoller.getAllResults);
+
+placementTestRoute.post('/getAllResultsByTestId', placementTestContoller.getAllResultsByTestId);
+
 
 module.exports = placementTestRoute;
