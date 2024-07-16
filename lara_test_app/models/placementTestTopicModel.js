@@ -37,7 +37,8 @@ module.exports = (sequelize, DataTypes) => {
         });
         PlacementTestTopic.belongsTo(models.Topic, {
             foreignKey: 'topic_id',
-            as: 'topics'
+            // as: 'topics'
+            as: 'Topics'
         });
     };
  
