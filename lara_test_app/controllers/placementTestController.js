@@ -8,6 +8,8 @@ const Topic = db.Topic;
 const PlacementTestResult = db.PlacementTestResult;
 const { baseURL } = require('./baseURLConfig')
 
+const jwtSecret = process.env.JWT_SECRET;
+const CryptoJS = require('crypto-js');
 
 const createPlacementTestLink = async (req, res) => {
     try {
@@ -37,8 +39,11 @@ const createPlacementTestLink = async (req, res) => {
             show_result: show_result !== undefined ? show_result : true // Default to true if not provided
         });
 
-        // Generate the test link using the created test ID
-        const test_link = `${baseURL}/${newTest.placement_test_id}`;
+        // Encrypt the test ID using AES encryption
+        const encryptedTestId = CryptoJS.AES.encrypt(newTest.placement_test_id.toString(), jwtSecret).toString();
+
+        // Generate the test link with the encrypted test ID
+        const test_link = `${baseURL}/${encodeURIComponent(encryptedTestId)}`;
 
         // Update the test link in the database
         newTest.test_link = test_link;
@@ -56,20 +61,50 @@ const createPlacementTestLink = async (req, res) => {
 
         return res.status(200).send({ message: 'Placement test added successfully', newTest });
     } catch (error) {
+        console.error('Error creating placement test link:', error.stack);
         return res.status(500).send({ message: error.message });
+    }
+};
+
+// Function to decrypt the encrypted test ID
+const decryptTestId = (encryptedTestId) => {
+    try {
+        console.log('Encrypted Test ID:', encryptedTestId); // Log the encrypted test ID
+
+        const bytes = CryptoJS.AES.decrypt(encryptedTestId, jwtSecret);
+        const originalTestId = bytes.toString(CryptoJS.enc.Utf8);
+
+        console.log('Decrypted Test ID:', originalTestId); // Log the decrypted test ID
+
+        if (!originalTestId || isNaN(parseInt(originalTestId, 10))) {
+            throw new Error('Decrypted test ID is not valid');
+        }
+
+        return parseInt(originalTestId, 10);
+    } catch (error) {
+        console.error('Error decrypting test ID:', error.stack);
+        throw new Error('Invalid encrypted Test ID');
     }
 };
 
 const fetchTestTopicIdsAndQnNums = async (req, res) => {
     try {
-        const { test_id } = req.body;
-        console.log('test id ====', test_id);
+        const { encrypted_test_id } = req.body; // Assuming you receive the encrypted test ID
 
-        if (!test_id) {
-            return res.status(400).send({ message: 'Test ID is required' });
+        if (!encrypted_test_id) {
+            return res.status(400).send({ message: 'Encrypted Test ID is required' });
         }
 
-        // Fetch all topic IDs associated with the given test_id from PlacementTestTopic
+        // Decrypt the test ID
+        let test_id;
+        try {
+            test_id = decryptTestId(encrypted_test_id);
+        } catch (error) {
+            console.error('Error decrypting test ID:', error.stack);
+            return res.status(400).send({ message: 'Invalid encrypted Test ID' });
+        }
+
+        // Fetch all topic IDs associated with the decrypted test_id from PlacementTestTopic
         const placementTestTopics = await PlacementTestTopic.findAll({
             where: {
                 placement_test_id: test_id
@@ -79,7 +114,7 @@ const fetchTestTopicIdsAndQnNums = async (req, res) => {
 
         // Fetch number_of_questions from PlacementTest table
         const placementTest = await PlacementTest.findByPk(test_id, {
-            attributes: ['number_of_questions','show_result'] // Only fetch number_of_questions
+            attributes: ['number_of_questions', 'show_result'] // Only fetch number_of_questions
         });
 
         if (!placementTest) {
@@ -92,9 +127,10 @@ const fetchTestTopicIdsAndQnNums = async (req, res) => {
             message: 'Placement test details retrieved successfully',
             topic_ids,
             number_of_questions: placementTest.number_of_questions,
-            show_result:placementTest.show_result
+            show_result: placementTest.show_result
         });
     } catch (error) {
+        console.error('Error fetching test details:', error.stack);
         return res.status(500).send({ message: error.message });
     }
 };
@@ -102,12 +138,21 @@ const fetchTestTopicIdsAndQnNums = async (req, res) => {
 
 const savePlacementTestResults = async (req, res) => {
     try {
-        const { placement_test_id, placement_test_student_id, marks_obtained,total_marks} = req.body;
+        const { placement_test_id, placement_test_student_id, marks_obtained, total_marks } = req.body;
+
+        // Decrypt the placement_test_id
+        let test_id;
+        try {
+            test_id = decryptTestId(placement_test_id);
+        } catch (error) {
+            console.error('Error decrypting test ID:', error.stack);
+            return res.status(400).send({ message: 'Invalid encrypted Test ID' });
+        }
 
         // Check if there is already a result for this combination
         const existingResult = await PlacementTestResult.findOne({
             where: {
-                placement_test_id,
+                placement_test_id: test_id,
                 placement_test_student_id,
             },
         });
@@ -116,13 +161,15 @@ const savePlacementTestResults = async (req, res) => {
             return res.status(400).send({ message: "You have already attended this test." });
         }
 
+        // Check if the student exists
         const placementStudent = await PlacementTestStudent.findByPk(placement_test_student_id);
         if (!placementStudent) {
             return res.status(404).send({ message: "Student Not Available" });
         }
 
+        // Save the test results
         const testResults = await PlacementTestResult.create({
-            placement_test_id,
+            placement_test_id: test_id,
             placement_test_student_id,
             marks_obtained,
             total_marks
@@ -133,6 +180,7 @@ const savePlacementTestResults = async (req, res) => {
         return res.status(500).send({ message: error.message });
     }
 };
+
 
   
   const getAllResults = async(req, res) => {
@@ -157,7 +205,7 @@ const savePlacementTestResults = async (req, res) => {
   }
 
 
-  const getAllPlacementTests = async (req, res) => {
+const getAllPlacementTests = async (req, res) => {
     try {
         const placementTests = await PlacementTest.findAll({
             include: [
@@ -201,6 +249,7 @@ const savePlacementTestResults = async (req, res) => {
         return res.status(500).send({ message: error.message });
     }
 };
+
 
 
 

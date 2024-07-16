@@ -126,7 +126,7 @@ db.Job.belongsTo(db.Drive, {
 db.PlacementTest.hasMany(db.PlacementTestTopic, {
     foreignKey: 'placement_test_id',
     // as: 'topics'
-    as: 'topics'
+    as: 'Topics'
 });
 
 db.PlacementTestTopic.belongsTo(db.PlacementTest, {

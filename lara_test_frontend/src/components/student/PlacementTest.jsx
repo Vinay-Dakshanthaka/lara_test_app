@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import { Button, Form, Modal, Row, Col, Card } from 'react-bootstrap';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Button, Form, Modal, Row, Col, Card, Table, Alert } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { baseURL } from '../config';
@@ -29,12 +29,38 @@ const PlacementTest = () => {
     const [remainingTime, setRemainingTime] = useState(0); // Timer state
     const [autoSubmit, setAutoSubmit] = useState(false); // Auto-submit state
     const timerRef = useRef(null); // Timer reference
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                // User switched tabs or minimized window
+                // Navigate back to StudentCumulativeTest component with a state
+                // navigate('/studentCumulativeTest', { state: { message: "Test Terminated due to detection of Malpractice" } });
+                navigate('/malpractice-detected');
+            }
+        };
+
+        const handlePopState = () => {
+            // User clicked on the browser's back button
+            // navigate('/studentCumulativeTest', { state: { message: "Test Terminated due to navigation attempt" } });
+            navigate('/malpractice-detected');
+        };
+
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+        window.addEventListener("popstate", handlePopState);
+
+        return () => {
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+            window.removeEventListener("popstate", handlePopState);
+        };
+    }, [navigate]);
 
     useEffect(() => {
         const fetchTestDetails = async () => {
             try {
                 const response1 = await axios.post(`${baseURL}/api/placement-test/fetchTestTopicIdsAndQnNums`, {
-                    test_id
+                    encrypted_test_id:test_id
                 });
 
                 const { topic_ids, number_of_questions, show_result } = response1.data;
@@ -248,7 +274,7 @@ const PlacementTest = () => {
                 <div>Total Marks: {totalMarks}</div>
                 <div>Time Remaining: {Math.floor(remainingTime / 60)}:{String(remainingTime % 60).padStart(2, '0')}</div>
             </div>
-            {!showSummary  &&! testResults &&(
+            {!showSummary && !testResults && (
                 <>
                     {questions.map((question, index) => (
                         <Form key={question.cumulative_question_id} className="mb-3">
@@ -277,17 +303,39 @@ const PlacementTest = () => {
             )}
 
             {showSummary && showResult && (
-                <Card className="mt-5">
+                <Card className="mt-5 shadow">
                     <Card.Header>
                         <h3>Summary</h3>
                     </Card.Header>
-                    <Card.Body>
-                        <p>Total Questions: {questions.length}</p>
-                        <p>Answered Questions: {getAnsweredQuestionsCount()}</p>
-                        <p>Unanswered Questions: {getUnansweredQuestionsCount()}</p>
-                        <p>Wrong Answers: {getWrongAnswersCount()}</p>
-                        <p>Marks Obtained: {obtainedMarks}</p>
-                        <p>Total Marks: {totalMarks}</p>
+                    <Card.Body className="p-4 bg-light">
+                        <Table bordered hover>
+                            <tbody>
+                                <tr>
+                                    <td className="font-weight-bold text-primary">Total Questions</td>
+                                    <td>{questions.length}</td>
+                                </tr>
+                                <tr>
+                                    <td className="font-weight-bold text-success">Answered Questions</td>
+                                    <td>{getAnsweredQuestionsCount()}</td>
+                                </tr>
+                                <tr>
+                                    <td className="font-weight-bold text-warning">Unanswered Questions</td>
+                                    <td>{getUnansweredQuestionsCount()}</td>
+                                </tr>
+                                <tr>
+                                    <td className="font-weight-bold text-danger">Wrong Answers</td>
+                                    <td>{getWrongAnswersCount()}</td>
+                                </tr>
+                                <tr>
+                                    <td className="font-weight-bold text-info">Marks Obtained</td>
+                                    <td>{obtainedMarks}</td>
+                                </tr>
+                                <tr>
+                                    <td className="font-weight-bold text-secondary">Total Marks</td>
+                                    <td>{totalMarks}</td>
+                                </tr>
+                            </tbody>
+                        </Table>
                     </Card.Body>
                 </Card>
             )}
@@ -299,6 +347,7 @@ const PlacementTest = () => {
                     <Modal.Title>Student Details</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+
                     <Form onSubmit={handleSaveStudent}>
                         <Form.Group controlId="name">
                             <Form.Label>Name</Form.Label>
@@ -331,10 +380,16 @@ const PlacementTest = () => {
                             />
                         </Form.Group>
                         {saveError && <p className="text-danger">{saveError}</p>}
-                        <Button variant="primary" type="submit" disabled={savingStudent}>
-                            {savingStudent ? 'Saving...' : 'Save'}
+                        <Button variant="primary" type="submit" disabled={savingStudent} style={{marginTop:'5px'}}>
+                            {savingStudent ? 'Saving...' : 'Submit'}
                         </Button>
                     </Form>
+                        <Alert variant="danger" className="mt-4">
+                            <Alert.Heading>Warning</Alert.Heading>
+                            <p>
+                                Please be aware that any form of malpractice during the test, such as switching to a different tab or leaving the test window, will result in immediate termination of the test. Ensure that you stay within the test environment at all times to avoid disqualification.
+                            </p>
+                        </Alert>
                 </Modal.Body>
             </Modal>
 

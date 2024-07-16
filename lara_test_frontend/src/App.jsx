@@ -47,6 +47,7 @@ import StudentsDriveInfo from "./components/admin/StudentsDriveInfo";
 import CreateTestLink from "./components/placementTest/CreateTestLink";
 import PlacementTest from "./components/student/PlacementTest";
 import FetchResultsByTestId from "./components/placementTest/FetchResultsByTestId";
+import PlacementTestError from "./components/placementTest/PlacementTestError";
 
 const App = () => {
   const location = useLocation();
@@ -61,6 +62,7 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/update-password" element={<UpdatePassword />} />
         <Route path="/:test_id" element={<PlacementTest />} />
+        <Route path="/malpractice-detected" element={<PlacementTestError />} />
         <Route
           path="/password-update-warning"
           element={<PasswordUpdateWarning />}
