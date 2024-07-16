@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'placementtests', // Specify the actual table name
+                model: 'Placementtests', // Specify the actual table name
                 key: 'placement_test_id'
             },
             onDelete: 'CASCADE',
@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'placementteststudents', // Specify the actual table name
+                model: 'Placementteststudents', // Specify the actual table name
                 key: 'placement_test_student_id'
             },
             onDelete: 'CASCADE',
