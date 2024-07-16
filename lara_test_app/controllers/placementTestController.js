@@ -157,22 +157,26 @@ const savePlacementTestResults = async (req, res) => {
   }
 
 
-const getAllPlacementTests = async (req, res) => {
+  const getAllPlacementTests = async (req, res) => {
     try {
         const placementTests = await PlacementTest.findAll({
             include: [
                 {
                     model: PlacementTestTopic,
-                    as: 'Topics',
+                    as: 'topics',
                     include: [
                         {
                             model: Topic,
-                            attributes: ['topic_id', 'createdAt', 'updatedAt'] // Include all desired attributes
+                            attributes: ['topic_id', 'createdAt', 'updatedAt'] // Include desired attributes from Topic model
                         }
                     ]
                 }
             ]
         });
+
+        if (!placementTests || placementTests.length === 0) {
+            return res.status(404).send({ message: 'No placement tests found' });
+        }
 
         const formattedTests = placementTests.map(test => ({
             placement_test_id: test.placement_test_id,
@@ -184,17 +188,20 @@ const getAllPlacementTests = async (req, res) => {
             show_result: test.show_result,
             created_at: test.createdAt,
             updated_at: test.updatedAt,
-            topics: test.topics.map(topic => ({
+            topics: test.Topics.map(topic => ({
                 topic_id: topic.topic_id,
+                createdAt: topic.createdAt,
+                updatedAt: topic.updatedAt
             }))
         }));
-        
 
         return res.status(200).send({ message: 'Placement tests retrieved successfully', placementTests: formattedTests });
     } catch (error) {
+        console.error('Error retrieving placement tests:', error);
         return res.status(500).send({ message: error.message });
     }
 };
+
 
 
 

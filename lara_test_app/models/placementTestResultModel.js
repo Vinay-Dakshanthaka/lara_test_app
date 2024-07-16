@@ -37,17 +37,17 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         timestamps: true, // Enabling timestamps for tracking purposes
-        tableName: 'placementtestresults' // Specify the actual table name
+        tableName: 'Placementtestresults' // Specify the actual table name
     });
 
     PlacementTestResult.associate = (models) => {
         PlacementTestResult.belongsTo(models.PlacementTest, {
             foreignKey: 'placement_test_id',
-            as: 'placementtest'
+            as: 'Placementtest'
         });
         PlacementTestResult.belongsTo(models.PlacementTestStudent, {
             foreignKey: 'placement_test_student_id',
-            as: 'placementteststudent'
+            as: 'Placementteststudent'
         });
     };
 

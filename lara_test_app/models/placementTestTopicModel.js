@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'placementtests', // Specify the actual table name
+                model: 'Placementtests', // Specify the actual table name
                 key: 'placement_test_id'
             },
             onDelete: 'CASCADE',
@@ -27,13 +27,13 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         timestamps: true, // Enabling timestamps for tracking purposes
-        tableName: 'placementtesttopics' // Specify the actual table name if different from model name
+        tableName: 'Placementtesttopics' // Specify the actual table name if different from model name
     });
 
     PlacementTestTopic.associate = (models) => {
         PlacementTestTopic.belongsTo(models.PlacementTest, {
             foreignKey: 'placement_test_id',
-            as: 'placementtest'
+            as: 'Placementtest'
         });
         PlacementTestTopic.belongsTo(models.Topic, {
             foreignKey: 'topic_id',

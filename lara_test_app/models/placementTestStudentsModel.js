@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         timestamps: true, // Enabling timestamps for tracking purposes
-        tableName: 'placementteststudents' // Specify the actual table name
+        tableName: 'Placementteststudents' // Specify the actual table name
     });
 
     return PlacementTestStudent;
