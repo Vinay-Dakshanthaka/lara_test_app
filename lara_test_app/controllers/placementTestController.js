@@ -163,7 +163,7 @@ const getAllPlacementTests = async (req, res) => {
             include: [
                 {
                     model: PlacementTestTopic,
-                    as: 'topics',
+                    as: 'Topics',
                     include: [
                         {
                             model: Topic,
