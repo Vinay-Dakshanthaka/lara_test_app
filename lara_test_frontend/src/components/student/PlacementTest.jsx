@@ -32,29 +32,39 @@ const PlacementTest = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        const handleVisibilityChange = () => {
+        const handleVisibilityChange = async () => {
             if (document.hidden) {
-                // User switched tabs or minimized window
-                // Navigate back to StudentCumulativeTest component with a state
-                // navigate('/studentCumulativeTest', { state: { message: "Test Terminated due to detection of Malpractice" } });
+                setAutoSubmit(true);
+                await handleSubmitTest();
                 navigate('/malpractice-detected');
             }
         };
-
-        const handlePopState = () => {
-            // User clicked on the browser's back button
-            // navigate('/studentCumulativeTest', { state: { message: "Test Terminated due to navigation attempt" } });
+    
+        const handlePopState = async () => {
+            setAutoSubmit(true);
+            await handleSubmitTest();
             navigate('/malpractice-detected');
         };
-
-        document.addEventListener("visibilitychange", handleVisibilityChange);
-        window.addEventListener("popstate", handlePopState);
-
-        return () => {
+    
+        const setupListeners = () => {
+            document.addEventListener("visibilitychange", handleVisibilityChange);
+            window.addEventListener("popstate", handlePopState);
+        };
+    
+        const cleanupListeners = () => {
             document.removeEventListener("visibilitychange", handleVisibilityChange);
             window.removeEventListener("popstate", handlePopState);
         };
-    }, [navigate]);
+    
+        setupListeners();
+    
+        return () => {
+            cleanupListeners();
+        };
+    }, [navigate]); // Removed autoSubmit from dependencies
+    
+    
+    
 
     useEffect(() => {
         const fetchTestDetails = async () => {
@@ -219,7 +229,11 @@ const PlacementTest = () => {
         setSaveError(null);
 
         try {
-            const response = await axios.post(`${baseURL}/api/placement-test/save-placement-test-student`, formData);
+            const studentData = {
+                ...formData,
+                placement_test_id: test_id, // Include placement_test_id in the formData
+            };
+            const response = await axios.post(`${baseURL}/api/placement-test/save-placement-test-student`, studentData);
 
             if (response.status === 200) {
                 if (response.data.existingStudent) {
@@ -241,8 +255,16 @@ const PlacementTest = () => {
                 setSaveError('Failed to save student data. Please try again.');
             }
         } catch (error) {
-            console.error('Error saving student data:', error);
-            setSaveError('Failed to save student data. Please try again.');
+            if(error.response){
+                if(error.response.status === 403){
+                    alert("You have already completed this test.")
+                    setSaveError('You have already completed this test.');
+                    navigate('/not-found')
+                }
+            }else{
+                console.error('Error saving student data:', error);
+                setSaveError('Failed to save student data. Please try again.');
+            }
         } finally {
             setSavingStudent(false);
         }

@@ -70,7 +70,7 @@ const App = () => {
         />
         <Route path="/reset-password-email" element={<ResetPasswordEmail />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/" element={<Signin />} /> {/* Default route */}
+        <Route path="/" element={<Signin />} /> 
         <Route path="/not-found" element={<NotFound />} /> 
         <Route path="/*" element={<NotFound />} /> 
         {/* Protected Routes */}

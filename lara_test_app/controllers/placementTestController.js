@@ -272,10 +272,10 @@ const getAllPlacementTests = async (req, res) => {
 
 const savePlacementTestStudent = async (req, res) => {
     try {
-        const { name, email, phone_number } = req.body;
+        const { name, email, phone_number, placement_test_id } = req.body;
 
         // Check if all required fields are provided
-        if (!name || !email || !phone_number) {
+        if (!name || !email || !phone_number || !placement_test_id) {
             return res.status(400).send({ message: 'Required fields are missing or invalid' });
         }
 
@@ -287,7 +287,19 @@ const savePlacementTestStudent = async (req, res) => {
         });
 
         if (existingStudent) {
-            return res.status(200).send({ message: 'Student details already exist', existingStudent });
+            // Check if the student has already taken this specific test
+            const existingResult = await PlacementTestResult.findOne({
+                where: {
+                    placement_test_id,
+                    placement_test_student_id: existingStudent.placement_test_student_id,
+                }
+            });
+
+            if (existingResult) {
+                return res.status(403).send({ message: 'You have already attended this test.' });
+            } else {
+                return res.status(200).send({ message: 'Student details already exist', existingStudent });
+            }
         }
 
         // Create the new student record
@@ -302,6 +314,7 @@ const savePlacementTestStudent = async (req, res) => {
         return res.status(500).send({ message: error.message });
     }
 };
+
 
 const getAllResultsByTestId = async (req, res) => {
     try {
