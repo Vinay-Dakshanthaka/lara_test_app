@@ -98,8 +98,16 @@ const PlacementTest = () => {
 
                 setLoading(false);
             } catch (error) {
-                console.error('Error fetching test details:', error);
-                setLoading(false);
+                if(error.response){
+                    if(error.response.status === 403){
+                        navigate('/not-found')
+                    }else if(error.response.status === 404){
+                        navigate('/not-found')
+                    }
+                }else{
+                    console.error('Error fetching test details:', error);
+                    setLoading(false);
+                }
             }
         };
 

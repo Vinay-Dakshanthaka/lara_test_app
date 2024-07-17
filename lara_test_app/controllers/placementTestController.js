@@ -46,7 +46,7 @@ const createPlacementTestLink = async (req, res) => {
 
         // Generate the test link with the encrypted test ID
         // const test_link = `${baseURL}/${encodeURIComponent(encryptedTestId)}`;
-        const test_link = `${baseURL}/${newTest.placement_test_id}`;
+        const test_link = `${baseURL}/test/${newTest.placement_test_id}`;
 
         // Update the test link in the database
         newTest.test_link = test_link;
@@ -98,6 +98,14 @@ const fetchTestTopicIdsAndQnNums = async (req, res) => {
             return res.status(400).send({ message: 'Encrypted Test ID is required' });
         }
 
+        const activeTest = await PlacementTest.findByPk(encrypted_test_id);
+        if(!activeTest){
+            return res.status(404).send({message: "Test Not Found"})
+        }
+        console.log('ACtive test ', activeTest)
+        if(!activeTest.is_Active){
+            return res.status(403).send({message:"Access Forbidden"})
+        }
         // // Decrypt the test ID
         // let test_id;
         // try {
@@ -243,6 +251,7 @@ const getAllPlacementTests = async (req, res) => {
             show_result: test.show_result,
             created_at: test.createdAt,
             updated_at: test.updatedAt,
+            is_Active:test.is_Active,
             topics: test.Topics.map(topic => ({
                 topic_id: topic.topic_id,
                 createdAt: topic.createdAt,
@@ -363,7 +372,7 @@ const getAllResultsByTestId = async (req, res) => {
 const disableLink = async (req, res) => {
     try {
         const { test_id, is_Active } = req.body;
-
+        console.log( "is active ", is_Active, "  test _ id ", test_id)
         // Step 1: Find the currently active test link
         const activeTest = await PlacementTest.findAll({
             where: { is_Active: true }

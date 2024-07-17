@@ -48,6 +48,7 @@ import CreateTestLink from "./components/placementTest/CreateTestLink";
 import PlacementTest from "./components/student/PlacementTest";
 import FetchResultsByTestId from "./components/placementTest/FetchResultsByTestId";
 import PlacementTestError from "./components/placementTest/PlacementTestError";
+import NotFound from "./components/NotFound";
 
 const App = () => {
   const location = useLocation();
@@ -61,7 +62,7 @@ const App = () => {
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/update-password" element={<UpdatePassword />} />
-        <Route path="/:test_id" element={<PlacementTest />} />
+        <Route path="/test/:test_id" element={<PlacementTest />} />
         <Route path="/malpractice-detected" element={<PlacementTestError />} />
         <Route
           path="/password-update-warning"
@@ -70,6 +71,8 @@ const App = () => {
         <Route path="/reset-password-email" element={<ResetPasswordEmail />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/" element={<Signin />} /> {/* Default route */}
+        <Route path="/not-found" element={<NotFound />} /> 
+        <Route path="/*" element={<NotFound />} /> 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/update-role" element={<UpdateRole />} />
