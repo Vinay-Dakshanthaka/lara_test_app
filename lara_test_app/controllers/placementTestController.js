@@ -40,10 +40,11 @@ const createPlacementTestLink = async (req, res) => {
         });
 
         // Encrypt the test ID using AES encryption
-        const encryptedTestId = CryptoJS.AES.encrypt(newTest.placement_test_id.toString(), jwtSecret).toString();
+        // const encryptedTestId = CryptoJS.AES.encrypt(newTest.placement_test_id.toString(), jwtSecret).toString();
 
         // Generate the test link with the encrypted test ID
-        const test_link = `${baseURL}/${encodeURIComponent(encryptedTestId)}`;
+        // const test_link = `${baseURL}/${encodeURIComponent(encryptedTestId)}`;
+        const test_link = `${baseURL}/${newTest.placement_test_id}`;
 
         // Update the test link in the database
         newTest.test_link = test_link;
@@ -95,25 +96,26 @@ const fetchTestTopicIdsAndQnNums = async (req, res) => {
             return res.status(400).send({ message: 'Encrypted Test ID is required' });
         }
 
-        // Decrypt the test ID
-        let test_id;
-        try {
-            test_id = decryptTestId(encrypted_test_id);
-        } catch (error) {
-            console.error('Error decrypting test ID:', error.stack);
-            return res.status(400).send({ message: 'Invalid encrypted Test ID' });
-        }
+        // // Decrypt the test ID
+        // let test_id;
+        // try {
+        //     test_id = decryptTestId(encrypted_test_id);
+        // } catch (error) {
+        //     console.error('Error decrypting test ID:', error.stack);
+        //     return res.status(400).send({ message: 'Invalid encrypted Test ID' });
+        // }
 
         // Fetch all topic IDs associated with the decrypted test_id from PlacementTestTopic
         const placementTestTopics = await PlacementTestTopic.findAll({
             where: {
-                placement_test_id: test_id
+                // placement_test_id: test_id
+                placement_test_id: encrypted_test_id
             },
             attributes: ['topic_id'] // Only fetch topic_id
         });
 
         // Fetch number_of_questions from PlacementTest table
-        const placementTest = await PlacementTest.findByPk(test_id, {
+        const placementTest = await PlacementTest.findByPk(encrypted_test_id, {
             attributes: ['number_of_questions', 'show_result'] // Only fetch number_of_questions
         });
 
@@ -140,19 +142,20 @@ const savePlacementTestResults = async (req, res) => {
     try {
         const { placement_test_id, placement_test_student_id, marks_obtained, total_marks } = req.body;
 
-        // Decrypt the placement_test_id
-        let test_id;
-        try {
-            test_id = decryptTestId(placement_test_id);
-        } catch (error) {
-            console.error('Error decrypting test ID:', error.stack);
-            return res.status(400).send({ message: 'Invalid encrypted Test ID' });
-        }
+        // // Decrypt the placement_test_id
+        // let test_id;
+        // try {
+        //     test_id = decryptTestId(placement_test_id);
+        // } catch (error) {
+        //     console.error('Error decrypting test ID:', error.stack);
+        //     return res.status(400).send({ message: 'Invalid encrypted Test ID' });
+        // }
 
         // Check if there is already a result for this combination
         const existingResult = await PlacementTestResult.findOne({
             where: {
-                placement_test_id: test_id,
+                // placement_test_id: test_id,
+                placement_test_id,
                 placement_test_student_id,
             },
         });
@@ -169,7 +172,7 @@ const savePlacementTestResults = async (req, res) => {
 
         // Save the test results
         const testResults = await PlacementTestResult.create({
-            placement_test_id: test_id,
+            placement_test_id,
             placement_test_student_id,
             marks_obtained,
             total_marks
