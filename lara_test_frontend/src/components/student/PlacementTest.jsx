@@ -342,8 +342,8 @@ const PlacementTest = () => {
             {showSummary && !showResult && (
                 <h3 className='text-info text-center'>Your result will be updated soon.</h3>
             )}
-            <Modal show={modalOpen} onHide={handleCloseModal}>
-                <Modal.Header closeButton>
+            <Modal show={modalOpen} >
+                <Modal.Header >
                     <Modal.Title>Student Details</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
