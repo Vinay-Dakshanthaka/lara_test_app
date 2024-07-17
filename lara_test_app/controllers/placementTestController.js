@@ -1,5 +1,6 @@
 const db = require('../models');
 
+const {Op} = require('sequelize');
 const Student = db.Student;
 const PlacementTest = db.PlacementTest;
 const PlacementTestTopic = db.PlacementTestTopic;
@@ -7,6 +8,7 @@ const PlacementTestStudent = db.PlacementTestStudent;
 const Topic = db.Topic;
 const PlacementTestResult = db.PlacementTestResult;
 const { baseURL } = require('./baseURLConfig')
+
 
 const jwtSecret = process.env.JWT_SECRET;
 const CryptoJS = require('crypto-js');
@@ -127,7 +129,9 @@ const fetchTestTopicIdsAndQnNums = async (req, res) => {
             message: 'Placement test details retrieved successfully',
             topic_ids,
             number_of_questions: placementTest.number_of_questions,
-            show_result: placementTest.show_result
+            show_result: placementTest.show_result,
+            // start_time: PlacementTest.start_time,
+            // end_time: PlacementTest.end_time
         });
     } catch (error) {
         console.error('Error fetching test details:', error.stack);
@@ -339,6 +343,55 @@ const getAllResultsByTestId = async (req, res) => {
     }
 };
 
+// const disableTestLink = async(req, res) => {
+// try {
+//     const {is_Active, test_id} = req.body;
+
+//     if(is_Active){
+//         await PlacementTest.update({is_Active:false where {
+//             [op.ne] = test_id
+//         }})
+//     }
+// } catch (error) {
+    
+// }
+
+
+const disableLink = async (req, res) => {
+    try {
+        const { test_id, is_Active } = req.body;
+
+        // Step 1: Find the currently active test link
+        const activeTest = await PlacementTest.findAll({
+            where: { is_Active: true }
+        });
+
+        // Step 2: Disable the currently active test link if it exists
+        if (activeTest.length > 0) {
+            await PlacementTest.update({ is_Active: false }, {
+                where: { placement_test_id: activeTest.map(test => test.placement_test_id) }
+            });
+        }
+
+        // Step 3: Enable the specified test link if is_Active is true
+        if (is_Active) {
+            await PlacementTest.update({ is_Active: true }, {
+                where: { placement_test_id: test_id }
+            });
+        }
+
+        res.status(200).send({ message: 'Test link status updated successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: 'An error occurred while updating test link status' });
+    }
+};
+    
+
+
+
+
+
 
 
 
@@ -350,4 +403,5 @@ module.exports = {
     savePlacementTestResults,
     getAllResults,
     getAllResultsByTestId,
+    disableLink
 }
