@@ -33,7 +33,7 @@ const PlacementTest = () => {
 
     useEffect(() => {
         const handleVisibilityChange = async () => {
-            if (document.hidden) {
+            if (!showSummary && document.hidden) {
                 setAutoSubmit(true);
                 await handleSubmitTest();
                 navigate('/malpractice-detected');
@@ -41,9 +41,11 @@ const PlacementTest = () => {
         };
     
         const handlePopState = async () => {
-            setAutoSubmit(true);
-            await handleSubmitTest();
-            navigate('/malpractice-detected');
+            if (!showSummary) {
+                setAutoSubmit(true);
+                await handleSubmitTest();
+                navigate('/malpractice-detected');
+            }
         };
     
         const setupListeners = () => {
@@ -61,8 +63,8 @@ const PlacementTest = () => {
         return () => {
             cleanupListeners();
         };
-    }, [navigate]); // Removed autoSubmit from dependencies
-    
+    }, [navigate, showSummary]);
+     
     
     
 
@@ -208,7 +210,7 @@ const PlacementTest = () => {
                 if (error.response.status === 400) {
                     alert('Cannot Submit Answers Again: You have already submitted your answers for this test')
                 } else {
-                    alert('Something went wrong')
+                    toast.error('Error')
                 }
             }
             console.error('Error saving test results:', error);
@@ -302,7 +304,7 @@ const PlacementTest = () => {
             <h2>Test</h2>
             <div className="d-flex justify-content-between">
                 <div>Total Marks: {totalMarks}</div>
-                <div>Time Remaining: {Math.floor(remainingTime / 60)}:{String(remainingTime % 60).padStart(2, '0')}</div>
+                <div className='fw-bolder '>Time Remaining: {Math.floor(remainingTime / 60)}:{String(remainingTime % 60).padStart(2, '0')}</div>
             </div>
             {!showSummary && !testResults && (
                 <>
