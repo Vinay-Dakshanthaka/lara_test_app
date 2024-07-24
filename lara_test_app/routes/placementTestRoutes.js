@@ -19,5 +19,9 @@ placementTestRoute.post('/getAllResultsByTestId', placementTestContoller.getAllR
 
 placementTestRoute.post('/disable-link', placementTestContoller.disableLink);
 
+placementTestRoute.post('/send-test-link', placementTestContoller.emailTestLink);
+
+placementTestRoute.post('/get-placementtest-details', placementTestContoller.getPlacementTestById);
+
 
 module.exports = placementTestRoute;

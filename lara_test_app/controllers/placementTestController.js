@@ -1,4 +1,5 @@
 const db = require('../models');
+const nodemailer = require('nodemailer');
 
 const {Op} = require('sequelize');
 const Student = db.Student;
@@ -12,6 +13,7 @@ const { baseURL } = require('./baseURLConfig')
 
 const jwtSecret = process.env.JWT_SECRET;
 const CryptoJS = require('crypto-js');
+const { text } = require('express');
 
 const createPlacementTestLink = async (req, res) => {
     try {
@@ -266,7 +268,19 @@ const getAllPlacementTests = async (req, res) => {
     }
 };
 
-
+const getPlacementTestById = async (req, res) => {
+    try {
+        const { placement_test_id } = req.body;
+        console.log('placement test id', placement_test_id);
+        const placementTest = await PlacementTest.findByPk(placement_test_id);
+        if (!placementTest) {
+            return res.status(404).send({ message: "No Placement Test found for the given ID" });
+        }
+        return res.status(200).send({ placementTest: placementTest });
+    } catch (error) {
+        return res.status(500).send({ message: "Error fetching Placement Test Details by id" });
+    }
+};
 
 
 
@@ -412,8 +426,49 @@ const disableLink = async (req, res) => {
     }
 };
     
+const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+        user: 'lara.placementcell@gmail.com', //  email address
+        pass: 'kphhcgeglahzzixb' // app password
+    }
+});
 
-
+const emailTestLink = async (req, res) => {
+    try {
+      const { student_ids, subject, body } = req.body;
+  
+      const studentEmails = (await Student.findAll({ where: { student_id: student_ids } })).map(student => student.email);
+      const emailErrors = [];
+      for (const email of studentEmails) {
+        const mailOptions = {
+          from: 'lara.placementcell@gmail.com',
+          to: email,
+          subject: subject,
+          html: body
+        };
+        try {
+          await transporter.sendMail(mailOptions);
+        } catch (error) {
+          emailErrors.push({ email: email, error: error.message });
+        }
+      }
+      if (emailErrors.length > 0) {
+        return res.status(200).send({
+          message: 'Test Link sent successfully with some unsent emails',
+          students: emailErrors
+        });
+      } else {
+        return res.status(200).send({
+          message: 'Test Link sent successfully',
+          students: studentEmails
+        });
+      }
+    } catch (error) {
+      return res.status(500).send({ message: 'An error occurred while sending the links through emails' });
+    }
+  };
+  
 
 
 
@@ -423,10 +478,12 @@ const disableLink = async (req, res) => {
 module.exports = {
     createPlacementTestLink,
     savePlacementTestStudent,
+    getPlacementTestById,
     getAllPlacementTests,
     fetchTestTopicIdsAndQnNums,
     savePlacementTestResults,
     getAllResults,
     getAllResultsByTestId,
-    disableLink
+    disableLink,
+    emailTestLink,
 }

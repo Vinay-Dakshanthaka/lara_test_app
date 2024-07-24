@@ -88,16 +88,13 @@ const SelectSkills = () => {
         <p>You can select and add skills</p>
       ) : (
         <table className="table table-bordered">
-          <thead>
-            <tr>
-              <th>Skill Name</th>
-            </tr>
-          </thead>
           <tbody>
             {studentSkills.map(skill => (
-              <tr key={skill.skill_id}>
-                <td>{skill.name}</td>
-              </tr>
+              <>
+                <tr key={skill.skill_id}>
+                  <td>{skill.name}</td>
+                </tr>
+              </> 
             ))}
           </tbody>
         </table>

@@ -69,6 +69,7 @@ const AllPlacementTests = () => {
                             <th>Show Result</th>
                             <th>Results</th>
                             <th>Activate Link</th>
+                            <th>Email Test Link</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -106,6 +107,9 @@ const AllPlacementTests = () => {
                                             Activate
                                         </button>
                                     )}
+                                </td>
+                                <td>
+                                    <Link to={`/email-test-link/${test.placement_test_id}`}>Email Link</Link>
                                 </td>
                             </tr>
                         ))}

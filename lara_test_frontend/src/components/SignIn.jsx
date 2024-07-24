@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer, toast } from 'react-toastify';
@@ -14,10 +14,18 @@ const Signin = () => {
         password: ''
     });
 
+    
+
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(() => {
+      if (localStorage.getItem('token')) {
+        navigate('/student-dashboard'); 
+      }
+    }, []);
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

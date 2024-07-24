@@ -261,7 +261,7 @@ const StartTest = () => {
                                             <p className={`text-${isCorrect ? 'success' : 'danger'}`}>Your Answer: {selectedOption ? selectedOption : "Not Attempted"}</p>
                                             {console.log('seleceted option <===', selectedOption)}
                                             {!isCorrect && (
-                                                <p className="text-success">Correct Answer: {question.correct_option}</p>
+                                                <p className="text-success">Correct Answer: {question[question.correct_option]}</p>
                                             )}
                                         </div>
                                     );

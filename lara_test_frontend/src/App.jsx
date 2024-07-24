@@ -49,6 +49,8 @@ import PlacementTest from "./components/student/PlacementTest";
 import FetchResultsByTestId from "./components/placementTest/FetchResultsByTestId";
 import PlacementTestError from "./components/placementTest/PlacementTestError";
 import NotFound from "./components/NotFound";
+import SendTestLink from "./components/placementTest/SendTestLink";
+import FaceDetector from "./components/placementTest/FaceDetector";
 
 const App = () => {
   const location = useLocation();
@@ -126,6 +128,8 @@ const App = () => {
           <Route path="/all-students-drive-info" element={<StudentsDriveInfo />} />
           <Route path="/create-test-link" element={<CreateTestLink />} />
           <Route path="/get-result/:test_id" element={<FetchResultsByTestId />} />
+          <Route path="/email-test-link/:placement_test_id" element={<SendTestLink />} />
+          <Route path="/face-detector" element={<FaceDetector />} />
         </Route>
       </Routes>
     </>
