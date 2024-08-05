@@ -5,6 +5,7 @@ import { Table, FormControl, InputGroup, Button } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { baseURL } from '../config';
+import { BsFilter } from 'react-icons/bs';
 
 const FetchResultsByTestId = () => {
   const { test_id } = useParams();
@@ -24,7 +25,7 @@ const FetchResultsByTestId = () => {
         console.error('Error fetching results:', error);
         toast.error('Failed to fetch results.');
         setLoading(false);
-      } 
+      }
     };
 
     fetchResults();
@@ -83,10 +84,14 @@ const FetchResultsByTestId = () => {
         <thead>
           <tr>
             <th>SI No</th>
-            <th onClick={() => handleSort('student_name')}>Student Name</th>
+            <th onClick={() => handleSort('student_name')} style={{ cursor: 'pointer' }}>Student Name
+              <span className='px-2'><BsFilter style={{ background: 'yellow' }} /></span>
+            </th>
             <th>Email</th>
             <th>Phone Number</th>
-            <th onClick={() => handleSort('marks_obtained')}>Marks Obtained</th>
+            <th onClick={() => handleSort('marks_obtained')} style={{ cursor: 'pointer' }}>Marks Obtained
+              <span className='px-2'><BsFilter style={{ background: 'yellow' }} /></span>
+            </th>
             <th>Total Marks</th>
           </tr>
         </thead>

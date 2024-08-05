@@ -22,6 +22,8 @@ cumulativeTestRouter.get('/getTopicsBySubjectId',verifyToken,cumulativeTestContr
 
 cumulativeTestRouter.post('/getQuestionsByTopicIds',cumulativeTestController.getQuestionsByTopicIds );
 
+cumulativeTestRouter.post('/getPracticeQuestionsByTopicIds',cumulativeTestController.getPracticeQuestionsByTopicIds );
+
 cumulativeTestRouter.post('/getQuestionCountsByTopicIds',verifyToken,cumulativeTestController.getQuestionCountsByTopicIds );
 
 cumulativeTestRouter.get('/getTopicById',verifyToken,cumulativeTestController.getTopicById );
@@ -42,32 +44,37 @@ cumulativeTestRouter.get('/getAllTopics', verifyToken, cumulativeTestController.
 
 cumulativeTestRouter.get('/getAllSubjectsWithTopics', verifyToken, cumulativeTestController.getAllSubjectsWithTopics)
 
+cumulativeTestRouter.post('/add-question', verifyToken, cumulativeTestController.addQuestion)
+
+cumulativeTestRouter.post('/fetchQuestionsByTestId',  cumulativeTestController.fetchQuestionsByTestId)
+
+
 //For Uploading Quesion Topic wise
 cumulativeTestRouter.post('/upload-questions',upload.single('file'),verifyToken, async (req, res) => {
-     // Fetch the user's role from the database using the user's ID
-     const studentId = req.student_id; 
-     const user = await Student.findByPk(studentId); // Fetch user from database
-     const userRole = user.role; // Get the user's role
-     console.log("role :"+userRole)
-     // Check if the user role is either "ADMIN" or "SUPER ADMIN"
-     if (userRole !== 'SUPER ADMIN' && userRole !== 'PLACEMENT OFFICER') {
-         return res.status(403).json({ error: 'Access forbidden' });
-     }
-    
-    const topic_id = req.query.topic_id;
-    const filePath = req.file.path; 
+    // Fetch the user's role from the database using the user's ID
+    // const studentId = req.studentId; 
+    // const user = await Student.findByPk(studentId); // Fetch user from database
+    // const userRole = user.role; // Get the user's role
+    // console.log("role :"+userRole)
+    // // Check if the user role is either "ADMIN" or "SUPER ADMIN"
+    // if (userRole !== 'SUPER ADMIN' && userRole !== 'PLACEMENT OFFICER') {
+    //     return res.status(403).json({ error: 'Access forbidden' });
+    // }
+   
+   const topic_id = req.query.topic_id;
+   const filePath = req.file.path; 
 
-    if (!topic_id) {
-        return res.status(400).send({ message: "topic_id query parameter is required." });
-    }
+   if (!topic_id) {
+       return res.status(400).send({ message: "topic_id query parameter is required." });
+   }
 
-    try {
-        await cumulativeTestController.processExcel(filePath, topic_id);
-        res.status(200).send({ message: "Excel data processed successfully." });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({ message: error.message });
-    }
+   try {
+       await cumulativeTestController.processExcel(filePath, topic_id);
+       res.status(200).send({ message: "Excel data processed successfully." });
+   } catch (error) {
+       console.log(error);
+       res.status(500).send({ message: error.message });
+   }
 });
  
 

@@ -5,6 +5,8 @@ import { Button, Form, Modal, Row, Col, Card, Table, Alert } from 'react-bootstr
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { baseURL } from '../config';
+import OnlineTestMonitoring from '../placementTest/OnlineTestMonitoring';
+import { width } from '@fortawesome/free-solid-svg-icons/fa0';
 
 const PlacementTest = () => {
     const [loading, setLoading] = useState(true);
@@ -30,47 +32,51 @@ const PlacementTest = () => {
     const [autoSubmit, setAutoSubmit] = useState(false); // Auto-submit state
     const timerRef = useRef(null); // Timer reference
     const navigate = useNavigate()
+    const [isCameraOn, setIsCameraOn] = useState(false);
 
-    // useEffect(() => {
-    //     const handleVisibilityChange = async () => {
-    //         if (!showSummary && document.hidden) {
-    //             setAutoSubmit(true);
-    //             await handleSubmitTest();
-    //             navigate('/malpractice-detected');
-    //         }
-    //     };
-    
-    //     const handlePopState = async () => {
-    //         if (!showSummary) {
-    //             setAutoSubmit(true);
-    //             await handleSubmitTest();
-    //             navigate('/malpractice-detected');
-    //         }
-    //     };
-    
-    //     const setupListeners = () => {
-    //         document.addEventListener("visibilitychange", handleVisibilityChange);
-    //         window.addEventListener("popstate", handlePopState);
-    //     };
-    
-    //     const cleanupListeners = () => {
-    //         document.removeEventListener("visibilitychange", handleVisibilityChange);
-    //         window.removeEventListener("popstate", handlePopState);
-    //     };
-    
-    //     setupListeners();
-    
-    //     return () => {
-    //         cleanupListeners();
-    //     };
-    // }, [navigate, showSummary]);
-     
-    
+    useEffect(() => {
+        const handleVisibilityChange = async () => {
+            if (!showSummary && document.hidden) {
+                setIsCameraOn(false);
+                setAutoSubmit(true);
+                await handleSubmitTest();
+                navigate('/malpractice-detected');
+            }
+        };
+
+        const handlePopState = async () => {
+            if (!showSummary) {
+                setIsCameraOn(false);
+                setAutoSubmit(true);
+                await handleSubmitTest();
+                navigate('/malpractice-detected');
+            }
+        };
+
+        const setupListeners = () => {
+            document.addEventListener("visibilitychange", handleVisibilityChange);
+            window.addEventListener("popstate", handlePopState);
+        };
+
+        const cleanupListeners = () => {
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+            window.removeEventListener("popstate", handlePopState);
+        };
+
+        setupListeners();
+
+        return () => {
+            cleanupListeners();
+        };
+    }, [navigate, showSummary]);
+
+
     useEffect(() => {
         const handleVisibilityChange = async () => {
             if (!showSummary && document.hidden) {
                 setAutoSubmit(true);
                 await handleSubmitTest();
+                setIsCameraOn(false);
                 navigate('/malpractice-detected');
             }
         };
@@ -123,7 +129,7 @@ const PlacementTest = () => {
         const fetchTestDetails = async () => {
             try {
                 const response1 = await axios.post(`${baseURL}/api/placement-test/fetchTestTopicIdsAndQnNums`, {
-                    encrypted_test_id:test_id
+                    encrypted_test_id: test_id
                 });
 
                 const { topic_ids, number_of_questions, show_result } = response1.data;
@@ -161,13 +167,13 @@ const PlacementTest = () => {
 
                 setLoading(false);
             } catch (error) {
-                if(error.response){
-                    if(error.response.status === 403){
+                if (error.response) {
+                    if (error.response.status === 403) {
                         navigate('/not-found')
-                    }else if(error.response.status === 404){
+                    } else if (error.response.status === 404) {
                         navigate('/not-found')
                     }
-                }else{
+                } else {
                     console.error('Error fetching test details:', error);
                     setLoading(false);
                 }
@@ -239,12 +245,12 @@ const PlacementTest = () => {
                 total_marks: totalMarks
             });
 
+            setIsCameraOn(false);
             toast.success('Submitted successfully!')
             setTestResults({
                 ...response.data,
                 question_ans_data: questionAnsData,
             });
-
             setShowSummary(true);
             if (!showResult) {
                 // Display a message for pending results
@@ -257,6 +263,7 @@ const PlacementTest = () => {
             }
 
         } catch (error) {
+            setIsCameraOn(false);
             if (error.response) {
                 if (error.response.status === 400) {
                     alert('Cannot Submit Answers Again: You have already submitted your answers for this test')
@@ -303,18 +310,20 @@ const PlacementTest = () => {
                     phone_number: ''
                 });
                 setModalOpen(false); // Close modal after saving student data
+                setIsCameraOn(true); // open camera
                 startTimer(remainingTime); // Start the timer after the modal is closed
             } else {
-                setSaveError('Failed to save student data. Please try again.');
+                setSaveError('Failed to save data. Please try again.');
             }
         } catch (error) {
-            if(error.response){
-                if(error.response.status === 403){
+            setIsCameraOn(false);
+            if (error.response) {
+                if (error.response.status === 403) {
                     alert("You have already completed this test.")
                     setSaveError('You have already completed this test.');
                     navigate('/not-found')
                 }
-            }else{
+            } else {
                 console.error('Error saving student data:', error);
                 setSaveError('Failed to save student data. Please try again.');
             }
@@ -351,139 +360,143 @@ const PlacementTest = () => {
     }
 
     return (
-        <div className="container mt-5">
-            <h2>Test</h2>
-            <div className="d-flex justify-content-between">
-                <div>Total Marks: {totalMarks}</div>
-                <div className='fw-bolder '>Time Remaining: {Math.floor(remainingTime / 60)}:{String(remainingTime % 60).padStart(2, '0')}</div>
-            </div>
-            {!showSummary && !testResults && (
-                <>
-                    {questions.map((question, index) => (
-                        <Form key={question.cumulative_question_id} className="mb-3">
-                            <Form.Group as={Row}>
-                                <Form.Label column sm="12" className="position-relative">
-                                    <span>{index + 1}. {question.question_description}</span>
-                                    <span className="position-absolute top-0 end-0">Marks: {question.no_of_marks_allocated}</span>
-                                </Form.Label>
-                                <Col sm="12">
-                                    {question.options.map((option, idx) => (
-                                        <Form.Check
-                                            key={idx}
-                                            type="radio"
-                                            label={option}
-                                            name={`question-${index}`}
-                                            value={option}
-                                            checked={answers[question.cumulative_question_id] === option}
-                                            onChange={(e) => handleAnswerChange(question.cumulative_question_id, e.target.value)}
-                                        />
-                                    ))}
-                                </Col>
+        <>
+            <OnlineTestMonitoring style={{ marginLeft: '80%', marginTop: '-8rem', position: 'fixed' }} isCameraOn={isCameraOn} />
+            <div className="container " style={{ marginTop: '10rem' }}>
+                <h2>Test</h2>
+                <div className="d-flex justify-content-between">
+                    <div>Total Marks: {totalMarks}</div>
+                    <div className='fw-bolder '>Time Remaining: {Math.floor(remainingTime / 60)}:{String(remainingTime % 60).padStart(2, '0')}</div>
+                </div>
+                {!showSummary && !testResults && (
+                    <>
+                        {questions.map((question, index) => (
+                            <Form key={question.cumulative_question_id} className="mb-3">
+                                <Form.Group as={Row}>
+                                    <Form.Label column sm="12" className="position-relative">
+                                        <span>{index + 1}. {question.question_description}</span>
+                                        <span className="position-absolute top-0 end-0">Marks: {question.no_of_marks_allocated}</span>
+                                    </Form.Label>
+                                    <Col sm="12">
+                                        {question.options.map((option, idx) => (
+                                            <Form.Check
+                                                key={idx}
+                                                type="radio"
+                                                label={option}
+                                                name={`question-${index}`}
+                                                value={option}
+                                                checked={answers[question.cumulative_question_id] === option}
+                                                onChange={(e) => handleAnswerChange(question.cumulative_question_id, e.target.value)}
+                                            />
+                                        ))}
+                                    </Col>
+                                </Form.Group>
+                            </Form>
+                        ))}
+                    </>
+                )}
+
+                {showSummary && showResult && (
+                   
+                    <Card className="mt-5 shadow">
+                        <Card.Header>
+                            <h3>Summary</h3>
+                        </Card.Header>
+                        <Card.Body className="p-4 bg-light">
+                            <Table bordered hover>
+                                <tbody>
+                                    <tr>
+                                        <td className="font-weight-bold text-primary">Total Questions</td>
+                                        <td>{questions.length}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="font-weight-bold text-success">Answered Questions</td>
+                                        <td>{getAnsweredQuestionsCount()}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="font-weight-bold text-warning">Unanswered Questions</td>
+                                        <td>{getUnansweredQuestionsCount()}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="font-weight-bold text-danger">Wrong Answers</td>
+                                        <td>{getWrongAnswersCount()}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="font-weight-bold text-info">Marks Obtained</td>
+                                        <td>{obtainedMarks}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="font-weight-bold text-secondary">Total Marks</td>
+                                        <td>{totalMarks}</td>
+                                    </tr>
+                                </tbody>
+                            </Table>
+                        </Card.Body>
+                    </Card>
+                )}
+                {showSummary && !showResult && (
+                    <h3 className='text-info text-center'>Your result will be updated soon.</h3>
+                )}
+                <Modal show={modalOpen} >
+                    <Modal.Header >
+                        <Modal.Title>Student Details</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+
+                        <Form onSubmit={handleSaveStudent}>
+                            <Form.Group controlId="name">
+                                <Form.Label>Name</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    required
+                                />
                             </Form.Group>
+                            <Form.Group controlId="email">
+                                <Form.Label>Email</Form.Label>
+                                <Form.Control
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="phone_number">
+                                <Form.Label>Phone Number</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="phone_number"
+                                    value={formData.phone_number}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </Form.Group>
+                            {saveError && <p className="text-danger">{saveError}</p>}
+                            <Button variant="primary" type="submit" disabled={savingStudent} style={{ marginTop: '5px' }}>
+                                {savingStudent ? 'Saving...' : 'Submit'}
+                            </Button>
                         </Form>
-                    ))}
-                </>
-            )}
-
-            {showSummary && showResult && (
-                <Card className="mt-5 shadow">
-                    <Card.Header>
-                        <h3>Summary</h3>
-                    </Card.Header>
-                    <Card.Body className="p-4 bg-light">
-                        <Table bordered hover>
-                            <tbody>
-                                <tr>
-                                    <td className="font-weight-bold text-primary">Total Questions</td>
-                                    <td>{questions.length}</td>
-                                </tr>
-                                <tr>
-                                    <td className="font-weight-bold text-success">Answered Questions</td>
-                                    <td>{getAnsweredQuestionsCount()}</td>
-                                </tr>
-                                <tr>
-                                    <td className="font-weight-bold text-warning">Unanswered Questions</td>
-                                    <td>{getUnansweredQuestionsCount()}</td>
-                                </tr>
-                                <tr>
-                                    <td className="font-weight-bold text-danger">Wrong Answers</td>
-                                    <td>{getWrongAnswersCount()}</td>
-                                </tr>
-                                <tr>
-                                    <td className="font-weight-bold text-info">Marks Obtained</td>
-                                    <td>{obtainedMarks}</td>
-                                </tr>
-                                <tr>
-                                    <td className="font-weight-bold text-secondary">Total Marks</td>
-                                    <td>{totalMarks}</td>
-                                </tr>
-                            </tbody>
-                        </Table>
-                    </Card.Body>
-                </Card>
-            )}
-            {showSummary && !showResult && (
-                <h3 className='text-info text-center'>Your result will be updated soon.</h3>
-            )}
-            <Modal show={modalOpen} >
-                <Modal.Header >
-                    <Modal.Title>Student Details</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-
-                    <Form onSubmit={handleSaveStudent}>
-                        <Form.Group controlId="name">
-                            <Form.Label>Name</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                required
-                            />
-                        </Form.Group>
-                        <Form.Group controlId="email">
-                            <Form.Label>Email</Form.Label>
-                            <Form.Control
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                required
-                            />
-                        </Form.Group>
-                        <Form.Group controlId="phone_number">
-                            <Form.Label>Phone Number</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="phone_number"
-                                value={formData.phone_number}
-                                onChange={handleChange}
-                                required
-                            />
-                        </Form.Group>
-                        {saveError && <p className="text-danger">{saveError}</p>}
-                        <Button variant="primary" type="submit" disabled={savingStudent} style={{marginTop:'5px'}}>
-                            {savingStudent ? 'Saving...' : 'Submit'}
-                        </Button>
-                    </Form>
                         <Alert variant="danger" className="mt-4">
                             <Alert.Heading>Warning</Alert.Heading>
                             <p>
                                 Please be aware that any form of malpractice during the test, such as switching to a different tab or leaving the test window, will result in immediate termination of the test. Ensure that you stay within the test environment at all times to avoid disqualification.
                             </p>
                         </Alert>
-                </Modal.Body>
-            </Modal>
+                    </Modal.Body>
+                </Modal>
 
-            {!showSummary && (
-                <Button variant="success" onClick={handleSubmitTest}>
-                    Submit Test
-                </Button>
-            )}
+                {!showSummary && (
+                    <Button variant="success" onClick={handleSubmitTest}>
+                        Submit Test
+                    </Button>
+                )}
 
-            <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} closeOnClick pauseOnHover />
-        </div>
+                <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} closeOnClick pauseOnHover />
+            </div>
+        </>
     );
 };
 

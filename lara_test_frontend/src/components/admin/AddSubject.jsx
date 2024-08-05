@@ -5,7 +5,6 @@ import { baseURL } from '../config';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 import { BsPencil, BsTrash } from 'react-icons/bs';
-import '../style.css';
 
 const AddSubject = () => {
     const [subjectName, setSubjectName] = useState('');
@@ -83,7 +82,7 @@ const AddSubject = () => {
         setSubjectToDelete(subjectId);
         setShowSubjectDeleteConfirmationModal(true);
     };
-
+    
     const handleDeleteTopic = async (topicId) => {
         setTopicToDelete(topicId);
         setShowTopicDeleteConfirmationModal(true);
@@ -115,13 +114,14 @@ const AddSubject = () => {
         }
     };
 
+    
     const confirmDeleteTopic = async () => {
         try {
             const token = localStorage.getItem("token");
             if (!token) {
                 throw new Error("No token provided.");
             }
-
+    
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -130,7 +130,7 @@ const AddSubject = () => {
                     topic_id: topicToDelete
                 }
             };
-
+    
             await axios.delete(`${baseURL}/api/test/cumulative-test/deleteTopic`, config);
             toast.success("Topic Deleted Successfully!!");
             fetchSubjects();
@@ -140,6 +140,7 @@ const AddSubject = () => {
             toast.error("Something went wrong!!!");
         }
     };
+    
 
     const handleAddTopic = (subjectId) => {
         setCurrentSubjectId(subjectId);
@@ -176,13 +177,13 @@ const AddSubject = () => {
             };
 
             if (isEditMode) {
-                await axios.put(`${baseURL}/api/test/cumulative-test/updateSubject`, {
+                const response = await axios.put(`${baseURL}/api/test/cumulative-test/updateSubject`, {
                     subject_id: currentSubjectId,
                     subject_name: subjectName
                 }, config);
                 toast.success("Subject Updated");
             } else {
-                await axios.post(`${baseURL}/api/test/cumulative-test/saveSubject`, {
+                const response = await axios.post(`${baseURL}/api/test/cumulative-test/saveSubject`, {
                     subject_name: subjectName
                 }, config);
                 toast.success("Subject Added");
@@ -191,8 +192,16 @@ const AddSubject = () => {
             fetchSubjects();
             handleCloseModals();
         } catch (error) {
-            console.error('Error:', error);
-            toast.error("Something went wrong");
+            if(error.response){
+                if(error.response.status === 400){
+                    toast.warn('Entered subject already exist');
+                    handleCloseModals();
+                }else{
+                    console.error('Error:', error);
+                    handleCloseModals();
+                    toast.error("Something went wrong");
+                }
+            }
         }
     };
 
@@ -215,13 +224,13 @@ const AddSubject = () => {
             };
 
             if (isEditMode) {
-                await axios.put(`${baseURL}/api/test/cumulative-test/updateTopic`, {
+                const response = await axios.put(`${baseURL}/api/test/cumulative-test/updateTopic`, {
                     topic_id: currentTopicId,
                     topic_name: topicName
                 }, config);
                 toast.success("Topic Updated");
             } else {
-                await axios.post(`${baseURL}/api/test/cumulative-test/saveTopic`, {
+                const response = await axios.post(`${baseURL}/api/test/cumulative-test/saveTopic`, {
                     subject_id: currentSubjectId,
                     topic_name: topicName
                 }, config);
@@ -231,8 +240,16 @@ const AddSubject = () => {
             fetchSubjects();
             handleCloseModals();
         } catch (error) {
-            console.error('Error:', error);
-            toast.error("Something went wrong");
+            if(error.response){
+                if(error.response.status === 400){
+                    toast.warn('Topic already exist for this subject');
+                    handleCloseModals();
+                }else{
+                    console.error('Error:', error);
+                    handleCloseModals();
+                    toast.error("Something went wrong");
+                }
+            }
         }
     };
 
@@ -261,168 +278,167 @@ const AddSubject = () => {
 
     return (
         <>
-            <div className='container mt-5'>
-                <Button className="btn btn-primary" onClick={handleAddSubject}>
-                    Add Subject
-                </Button>
-                <hr />
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>Subject Name</th>
-                            <th>Topics</th>
-                            <th>Add Topic</th>
+             <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
+            <Button className="btn btn-primary" onClick={handleAddSubject}>
+                Add Subject
+            </Button>
+            <hr />
+            <Table striped bordered hover>
+                <thead>
+                    <tr>
+                        <th>Subject Name</th>
+                        <th>Topics</th>
+                        <th>Add Topic</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {subjects.map((subject) => (
+                        <tr key={subject.id}>
+                            <td>
+                                <Row>
+                                    <Col>{subject.name}</Col>
+                                    <Col md="auto">
+                                        <Button
+                                            variant="secondary"
+                                            onClick={() => handleEditSubject(subject.subject_id)}
+                                        >
+                                            <BsPencil />
+                                        </Button>
+                                    </Col>
+                                    <Col md="auto">
+                                        <Button
+                                            variant="danger"
+                                            onClick={() => handleDeleteSubject(subject.subject_id)}
+                                        >
+                                            <BsTrash />
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </td>
+                            <td>
+                                <ul>
+                                    {subject.topics.map((topic) => (
+                                        <li key={topic.id} style={{ margin: '5px' }}>
+                                            <Row>
+                                                <Col>{topic.name}</Col>
+                                                <Col md="auto">
+                                                    <Button
+                                                        variant="secondary"
+                                                        onClick={() => handleEditTopic(topic.topic_id)}
+                                                    >
+                                                        <BsPencil />
+                                                    </Button>
+                                                </Col>
+                                                <Col md="auto">
+                                                    <Button
+                                                        variant="danger"
+                                                        onClick={() => handleDeleteTopic(topic.topic_id)}
+                                                    >
+                                                        <BsTrash />
+                                                    </Button>
+                                                </Col>
+                                            </Row>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </td>
+                            <td>
+                                <Button variant="primary" onClick={() => handleAddTopic(subject.subject_id)}>Add Topic</Button>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {subjects.map((subject) => (
-                            <tr key={subject.subject_id}>
-                                <td>
-                                    <Row>
-                                        <Col>{subject.name}</Col>
-                                        <Col md="auto">
-                                            <Button
-                                                variant="secondary"
-                                                onClick={() => handleEditSubject(subject.subject_id)}
-                                            >
-                                                <BsPencil />
-                                            </Button>
-                                        </Col>
-                                        <Col md="auto">
-                                            <Button
-                                                variant="danger"
-                                                onClick={() => handleDeleteSubject(subject.subject_id)}
-                                            >
-                                                <BsTrash />
-                                            </Button>
-                                        </Col>
-                                    </Row>
-                                </td>
-                                <td>
-                                    <ul>
-                                        {subject.topics.map((topic) => (
-                                            <li key={topic.topic_id} style={{ margin: '5px' }}>
-                                                <Row>
-                                                    <Col>{topic.name}</Col>
-                                                    <Col md="auto">
-                                                        <Button
-                                                            variant="secondary"
-                                                            onClick={() => handleEditTopic(topic.topic_id)}
-                                                        >
-                                                            <BsPencil />
-                                                        </Button>
-                                                    </Col>
-                                                    <Col md="auto">
-                                                        <Button
-                                                            variant="danger"
-                                                            onClick={() => handleDeleteTopic(topic.topic_id)}
-                                                        >
-                                                            <BsTrash />
-                                                        </Button>
-                                                    </Col>
-                                                </Row>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </td>
-                                <td>
-                                    <Button variant="primary" onClick={() => handleAddTopic(subject.subject_id)}>Add Topic</Button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                    ))}
+                </tbody>
+            </Table>
 
-                <Modal show={showSubjectModal} onHide={handleCloseModals} centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title>{isEditMode ? 'Edit Subject' : 'Add Subject'}</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form onSubmit={handleSubjectSubmit}>
-                            <Form.Group>
-                                <Form.Label htmlFor="subjectName">Subject Name</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    id="subjectName"
-                                    value={subjectName}
-                                    onChange={(e) => setSubjectName(e.target.value)}
-                                    isInvalid={!!errors}
-                                    required
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errors}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                            <Button type="submit" className="btn btn-primary mt-3">
-                                Submit
-                            </Button>
-                        </Form>
-                    </Modal.Body>
-                </Modal>
-
-                <Modal show={showTopicModal} onHide={handleCloseModals} centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title>{isEditMode ? 'Edit Topic' : 'Add Topic'}</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form onSubmit={handleTopicSubmit}>
-                            <Form.Group>
-                                <Form.Label htmlFor="topicName">Topic Name</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    id="topicName"
-                                    value={topicName}
-                                    onChange={(e) => setTopicName(e.target.value)}
-                                    isInvalid={!!errors}
-                                    required
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errors}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                            <Button type="submit" className="btn btn-primary mt-3">
-                                Submit
-                            </Button>
-                        </Form>
-                    </Modal.Body>
-                </Modal>
-
-                <Modal show={showSubjectDeleteConfirmationModal} onHide={() => setShowSubjectDeleteConfirmationModal(false)} centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Confirm Delete</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <p>Are you sure you want to delete this subject and all its topics?</p>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={() => setShowSubjectDeleteConfirmationModal(false)}>
-                            Cancel
+            <Modal show={showSubjectModal} onHide={handleCloseModals} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>{isEditMode ? 'Edit Subject' : 'Add Subject'}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form onSubmit={handleSubjectSubmit}>
+                        <Form.Group>
+                            <Form.Label htmlFor="subjectName">Subject Name</Form.Label>
+                            <Form.Control
+                                type="text"
+                                id="subjectName"
+                                value={subjectName}
+                                onChange={(e) => setSubjectName(e.target.value)}
+                                isInvalid={!!errors}
+                                required
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors}
+                            </Form.Control.Feedback>
+                        </Form.Group>
+                        <Button type="submit" className="btn btn-primary mt-3">
+                            Submit
                         </Button>
-                        <Button variant="danger" onClick={confirmDeleteSubject}>
-                            Delete
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
+                    </Form>
+                </Modal.Body>
+            </Modal>
 
-                <Modal show={showTopicDeleteConfirmationModal} onHide={() => setShowTopicDeleteConfirmationModal(false)} centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Confirm Delete</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <p>Are you sure you want to delete this topic this will delete all the questions related to this topic?</p>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={() => setShowTopicDeleteConfirmationModal(false)}>
-                            Cancel
+            <Modal show={showTopicModal} onHide={handleCloseModals} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>{isEditMode ? 'Edit Topic' : 'Add Topic'}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form onSubmit={handleTopicSubmit}>
+                        <Form.Group>
+                            <Form.Label htmlFor="topicName">Topic Name</Form.Label>
+                            <Form.Control
+                                type="text"
+                                id="topicName"
+                                value={topicName}
+                                onChange={(e) => setTopicName(e.target.value)}
+                                isInvalid={!!errors}
+                                required
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors}
+                            </Form.Control.Feedback>
+                        </Form.Group>
+                        <Button type="submit" className="btn btn-primary mt-3">
+                            Submit
                         </Button>
-                        <Button variant="danger" onClick={confirmDeleteTopic}>
-                            Delete
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
+                    </Form>
+                </Modal.Body>
+            </Modal>
 
-                <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
-            </div>
+            <Modal show={showSubjectDeleteConfirmationModal} onHide={() => setShowSubjectDeleteConfirmationModal(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirm Delete</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>Are you sure you want to delete this subject and all its topics?</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowSubjectDeleteConfirmationModal(false)}>
+                        Cancel
+                    </Button>
+                    <Button variant="danger" onClick={confirmDeleteSubject}>
+                        Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={showTopicDeleteConfirmationModal} onHide={() => setShowTopicDeleteConfirmationModal(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirm Delete</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>Are you sure you want to delete this topic this will delete all the questions related to this topic?</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowTopicDeleteConfirmationModal(false)}>
+                        Cancel
+                    </Button>
+                    <Button variant="danger" onClick={confirmDeleteTopic}>
+                        Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+       
         </>
     );
 };

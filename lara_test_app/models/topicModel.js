@@ -26,13 +26,13 @@ module.exports = (sequelize, DataTypes) => {
     Topic.associate = (models) => {
         Topic.belongsTo(models.Subject, {
             foreignKey: 'subject_id',
-            as: 'subjects'
+            as: 'subject'
         });
         Topic.hasMany(models.CumulativeQuestion, {
             foreignKey: 'topic_id',
-            as: 'cumulativequestions'
+            as: 'questions'
         });
     };
- 
+
     return Topic;
 };

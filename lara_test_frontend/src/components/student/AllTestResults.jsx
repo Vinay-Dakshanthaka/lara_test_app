@@ -79,7 +79,7 @@ const AllTestResults = () => {
                                         <th>Date</th>
                                         <th>Total Marks</th>
                                         <th>Obtained Marks</th>
-                                        <th>View Details</th>
+                                        {/* <th>View Details</th> */}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -88,14 +88,14 @@ const AllTestResults = () => {
                                             <td>{formatDate(result.completed_date_time)}</td>
                                             <td>{result.total_marks}</td>
                                             <td>{result.obtained_marks}</td>
-                                            <td>
+                                            {/* <td>
                                                 <Button
                                                     variant="secondary"
                                                     onClick={() => handleNavigate(result.testResult_id)}
                                                 >
                                                     View Details
                                                 </Button>
-                                            </td>
+                                            </td> */}
                                         </tr>
                                     ))}
                                 </tbody>

@@ -50,7 +50,11 @@ import FetchResultsByTestId from "./components/placementTest/FetchResultsByTestI
 import PlacementTestError from "./components/placementTest/PlacementTestError";
 import NotFound from "./components/NotFound";
 import SendTestLink from "./components/placementTest/SendTestLink";
-import FaceDetector from "./components/placementTest/FaceDetector";
+import FaceDetector from "./components/placementTest/OnlineTestMonitoring";
+import AddQuestion from "./components/admin/AddQuestion";
+import AddQuestionsToLink from "./components/placementTest/AddQuestionsToLink";
+import UploadQuestionsToLink from "./components/placementTest/UploadQuestionsToLink";
+import AllPlacementTests from "./components/placementTest/AllPlacementTests";
 
 const App = () => {
   const location = useLocation();
@@ -129,7 +133,12 @@ const App = () => {
           <Route path="/create-test-link" element={<CreateTestLink />} />
           <Route path="/get-result/:test_id" element={<FetchResultsByTestId />} />
           <Route path="/email-test-link/:placement_test_id" element={<SendTestLink />} />
-          <Route path="/face-detector" element={<FaceDetector />} />
+          <Route path="/add-questions-tolink/:test_id" element={<AddQuestionsToLink />} />
+            <Route path="/add-new-questions/:test_id" element={<AddQuestion />} />
+            <Route path="/upload-excel-link/:test_id" element={<UploadQuestionsToLink />} />
+            <Route path="/test-links" element={<AllPlacementTests />} />
+          {/* <Route path="/add-question" element={<AddQuestion/>} /> */}
+          {/* <Route path="/face-detector" element={<FaceDetector />} /> */}
         </Route>
       </Routes>
     </>

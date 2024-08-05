@@ -50,6 +50,9 @@ db.PlacementTest = require('./placementTestModel.js')(sequelize, DataTypes);
 db.PlacementTestTopic = require('./placementTestTopicModel.js')(sequelize, DataTypes);
 db.PlacementTestStudent = require('./placementTestStudentsModel.js')(sequelize, DataTypes);
 db.PlacementTestResult = require('./placementTestResultModel.js')(sequelize, DataTypes);
+db.Option = require('./optionModel.js')(sequelize, DataTypes);
+db.CorrectAnswer = require('./correctAnswerModel.js')(sequelize, DataTypes);  
+db.CumulativeQuestionPlacementTest = require('./CQPlacementTestModel.js')(sequelize, DataTypes);  
 
 db.Student.hasOne(db.Profile, {
     foreignKey: 'student_id',
@@ -64,14 +67,16 @@ db.Profile.belongsTo(db.Student, {
 
 db.Subject.hasMany(db.Topic, {
     foreignKey: 'subject_id',
-    as: 'topics',
+    as: 'topics', // Ensure this alias matches in both directions
     onDelete: 'CASCADE'
 });
 
 db.Topic.belongsTo(db.Subject, {
     foreignKey: 'subject_id',
+    as: 'subject', // Ensure this alias matches in both directions
     onDelete: 'CASCADE'
 });
+
 
 db.Topic.hasMany(db.CumulativeQuestion, {
     foreignKey: 'topic_id',
@@ -81,7 +86,7 @@ db.Topic.hasMany(db.CumulativeQuestion, {
 
 db.CumulativeQuestion.belongsTo(db.Topic, {
     foreignKey: 'topic_id',
-    onDelete: 'CASCADE'
+    as: 'QuestionTopic' // Unique alias for the association
 });
 
 db.Company.hasMany(db.Agent, {
@@ -122,11 +127,35 @@ db.Job.belongsTo(db.Drive, {
     onDelete: 'CASCADE'
 });
 
-// Associations
+db.CumulativeQuestion.belongsTo(db.PlacementTest, {
+    foreignKey: 'test_id',
+    as: 'QuestionForPlacementTest'
+});
+db.CumulativeQuestion.hasMany(db.Option, {
+    foreignKey: 'cumulative_question_id',
+    as: 'QuestionOptions' // Unique alias for the association
+});
+db.CumulativeQuestion.hasMany(db.CorrectAnswer, {
+    foreignKey: 'cumulative_question_id',
+    as: 'CorrectAnswers' // Unique alias for the association
+});
+
+db.CumulativeQuestion.belongsToMany(db.PlacementTest, {
+    through: 'CQPlacementTest', // Use the consistent table name
+    foreignKey: 'cumulative_question_id',
+    as: 'PlacementTestsCumulativeQuestions'
+});
+
+db.PlacementTest.belongsToMany(db.CumulativeQuestion, {
+    through: 'CQPlacementTest', // Use the consistent table name
+    foreignKey: 'placement_test_id',
+    as: 'CumulativeQuestionsPlacementTest'
+});
+
+// Associations for PlacementTest
 db.PlacementTest.hasMany(db.PlacementTestTopic, {
     foreignKey: 'placement_test_id',
-    // as: 'topics'
-    as: 'Topics'
+    as: 'TestTopics' // Unique alias for the association
 });
 
 db.PlacementTestTopic.belongsTo(db.PlacementTest, {
@@ -136,33 +165,43 @@ db.PlacementTestTopic.belongsTo(db.PlacementTest, {
 
 db.Topic.hasMany(db.PlacementTestTopic, {
     foreignKey: 'topic_id',
+    as: 'TopicPlacementTests' // Unique alias for the association
 });
 
 db.PlacementTestTopic.belongsTo(db.Topic, {
     foreignKey: 'topic_id',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
+    as: 'Topics' // Unique alias for the association
 });
 
 db.PlacementTest.hasMany(db.PlacementTestResult, {
     foreignKey: 'placement_test_id',
-    as: 'results'
+    as: 'TestResults' // Unique alias for the association
 });
 
 db.PlacementTestResult.belongsTo(db.PlacementTest, {
     foreignKey: 'placement_test_id',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
+    as: 'PlacementTest' // Unique alias for the association
 });
 
-// Define associations for PlacementTestStudent
 db.PlacementTestStudent.hasMany(db.PlacementTestResult, {
     foreignKey: 'placement_test_student_id',
-    as: 'results'
+    as: 'StudentResults' // Unique alias for the association
 });
 
 db.PlacementTestResult.belongsTo(db.PlacementTestStudent, {
     foreignKey: 'placement_test_student_id',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
+    as: 'TestResultStudent' // Unique alias for the association
 });
+
+// // Call associate method for each model if defined
+// Object.keys(db).forEach(modelName => {
+//     if (db[modelName].associate) {
+//         db[modelName].associate(db);
+//     }
+// });
 
 //ManyToMany between Student & Job
 db.Student.belongsToMany(db.Job, { through: 'Student_Job', foreignKey: 'student_id' });
