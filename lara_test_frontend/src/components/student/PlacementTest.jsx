@@ -34,96 +34,96 @@ const PlacementTest = () => {
     const navigate = useNavigate()
     const [isCameraOn, setIsCameraOn] = useState(false);
 
-    // useEffect(() => {
-    //     const handleVisibilityChange = async () => {
-    //         if (!showSummary && document.hidden) {
-    //             setIsCameraOn(false);
-    //             setAutoSubmit(true);
-    //             await handleSubmitTest();
-    //             navigate('/malpractice-detected');
-    //         }
-    //     };
+    useEffect(() => {
+        const handleVisibilityChange = async () => {
+            if (!showSummary && document.hidden) {
+                setIsCameraOn(false);
+                setAutoSubmit(true);
+                await handleSubmitTest();
+                navigate('/malpractice-detected');
+            }
+        };
 
-    //     const handlePopState = async () => {
-    //         if (!showSummary) {
-    //             setIsCameraOn(false);
-    //             setAutoSubmit(true);
-    //             await handleSubmitTest();
-    //             navigate('/malpractice-detected');
-    //         }
-    //     };
+        const handlePopState = async () => {
+            if (!showSummary) {
+                setIsCameraOn(false);
+                setAutoSubmit(true);
+                await handleSubmitTest();
+                navigate('/malpractice-detected');
+            }
+        };
 
-    //     const setupListeners = () => {
-    //         document.addEventListener("visibilitychange", handleVisibilityChange);
-    //         window.addEventListener("popstate", handlePopState);
-    //     };
+        const setupListeners = () => {
+            document.addEventListener("visibilitychange", handleVisibilityChange);
+            window.addEventListener("popstate", handlePopState);
+        };
 
-    //     const cleanupListeners = () => {
-    //         document.removeEventListener("visibilitychange", handleVisibilityChange);
-    //         window.removeEventListener("popstate", handlePopState);
-    //     };
+        const cleanupListeners = () => {
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+            window.removeEventListener("popstate", handlePopState);
+        };
 
-    //     setupListeners();
+        setupListeners();
 
-    //     return () => {
-    //         cleanupListeners();
-    //     };
-    // }, [navigate, showSummary]);
+        return () => {
+            cleanupListeners();
+        };
+    }, [navigate, showSummary]);
 
 
-    // useEffect(() => {
-    //     const handleVisibilityChange = async () => {
-    //         if (!showSummary && document.hidden) {
-    //             setAutoSubmit(true);
-    //             await handleSubmitTest();
-    //             setIsCameraOn(false);
-    //             navigate('/malpractice-detected');
-    //         }
-    //     };
+    useEffect(() => {
+        const handleVisibilityChange = async () => {
+            if (!showSummary && document.hidden) {
+                setAutoSubmit(true);
+                await handleSubmitTest();
+                setIsCameraOn(false);
+                navigate('/malpractice-detected');
+            }
+        };
 
-    //     const handlePopState = async () => {
-    //         if (!showSummary) {
-    //             setAutoSubmit(true);
-    //             await handleSubmitTest();
-    //             navigate('/malpractice-detected');
-    //         }
-    //     };
+        const handlePopState = async () => {
+            if (!showSummary) {
+                setAutoSubmit(true);
+                await handleSubmitTest();
+                navigate('/malpractice-detected');
+            }
+        };
 
-    //     const handleContextMenu = (event) => {
-    //         event.preventDefault(); // Disable the context menu
-    //     };
+        const handleContextMenu = (event) => {
+            event.preventDefault(); // Disable the context menu
+        };
 
-    //     const handleKeyDown = (event) => {
-    //         // List of key codes for some common developer tool shortcuts
-    //         if (
-    //             (event.ctrlKey && event.shiftKey && event.keyCode === 73) || // Ctrl+Shift+I
-    //             (event.ctrlKey && event.keyCode === 85) || // Ctrl+U (view source)
-    //             (event.keyCode === 123) // F12 (Developer tools)
-    //         ) {
-    //             event.preventDefault();
-    //         }
-    //     };
+        const handleKeyDown = (event) => {
+            // List of key codes for some common developer tool shortcuts
+            if (
+                (event.ctrlKey && event.shiftKey && event.keyCode === 73) || // Ctrl+Shift+I
+                (event.ctrlKey && event.keyCode === 85) || // Ctrl+U (view source)
+                (event.keyCode === 123) // F12 (Developer tools)
+            ) {
+                event.preventDefault();
+            }
+        };
 
-    //     const setupListeners = () => {
-    //         document.addEventListener("visibilitychange", handleVisibilityChange);
-    //         window.addEventListener("popstate", handlePopState);
-    //         document.addEventListener("contextmenu", handleContextMenu); // Disable right-click
-    //         document.addEventListener("keydown", handleKeyDown); // Handle key combinations
-    //     };
+        const setupListeners = () => {
+            document.addEventListener("visibilitychange", handleVisibilityChange);
+            window.addEventListener("popstate", handlePopState);
+            document.addEventListener("contextmenu", handleContextMenu); // Disable right-click
+            document.addEventListener("keydown", handleKeyDown); // Handle key combinations
+        };
 
-    //     const cleanupListeners = () => {
-    //         document.removeEventListener("visibilitychange", handleVisibilityChange);
-    //         window.removeEventListener("popstate", handlePopState);
-    //         document.removeEventListener("contextmenu", handleContextMenu); // Remove listener on cleanup
-    //         document.removeEventListener("keydown", handleKeyDown); // Remove listener on cleanup
-    //     };
+        const cleanupListeners = () => {
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+            window.removeEventListener("popstate", handlePopState);
+            document.removeEventListener("contextmenu", handleContextMenu); // Remove listener on cleanup
+            document.removeEventListener("keydown", handleKeyDown); // Remove listener on cleanup
+        };
 
-    //     setupListeners();
+        setupListeners();
 
-    //     return () => {
-    //         cleanupListeners();
-    //     };
-    // }, [navigate, showSummary]);
+        return () => {
+            cleanupListeners();
+        };
+    }, [navigate, showSummary]);
 
     useEffect(() => {
         const fetchTestDetails = async () => {
