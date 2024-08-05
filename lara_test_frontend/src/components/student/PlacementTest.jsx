@@ -34,96 +34,96 @@ const PlacementTest = () => {
     const navigate = useNavigate()
     const [isCameraOn, setIsCameraOn] = useState(false);
 
-    useEffect(() => {
-        const handleVisibilityChange = async () => {
-            if (!showSummary && document.hidden) {
-                setIsCameraOn(false);
-                setAutoSubmit(true);
-                await handleSubmitTest();
-                navigate('/malpractice-detected');
-            }
-        };
+    // useEffect(() => {
+    //     const handleVisibilityChange = async () => {
+    //         if (!showSummary && document.hidden) {
+    //             setIsCameraOn(false);
+    //             setAutoSubmit(true);
+    //             await handleSubmitTest();
+    //             navigate('/malpractice-detected');
+    //         }
+    //     };
 
-        const handlePopState = async () => {
-            if (!showSummary) {
-                setIsCameraOn(false);
-                setAutoSubmit(true);
-                await handleSubmitTest();
-                navigate('/malpractice-detected');
-            }
-        };
+    //     const handlePopState = async () => {
+    //         if (!showSummary) {
+    //             setIsCameraOn(false);
+    //             setAutoSubmit(true);
+    //             await handleSubmitTest();
+    //             navigate('/malpractice-detected');
+    //         }
+    //     };
 
-        const setupListeners = () => {
-            document.addEventListener("visibilitychange", handleVisibilityChange);
-            window.addEventListener("popstate", handlePopState);
-        };
+    //     const setupListeners = () => {
+    //         document.addEventListener("visibilitychange", handleVisibilityChange);
+    //         window.addEventListener("popstate", handlePopState);
+    //     };
 
-        const cleanupListeners = () => {
-            document.removeEventListener("visibilitychange", handleVisibilityChange);
-            window.removeEventListener("popstate", handlePopState);
-        };
+    //     const cleanupListeners = () => {
+    //         document.removeEventListener("visibilitychange", handleVisibilityChange);
+    //         window.removeEventListener("popstate", handlePopState);
+    //     };
 
-        setupListeners();
+    //     setupListeners();
 
-        return () => {
-            cleanupListeners();
-        };
-    }, [navigate, showSummary]);
+    //     return () => {
+    //         cleanupListeners();
+    //     };
+    // }, [navigate, showSummary]);
 
 
-    useEffect(() => {
-        const handleVisibilityChange = async () => {
-            if (!showSummary && document.hidden) {
-                setAutoSubmit(true);
-                await handleSubmitTest();
-                setIsCameraOn(false);
-                navigate('/malpractice-detected');
-            }
-        };
+    // useEffect(() => {
+    //     const handleVisibilityChange = async () => {
+    //         if (!showSummary && document.hidden) {
+    //             setAutoSubmit(true);
+    //             await handleSubmitTest();
+    //             setIsCameraOn(false);
+    //             navigate('/malpractice-detected');
+    //         }
+    //     };
 
-        const handlePopState = async () => {
-            if (!showSummary) {
-                setAutoSubmit(true);
-                await handleSubmitTest();
-                navigate('/malpractice-detected');
-            }
-        };
+    //     const handlePopState = async () => {
+    //         if (!showSummary) {
+    //             setAutoSubmit(true);
+    //             await handleSubmitTest();
+    //             navigate('/malpractice-detected');
+    //         }
+    //     };
 
-        const handleContextMenu = (event) => {
-            event.preventDefault(); // Disable the context menu
-        };
+    //     const handleContextMenu = (event) => {
+    //         event.preventDefault(); // Disable the context menu
+    //     };
 
-        const handleKeyDown = (event) => {
-            // List of key codes for some common developer tool shortcuts
-            if (
-                (event.ctrlKey && event.shiftKey && event.keyCode === 73) || // Ctrl+Shift+I
-                (event.ctrlKey && event.keyCode === 85) || // Ctrl+U (view source)
-                (event.keyCode === 123) // F12 (Developer tools)
-            ) {
-                event.preventDefault();
-            }
-        };
+    //     const handleKeyDown = (event) => {
+    //         // List of key codes for some common developer tool shortcuts
+    //         if (
+    //             (event.ctrlKey && event.shiftKey && event.keyCode === 73) || // Ctrl+Shift+I
+    //             (event.ctrlKey && event.keyCode === 85) || // Ctrl+U (view source)
+    //             (event.keyCode === 123) // F12 (Developer tools)
+    //         ) {
+    //             event.preventDefault();
+    //         }
+    //     };
 
-        const setupListeners = () => {
-            document.addEventListener("visibilitychange", handleVisibilityChange);
-            window.addEventListener("popstate", handlePopState);
-            document.addEventListener("contextmenu", handleContextMenu); // Disable right-click
-            document.addEventListener("keydown", handleKeyDown); // Handle key combinations
-        };
+    //     const setupListeners = () => {
+    //         document.addEventListener("visibilitychange", handleVisibilityChange);
+    //         window.addEventListener("popstate", handlePopState);
+    //         document.addEventListener("contextmenu", handleContextMenu); // Disable right-click
+    //         document.addEventListener("keydown", handleKeyDown); // Handle key combinations
+    //     };
 
-        const cleanupListeners = () => {
-            document.removeEventListener("visibilitychange", handleVisibilityChange);
-            window.removeEventListener("popstate", handlePopState);
-            document.removeEventListener("contextmenu", handleContextMenu); // Remove listener on cleanup
-            document.removeEventListener("keydown", handleKeyDown); // Remove listener on cleanup
-        };
+    //     const cleanupListeners = () => {
+    //         document.removeEventListener("visibilitychange", handleVisibilityChange);
+    //         window.removeEventListener("popstate", handlePopState);
+    //         document.removeEventListener("contextmenu", handleContextMenu); // Remove listener on cleanup
+    //         document.removeEventListener("keydown", handleKeyDown); // Remove listener on cleanup
+    //     };
 
-        setupListeners();
+    //     setupListeners();
 
-        return () => {
-            cleanupListeners();
-        };
-    }, [navigate, showSummary]);
+    //     return () => {
+    //         cleanupListeners();
+    //     };
+    // }, [navigate, showSummary]);
 
     useEffect(() => {
         const fetchTestDetails = async () => {
@@ -141,19 +141,17 @@ const PlacementTest = () => {
                     setShowSummary(false); // Do not show detailed summary
                 }
 
-                const response2 = await axios.post(`${baseURL}/api/test/cumulative-test/getQuestionsByTopicIds`, {
-                    topic_ids,
-                    numberOfQuestions: number_of_questions
+                const response2 = await axios.post(`${baseURL}/api/test/cumulative-test/fetchQuestionsByTestId`, {
+                    placement_test_id: test_id
                 });
 
                 const questionsWithOptions = response2.data.map(question => ({
                     ...question,
-                    options: [
-                        question.option_1,
-                        question.option_2,
-                        question.option_3,
-                        question.option_4,
-                    ]
+                    options: question.QuestionOptions.map(opt => ({
+                        option_id: opt.option_id,
+                        option_description: opt.option_description
+                    })),
+                    correct_answers: question.CorrectAnswers.map(ans => ans.answer_description)
                 }));
 
                 setQuestions(questionsWithOptions);
@@ -209,11 +207,21 @@ const PlacementTest = () => {
         }, 1000);
     };
 
-    const handleAnswerChange = (questionId, selectedOption) => {
-        setAnswers(prevAnswers => ({
-            ...prevAnswers,
-            [questionId]: selectedOption,
-        }));
+    const handleAnswerChange = (questionId, selectedOption, checked) => {
+        setAnswers(prevAnswers => {
+            const questionAnswers = prevAnswers[questionId] || [];
+            if (checked) {
+                return {
+                    ...prevAnswers,
+                    [questionId]: [...questionAnswers, selectedOption]
+                };
+            } else {
+                return {
+                    ...prevAnswers,
+                    [questionId]: questionAnswers.filter(option => option !== selectedOption)
+                };
+            }
+        });
     };
 
     const handleSubmitTest = async () => {
@@ -223,8 +231,14 @@ const PlacementTest = () => {
             const completedDateTime = new Date().toISOString();
 
             const obtainedMarks = questions.reduce((sum, question) => {
-                const selectedOption = answers[question.cumulative_question_id];
-                if (String(selectedOption) === String(question.correct_option)) {
+                const selectedOptions = answers[question.cumulative_question_id] || [];
+                const correctOptions = question.correct_answers;
+
+                // Check if the selected options match the correct answers
+                const isCorrect = correctOptions.length === selectedOptions.length &&
+                    correctOptions.every(answer => selectedOptions.includes(answer));
+
+                if (isCorrect) {
                     return sum + question.no_of_marks_allocated;
                 }
                 return sum;
@@ -234,8 +248,8 @@ const PlacementTest = () => {
 
             const questionAnsData = {};
             questions.forEach(question => {
-                const selectedOption = answers[question.cumulative_question_id] || null;
-                questionAnsData[question.cumulative_question_id] = selectedOption;
+                const selectedOptions = answers[question.cumulative_question_id] || [];
+                questionAnsData[question.cumulative_question_id] = selectedOptions;
             });
 
             const response = await axios.post(`${baseURL}/api/placement-test/savePlacementTestResults`, {
@@ -245,12 +259,12 @@ const PlacementTest = () => {
                 total_marks: totalMarks
             });
 
-            setIsCameraOn(false);
             toast.success('Submitted successfully!')
             setTestResults({
                 ...response.data,
                 question_ans_data: questionAnsData,
             });
+
             setShowSummary(true);
             if (!showResult) {
                 // Display a message for pending results
@@ -263,7 +277,6 @@ const PlacementTest = () => {
             }
 
         } catch (error) {
-            setIsCameraOn(false);
             if (error.response) {
                 if (error.response.status === 400) {
                     alert('Cannot Submit Answers Again: You have already submitted your answers for this test')
@@ -310,18 +323,17 @@ const PlacementTest = () => {
                     phone_number: ''
                 });
                 setModalOpen(false); // Close modal after saving student data
-                setIsCameraOn(true); // open camera
                 startTimer(remainingTime); // Start the timer after the modal is closed
             } else {
-                setSaveError('Failed to save data. Please try again.');
+                setSaveError('Failed to save student data. Please try again.');
             }
         } catch (error) {
-            setIsCameraOn(false);
             if (error.response) {
                 if (error.response.status === 403) {
                     alert("You have already completed this test.")
+
                     setSaveError('You have already completed this test.');
-                    navigate('/not-found')
+                    navigate('/not-found');
                 }
             } else {
                 console.error('Error saving student data:', error);
@@ -341,17 +353,21 @@ const PlacementTest = () => {
     };
 
     const getAnsweredQuestionsCount = () => {
-        return questions.filter(question => answers[question.cumulative_question_id]).length;
+        return questions.filter(question => answers[question.cumulative_question_id] && answers[question.cumulative_question_id].length > 0).length;
     };
 
     const getUnansweredQuestionsCount = () => {
-        return questions.filter(question => !answers[question.cumulative_question_id]).length;
+        return questions.filter(question => !answers[question.cumulative_question_id] || answers[question.cumulative_question_id].length === 0).length;
     };
 
     const getWrongAnswersCount = () => {
         return questions.filter(question => {
-            const selectedOption = answers[question.cumulative_question_id];
-            return selectedOption && selectedOption !== question.correct_option;
+            const selectedOptions = answers[question.cumulative_question_id] || [];
+            const correctOptions = question.correct_answers;
+
+            // Check if the selected options match the correct answers
+            return !(correctOptions.length === selectedOptions.length &&
+                correctOptions.every(answer => selectedOptions.includes(answer)));
         }).length;
     };
 
@@ -381,12 +397,12 @@ const PlacementTest = () => {
                                         {question.options.map((option, idx) => (
                                             <Form.Check
                                                 key={idx}
-                                                type="radio"
-                                                label={option}
+                                                type="checkbox"
+                                                label={option.option_description}
                                                 name={`question-${index}`}
-                                                value={option}
-                                                checked={answers[question.cumulative_question_id] === option}
-                                                onChange={(e) => handleAnswerChange(question.cumulative_question_id, e.target.value)}
+                                                value={option.option_description}
+                                                checked={answers[question.cumulative_question_id]?.includes(option.option_description)}
+                                                onChange={(e) => handleAnswerChange(question.cumulative_question_id, e.target.value, e.target.checked)}
                                             />
                                         ))}
                                     </Col>
@@ -397,7 +413,6 @@ const PlacementTest = () => {
                 )}
 
                 {showSummary && showResult && (
-                   
                     <Card className="mt-5 shadow">
                         <Card.Header>
                             <h3>Summary</h3>
@@ -439,7 +454,7 @@ const PlacementTest = () => {
                 )}
                 <Modal show={modalOpen} >
                     <Modal.Header >
-                        <Modal.Title>Student Details</Modal.Title>
+                        <Modal.Title>Please Fill the Form</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
 
