@@ -1,4 +1,4 @@
-//---------------------use this code to to generate jwt token and store it in the env --------------------//
+//---------------------use this code to to generate jwt token secret key and store it in the env --------------------//
 // const crypto = require('crypto');
 
 // // Function to generate a JWT secret

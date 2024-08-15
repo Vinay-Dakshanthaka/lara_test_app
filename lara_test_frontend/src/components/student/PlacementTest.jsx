@@ -32,7 +32,7 @@ const PlacementTest = () => {
     const [autoSubmit, setAutoSubmit] = useState(false); // Auto-submit state
     const timerRef = useRef(null); // Timer reference
     const navigate = useNavigate()
-    const [isCameraOn, setIsCameraOn] = useState(false);
+    const [isCameraOn, setIsCameraOn] = useState(true);
 
     useEffect(() => {
         const handleVisibilityChange = async () => {
@@ -125,7 +125,12 @@ const PlacementTest = () => {
         };
     }, [navigate, showSummary]);
 
+    const showAlert = ()=>{
+        alert("Allow camera and microphone access inorder to attend the test")
+    }
+
     useEffect(() => {
+        // showAlert()
         const fetchTestDetails = async () => {
             try {
                 const response1 = await axios.post(`${baseURL}/api/placement-test/fetchTestTopicIdsAndQnNums`, {
@@ -377,7 +382,7 @@ const PlacementTest = () => {
 
     return (
         <>
-            <OnlineTestMonitoring style={{ marginLeft: '80%', marginTop: '-8rem', position: 'fixed' }} isCameraOn={isCameraOn} />
+            <OnlineTestMonitoring isCameraOn={isCameraOn} style={{ marginLeft: '80%', marginTop: '-8rem', position: 'fixed' }}  />
             <div className="container " style={{ marginTop: '10rem' }}>
                 <h2>Test</h2>
                 <div className="d-flex justify-content-between">
@@ -421,28 +426,28 @@ const PlacementTest = () => {
                             <Table bordered hover>
                                 <tbody>
                                     <tr>
-                                        <td className="font-weight-bold text-primary">Total Questions</td>
-                                        <td>{questions.length}</td>
+                                        <td className="fw-bold text-primary">Total Questions</td>
+                                        <td className="fw-bold text-primary">{questions.length}</td>
                                     </tr>
                                     <tr>
-                                        <td className="font-weight-bold text-success">Answered Questions</td>
-                                        <td>{getAnsweredQuestionsCount()}</td>
+                                        <td className="fw-bold text-dark">Total Marks</td>
+                                        <td className="fw-bold text-dark">{totalMarks}</td>
                                     </tr>
                                     <tr>
-                                        <td className="font-weight-bold text-warning">Unanswered Questions</td>
-                                        <td>{getUnansweredQuestionsCount()}</td>
+                                        <td className="fw-bold text-success">Answered Questions</td>
+                                        <td className="fw-bold text-success">{getAnsweredQuestionsCount()}</td>
                                     </tr>
                                     <tr>
-                                        <td className="font-weight-bold text-danger">Wrong Answers</td>
-                                        <td>{getWrongAnswersCount()}</td>
+                                        <td className="fw-bold text-warning">Unanswered Questions</td>
+                                        <td className="fw-bold text-warning">{getUnansweredQuestionsCount()}</td>
                                     </tr>
                                     <tr>
-                                        <td className="font-weight-bold text-info">Marks Obtained</td>
-                                        <td>{obtainedMarks}</td>
+                                        <td className="fw-bold text-danger">Wrong Answers</td>
+                                        <td className="fw-bold text-danger">{getWrongAnswersCount()}</td>
                                     </tr>
                                     <tr>
-                                        <td className="font-weight-bold text-secondary">Total Marks</td>
-                                        <td>{totalMarks}</td>
+                                        <td className="fw-bold text-info">Marks Obtained</td>
+                                        <td className="fw-bold text-info">{obtainedMarks}</td>
                                     </tr>
                                 </tbody>
                             </Table>
@@ -455,6 +460,9 @@ const PlacementTest = () => {
                 <Modal show={modalOpen} >
                     <Modal.Header >
                         <Modal.Title>Please Fill the Form</Modal.Title>
+                        {/* <p className="bg-info">
+                       Please give permission to Access to camera and microphone in order to monitor the test
+                        </p> */}
                     </Modal.Header>
                     <Modal.Body>
 

@@ -6,7 +6,7 @@ const app = express();
 const router = require('./routes/adminRoutes');
 const authRoute = require('./routes/authRoutes');
 const profileRoute = require('./routes/profileRoutes')
-const db = require('./models'); // Ensure this matches your Sequelize setup file path
+const db = require('./models');
 const adminRoute = require('./routes/adminRoutes');
 const cumulativeTestRouter = require('./routes/cumulativeTestRoutes');
 const companyRoute = require('./routes/companyRoutes');
@@ -23,11 +23,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const corsOptions = {
-    // origin: 'https://www.laragrooming.com',
     origin: ['https://paintpulse.in'],
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
   }; 
-  
+
 // Enable CORS 
 app.use(cors(corsOptions)); 
 
@@ -37,10 +36,10 @@ app.use(cors(corsOptions));
 // Routes
 app.use('/api/test', router);
 app.use('/api/auth/student', authRoute);
-app.use('/api/student/profile', profileRoute); 
-app.use('/api/admin/activites',adminRoute);
-app.use('/api/test/cumulative-test',cumulativeTestRouter);
-app.use('/api/company',companyRoute); 
+app.use('/api/student/profile', profileRoute);
+app.use('/api/admin/activites', adminRoute);
+app.use('/api/test/cumulative-test', cumulativeTestRouter);
+app.use('/api/company', companyRoute);
 app.use('/api/agent', agentRoute);
 app.use('/api/job', jobRoute);
 app.use('/api/drive', driveRoute);

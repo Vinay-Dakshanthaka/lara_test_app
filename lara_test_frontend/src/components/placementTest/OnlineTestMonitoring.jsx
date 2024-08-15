@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as faceapi from 'face-api.js';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 const OnlineTestMonitoring = ({ style, isCameraOn }) => {
   const [video, setVideo] = useState(null);
@@ -9,9 +10,12 @@ const OnlineTestMonitoring = ({ style, isCameraOn }) => {
   const [lastFacePosition, setLastFacePosition] = useState(null);
   const [movementDetected, setMovementDetected] = useState(false);
   const [outOfFrameCount, setOutOfFrameCount] = useState(0);
-  const [toastId, setToastId] = useState(null); // Track the toast ID to manage visibility
+  const [toastId, setToastId] = useState(null);
+  const [toastCount, setToastCount] = useState(0);
   const OUT_OF_FRAME_THRESHOLD = 3;
   const MOVEMENT_THRESHOLD = 100;
+  const MAX_TOAST_COUNT = 3;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadModels = async () => {
@@ -27,19 +31,23 @@ const OnlineTestMonitoring = ({ style, isCameraOn }) => {
 
     const startVideo = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240 } });
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { width: 320, height: 240 },
+          audio: true // Request audio stream
+        });
         const videoElement = document.getElementById('video');
         if (videoElement) {
           videoElement.srcObject = stream;
           videoElement.onloadedmetadata = () => {
-            videoElement.play();
+            videoElement.play().catch(err => console.error('Error playing video:', err));
           };
           setVideo(videoElement);
         }
       } catch (error) {
-        console.error('Error accessing camera:', error);
+        console.error('Error accessing camera and/or microphone:', error);
       }
     };
+    
 
     const initialize = async () => {
       await loadModels();
@@ -66,7 +74,7 @@ const OnlineTestMonitoring = ({ style, isCameraOn }) => {
           if (detections.length > 0) {
             setFaceDetected(true);
             setOutOfFrameCount(0);
-            dismissWarningToast(); // Hide toast when face is detected
+            dismissWarningToast();
 
             const faceBox = detections[0].box;
             const landmarks = await faceapi.detectFaceLandmarks(video);
@@ -125,11 +133,18 @@ const OnlineTestMonitoring = ({ style, isCameraOn }) => {
 
   const showWarningToast = () => {
     if (!toastId) {
-      const id = toast.warn("Malpractice detected. If you contiune to do this test will be terminated.", {
+      const id = toast.warn("Malpractice detected. If you continue, the test will be terminated.", {
         autoClose: false, // Disable auto-close
         closeOnClick: false, // Disable close on click
       });
       setToastId(id);
+      setToastCount(prevCount => {
+        const newCount = prevCount + 1;
+        if (newCount >= MAX_TOAST_COUNT) {
+          navigate('/malpractice-detected');
+        }
+        return newCount;
+      });
     }
   };
 
@@ -144,8 +159,6 @@ const OnlineTestMonitoring = ({ style, isCameraOn }) => {
     <div>
       {/* <ToastContainer /> */}
       <video id="video" width="150" height="150" style={{ ...style }} />
-      {/* {!faceDetected && <p>No face detected. Please ensure your face is visible in the webcam.</p>}
-      {movementDetected && <p>Significant movement or not facing towards the screen. The test is being terminated.</p>} */}
     </div>
   );
 };
